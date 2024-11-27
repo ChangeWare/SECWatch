@@ -8,10 +8,10 @@ export default function HomeLayout(props: PropsWithChildren) {
   return (
     <div className="min-h-screen bg-main-blue-dark">
       <HomeNav />
-        <main>
-            <Outlet />
+        <main className="pt-20">
+            <Outlet/>
         </main>
-      <HomeFooter />
+        <HomeFooter/>
     </div>
   );
 };
