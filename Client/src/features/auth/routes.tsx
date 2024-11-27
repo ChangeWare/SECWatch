@@ -1,0 +1,53 @@
+import { Suspense } from "react";
+import { RouteObject } from "react-router-dom";
+import Login from "./views/Login";
+import Register from "./views/Register";
+import LoadingScreen from "@common/views/LoadingScreen";
+import ForgotPassword from "./views/ForgotPassword";
+import ResetPassword from "./views/ResetPassword";
+import VerifyEmail from "./views/VerifyEmail";
+import { authPaths } from "./paths";
+
+export const authRoutes: RouteObject[] = [
+    {
+      path: authPaths.login,
+      element: (
+        <Suspense fallback={<LoadingScreen />}>
+          <Login />
+        </Suspense>
+      )
+    },
+    {
+      path: authPaths.register,
+      element: (
+        <Suspense fallback={<LoadingScreen />}>
+          <Register />
+        </Suspense>
+      )
+    },
+    {
+      path: authPaths.forgotPassword,
+      element: (
+        <Suspense fallback={<LoadingScreen />}>
+          <ForgotPassword />
+        </Suspense>
+      )
+    },
+    {
+      path: authPaths.resetPassword,
+      element: (
+        <Suspense fallback={<LoadingScreen />}>
+          <ResetPassword />
+        </Suspense>
+      )
+    },
+    {
+      // Handle email verification links
+      path: authPaths.verifyEmail,
+      element: (
+        <Suspense fallback={<LoadingScreen />}>
+          <VerifyEmail />
+        </Suspense>
+      )
+    }
+  ];
