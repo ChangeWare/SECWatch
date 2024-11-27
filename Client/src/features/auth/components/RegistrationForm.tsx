@@ -63,7 +63,7 @@ export function RegistrationForm() {
                 <input
                     {...register('confirmPassword', {
                         required: 'Please confirm your password',
-                        validate: (value: any) => value === password || 'Passwords do not match'
+                        validate: (value: string) => value === password || 'Passwords do not match'
                     })}
                     className="w-full p-3 rounded-lg bg-white/5 border border-white/10 text-white"
                     type="password"

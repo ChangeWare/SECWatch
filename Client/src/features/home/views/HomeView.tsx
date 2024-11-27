@@ -4,6 +4,8 @@ import React from "react";
 import FeatureCard from "../components/FeatureCard.tsx";
 import Button from "@common/components/Button.tsx";
 import {glassStyles, layoutStyles, textStyles} from "@common/styles/components.ts";
+import {paths} from "@routes/paths.ts";
+import {homePaths} from "@features/home";
 
 function FeaturesSection() {
     const features = [
@@ -59,10 +61,10 @@ function HeroSection() {
                         search capabilities.
                     </p>
                     <div className={layoutStyles.flexCenter}>
-                        <Button className="px-8 py-3 text-lg flex items-center">
-                            Start Free Trial <ArrowRight className="ml-2"/>
+                        <Button className="px-8 py-3 text-lg flex items-center" to={paths.auth.register}>
+                            Start Now <ArrowRight className="ml-2"/>
                         </Button>
-                        <Button variant="secondary" className="px-8 py-3 text-lg ml-4">
+                        <Button variant="secondary" className="px-8 py-3 text-lg ml-4" to={homePaths.about}>
                             Learn More
                         </Button>
                     </div>

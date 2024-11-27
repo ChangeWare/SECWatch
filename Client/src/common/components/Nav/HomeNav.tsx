@@ -1,6 +1,7 @@
 import Button from "@common/components/Button.tsx";
 import {glassStyles, layoutStyles} from "@common/styles/components.ts";
 import {Logo} from "@common/components/Logo.tsx";
+import {paths} from "@routes/paths.ts";
 
 export function HomeNav() {
   const navItems = ['Features', 'About', 'Contact'];
@@ -26,8 +27,8 @@ export function HomeNav() {
             </div>
 
             <div className="flex items-center space-x-4">
-              <Button variant="primary" to="/register">Get Started</Button>
-              <Button variant="secondary" to="/login">Login</Button>
+              <Button variant="primary" to={paths.auth.register}>Get Started</Button>
+              <Button variant="secondary" to={paths.auth.login}>Login</Button>
             </div>
           </div>
         </div>
