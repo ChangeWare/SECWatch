@@ -1,6 +1,0 @@
-{
-  "devDependencies": {
-    "eslint": "^9.15.0",
-    "eslint-plugin-boundaries": "^5.0.1"
-  }
-}

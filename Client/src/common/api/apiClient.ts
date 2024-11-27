@@ -1,7 +1,7 @@
-import { paths } from "@common/paths";
 import { QueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { getAuthToken, logout, refreshAuthToken } from "features/auth";
+import { paths } from "@routes/paths";
+import { getAuthToken, logout, refreshAuthToken } from "@features/auth";
 import { toast } from "react-toastify";
 
 // Initialize with undefined and set it later
