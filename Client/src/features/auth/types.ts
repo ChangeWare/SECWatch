@@ -18,6 +18,14 @@ export interface RegisterResponse {
     message: string;
 }
 
+export interface RegistrationForm {
+    email: string;
+    password: string;
+    confirmPassword: string;
+    companyName?: string;
+    agreeToTerms: boolean;
+}
+
 export interface User {
     id: string;
     email: string;
@@ -33,6 +41,7 @@ export interface RegistrationData {
     password: string;
     firstName: string;
     lastName: string;
+    companyName?: string;
 }
 
 // Type for password reset request

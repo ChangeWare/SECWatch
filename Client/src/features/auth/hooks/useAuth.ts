@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { authApi } from "../api/authAPI";
+import { authApi } from "../api/authApi.ts";
 import { useState } from "react";
 import { getAuthToken, isTokenExpired, setAuthToken } from "../utils";
 import { toast } from "react-toastify";

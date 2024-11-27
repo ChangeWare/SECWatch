@@ -9,7 +9,7 @@ export function HomeNav() {
       <nav className={`fixed w-full top-0 z-50 ${glassStyles.container} bg-white/5`}>
         <div className={layoutStyles.navSection}>
           <div className={layoutStyles.flexBetween}>
-            <div className="flex items-center">
+            <div className="flex items-center -ml-12">
               <Logo height={40} className="hover:transform hover:scale-105 transition"/>
             </div>
 
@@ -26,8 +26,8 @@ export function HomeNav() {
             </div>
 
             <div className="flex items-center space-x-4">
-              <Button variant="primary">Get Started</Button>
-              <Button variant="secondary">Login</Button>
+              <Button variant="primary" to="/register">Get Started</Button>
+              <Button variant="secondary" to="/login">Login</Button>
             </div>
           </div>
         </div>

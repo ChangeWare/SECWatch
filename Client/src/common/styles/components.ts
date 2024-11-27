@@ -12,7 +12,7 @@ export const textStyles = {
 
 export const layoutStyles = {
     section: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4",  // Added explicit padding
-    navSection: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4",
+    navSection: "max-w-7xl mx-auto px-2 sm:px-4 lg:px-4 py-4",
     contentSection: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16", // For larger sections
     flexCenter: "flex items-center justify-center",
     flexBetween: "flex items-center justify-between",
