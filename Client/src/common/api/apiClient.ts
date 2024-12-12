@@ -20,7 +20,7 @@ export const getBaseUrl = () => {
           break;
       case 'development':
       default:
-          url = 'http://localhost:5001/api/';
+          url = 'http://localhost:5181/api/';
   }
 
   return url;

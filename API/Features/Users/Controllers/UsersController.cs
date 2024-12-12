@@ -13,7 +13,7 @@ public class UsersController(
 {
     private readonly ILogger<UsersController> _logger = logger;
 
-    [HttpPost]
+    [HttpPost("register")]
     [ProducesResponseType(typeof(UserDto), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Register(
@@ -40,7 +40,7 @@ public class UsersController(
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
     {
-        var result = await userService.GetByIdAsync(id.ToString());
+        var result = await userService.GetByIdAsync(id);
 
         if (result.IsFailed)
             return NotFound();

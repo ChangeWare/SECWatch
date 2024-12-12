@@ -8,12 +8,13 @@ public class UserDomainService(IUserRepository userRepository) : IUserDomainServ
         string email,
         string passwordHash,
         string firstName,
-        string lastName)
+        string lastName,
+        string companyName)
     {
         if (await userRepository.ExistsByEmailAsync(email))
             return Result.Fail<User>("Email already exists");
 
-        var userResult = User.Create(email, passwordHash, firstName, lastName);
+        var userResult = User.Create(email, passwordHash, firstName, lastName, companyName);
         if (userResult.IsFailed)
             return userResult;
 
@@ -21,16 +22,16 @@ public class UserDomainService(IUserRepository userRepository) : IUserDomainServ
         return Result.Ok(user);
     }
 
-    public async Task<Result> VerifyEmailAsync(
-        string userId,
+    public async Task<Result<User>> VerifyEmailAsync(
+        Guid userId,
         string token)
     {
         var user = await userRepository.GetByIdAsync(userId);
         return user == null ? Result.Fail("User not found") : user.VerifyEmail(token);
     }
 
-    public async Task<Result> ResetPasswordAsync(
-        string userId,
+    public async Task<Result<User>> ResetPasswordAsync(
+        Guid userId,
         string resetToken,
         string newPasswordHash)
     {

@@ -1,9 +1,15 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SECWatch.Application.Features.Authentication.Utils;
+using SECWatch.Application.Features.Communication.Services;
+using SECWatch.Domain.Common;
+using SECWatch.Domain.Features.Authentication.Services;
 using SECWatch.Domain.Features.Users;
-using SECWatch.Infrastructure.Authentication.Utils;
+using SECWatch.Infrastructure.Common;
+using SECWatch.Infrastructure.Features.Authentication.Utils;
+using SECWatch.Infrastructure.Features.Communication.Email;
 using SECWatch.Infrastructure.Features.Users;
 using SECWatch.Infrastructure.Persistence;
 
@@ -23,15 +29,18 @@ public static class DependencyInjection
         }
         services.AddSingleton(jwtConfig);
 
-        // Register JWT Token Generator
+        // Register infrastructure & utility services
         services.AddSingleton<ITokenGenerator, JwtTokenGenerator>();
+        services.AddSingleton<IPasswordHasher, BcryptPasswordHasher>();
+        services.AddScoped<IEmailService, SendGridEmailService>();
 
         // Add your DbContext
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
         // Register Repositories
-        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddTransient<ISystemEventRepository, SystemEventRepository>();
+        services.AddTransient<IUserRepository, UserRepository>();
 
         return services;
     }

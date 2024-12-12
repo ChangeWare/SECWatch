@@ -1,6 +1,6 @@
 using SECWatch.Domain.Features.Authentication.Services;
 
-namespace SECWatch.Infrastructure.Authentication.Utils;
+namespace SECWatch.Infrastructure.Features.Authentication.Utils;
 
 public class BcryptPasswordHasher : IPasswordHasher
 {

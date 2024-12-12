@@ -1,17 +1,21 @@
 using SECWatch.Application.Features.Communication.Services;
 using SECWatch.Domain.Features.Authentication;
 
-namespace SECWatch.Infrastructure.Features.Email;
+namespace SECWatch.Infrastructure.Features.Communication.Email;
 
 public class SendGridEmailService : IEmailService
 {
     public Task SendEmailAsync(string email, string subject, string message)
     {
-        throw new NotImplementedException();
+        Console.WriteLine("TODO HEHE");
+        
+        return Task.CompletedTask;
     }
 
     public Task SendVerificationEmailAsync(string email, VerificationToken token)
     {
-        throw new NotImplementedException();
+        Console.WriteLine("TODO HEHE");
+        
+        return Task.CompletedTask;
     }
 }

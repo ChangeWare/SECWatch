@@ -6,7 +6,7 @@ namespace SECWatch.Application.Features.Authentication.Services;
 public interface IAuthService
 {
     Task<Result<AuthenticationResponse>> LoginAsync(LoginRequest request);
-    Task<Result<AuthenticationResponse>> RefreshTokenAsync(string token, string refreshToken);
+    Task<Result<AuthenticationResponse>> RefreshTokenAsync(RefreshTokenRequest request);
     
-    Task<Result> LogoutAsync(string userId);
+    Task<Result> LogoutAsync(Guid userId);
 }
