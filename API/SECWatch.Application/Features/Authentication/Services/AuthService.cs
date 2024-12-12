@@ -1,6 +1,6 @@
-using System.Security.Claims;
 using FluentResults;
 using Microsoft.Extensions.Logging;
+using SECWatch.Application.Common.Utils;
 using SECWatch.Application.Features.Authentication.DTOs;
 using SECWatch.Application.Features.Authentication.Utils;
 using SECWatch.Domain.Features.Authentication.Services;
@@ -51,7 +51,7 @@ public class AuthService : IAuthService
 
         var response = new AuthenticationResponse
         {
-            UserId = user.Id,
+            UserId = user.Id.ToString(),
             Email = user.Email,
             Token = token,
             RefreshToken = refreshToken,
@@ -61,18 +61,19 @@ public class AuthService : IAuthService
         return Result.Ok(response);
     }
 
-    public async Task<Result<AuthenticationResponse>> RefreshTokenAsync(string token, string refreshToken)
+    public async Task<Result<AuthenticationResponse>> RefreshTokenAsync(RefreshTokenRequest req)
     {
-        var principal = _jwtTokenGenerator.ValidateToken(token);
+        var principal = _jwtTokenGenerator.ValidateToken(req.Token);
         if (principal == null)
         {
             return Result.Fail(new Error("Invalid token"));
         }
 
-        var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = principal.GetUserId();
+        
         var user = await _userRepository.GetByIdAsync(userId);
         
-        if (user == null || user.RefreshToken != refreshToken)
+        if (user == null || user.RefreshToken != req.RefreshToken)
         {
             return Result.Fail(new Error("Invalid refresh token"));
         }
@@ -85,7 +86,7 @@ public class AuthService : IAuthService
 
         var response = new AuthenticationResponse
         {
-            UserId = user.Id,
+            UserId = user.Id.ToString(),
             Email = user.Email,
             Token = newToken,
             RefreshToken = newRefreshToken,
@@ -96,7 +97,7 @@ public class AuthService : IAuthService
 
     }
 
-    public async Task<Result> LogoutAsync(string userId)
+    public async Task<Result> LogoutAsync(Guid userId)
     {
         var user = await _userRepository.GetByIdAsync(userId);
         if (user == null)

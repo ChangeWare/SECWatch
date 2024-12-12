@@ -1,46 +1,51 @@
 using FluentResults;
 using SECWatch.Domain.Common;
 using SECWatch.Domain.Features.Authentication;
-using SECWatch.Domain.Features.Users.Events;
 
 namespace SECWatch.Domain.Features.Users;
 
 public class User : AggregateRoot
 {
-    public string Email { get; private set; }
-    public string PasswordHash { get; private set; }
-    public string FirstName { get; private set; }
-    public string LastName { get; private set; }
+    public required string Email { get; init; }
+    public string? PasswordHash { get; private set; }
+    public required string FirstName { get; init; }
+    public required string LastName { get; init; }
+    
+    public string? CompanyName { get; init; }
+    
     public string? RefreshToken { get; private set; }
     
     public DateTime? RefreshTokenExpiry { get; private set; }
     
-    public DateTime CreatedAt { get; private set; }
+    public required DateTime CreatedAt { get; init; }
     public DateTime? LastLoginAt { get; private set; }
     
     public bool EmailVerified { get; private set; }
     
-    public string EmailVerificationToken { get; private set; }
-    
     public DateTime? EmailVerificationTokenExpiry { get; private set; }
     
     public DateTime? VerifiedAt { get; private set; }
+    
+    private string? EmailVerificationToken { get;  set; }
 
     private User() { }
 
-    public static Result<User> Create(string email, string passwordHash, string firstName, string lastName)
+    public static Result<User> Create(
+        string email, 
+        string passwordHash, 
+        string firstName, 
+        string lastName,
+        string? companyName)
     {
         var user = new User
         {
-            Id = Guid.NewGuid().ToString(),
             Email = email,
             PasswordHash = passwordHash,
             FirstName = firstName,
             LastName = lastName,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            CompanyName = companyName
         };
-
-        user.AddDomainEvent(new UserCreatedDomainEvent(user.Id, user.Email));
         
         if (string.IsNullOrWhiteSpace(email))
             return Result.Fail<User>("Email is required");
@@ -57,7 +62,7 @@ public class User : AggregateRoot
         return Result.Ok(user);
     }
     
-    public Result VerifyEmail(string token)
+    public Result<User> VerifyEmail(string token)
     {
         if (EmailVerified)
             return Result.Fail("Email already verified");
@@ -73,12 +78,11 @@ public class User : AggregateRoot
 
         EmailVerified = true;
         VerifiedAt = DateTime.UtcNow;
-        AddDomainEvent(new UserEmailVerifiedDomainEvent(Id, Email));
         
-        return Result.Ok();
+        return Result.Ok(this);
     }
     
-    public Result ResetPassword(string resetToken, string newPasswordHash)
+    public Result<User> ResetPassword(string resetToken, string newPasswordHash)
     {
         if (string.IsNullOrWhiteSpace(resetToken))
             return Result.Fail("Reset token is required");
@@ -87,9 +91,8 @@ public class User : AggregateRoot
             return Result.Fail("New password hash is required");
 
         PasswordHash = newPasswordHash;
-        AddDomainEvent(new UserPasswordResetDomainEvent(Id, Email));
         
-        return Result.Ok();
+        return Result.Ok(this);
     }
     
     public void UpdateRefreshToken(UserToken refreshToken)

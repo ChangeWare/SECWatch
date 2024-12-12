@@ -26,7 +26,7 @@ export const authApi = {
    * Register a new user
    */
   register: async (data: RegistrationData): Promise<RegisterResponse> => {
-    const response = await apiClient.post<RegisterResponse>('/auth/register', data);
+    const response = await apiClient.post<RegisterResponse>('/users/register', data);
     return response.data;
   },
 

@@ -7,6 +7,7 @@ import ForgotPassword from "./views/ForgotPassword";
 import ResetPassword from "./views/ResetPassword";
 import VerifyEmail from "./views/VerifyEmail";
 import { authPaths } from "./paths";
+import RegistrationSuccessful from "@features/auth/views/RegistrationSuccessful.tsx";
 
 export const authRoutes: RouteObject[] = [
     {
@@ -40,6 +41,14 @@ export const authRoutes: RouteObject[] = [
           <ResetPassword />
         </Suspense>
       )
+    },
+    {
+        path: authPaths.registerSuccess,
+        element: (
+            <Suspense fallback={<LoadingScreen />}>
+                <RegistrationSuccessful />
+            </Suspense>
+        )
     },
     {
       // Handle email verification links

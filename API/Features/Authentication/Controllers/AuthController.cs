@@ -27,4 +27,19 @@ public class AuthController(IAuthService authService) : ControllerBase
 
         return Ok(result.Value);
     }
+    
+    [HttpPost("refresh")]
+    public async Task<IActionResult> Refresh(RefreshTokenRequest req, CancellationToken ct)
+    {
+        var result = await authService.RefreshTokenAsync(req);
+
+        if (result.IsFailed)
+            return BadRequest(new ValidationProblemDetails(
+                new Dictionary<string, string[]>
+                {
+                    { "Refresh",  result.Errors.Select(e => e.Message).ToArray() }
+                }));
+
+        return Ok(result.Value);
+    }
 }

@@ -1,19 +1,32 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { useForm } from 'react-hook-form';
 import { glassStyles, textStyles, layoutStyles } from '@/common/styles/components';
 import type {RegistrationData, RegistrationForm} from '../types';
 import Button from "@common/components/Button.tsx";
 import {useAuth} from "@features/auth";
+import {useNavigate} from "react-router-dom";
 
 export function RegistrationForm() {
     const { register, handleSubmit, formState: { errors }, watch } = useForm<RegistrationForm>();
-    const { register: registerUser, isRegistering } = useAuth();
+    const { register: registerUser, isRegistering, registerSuccess } = useAuth();
     const password = watch('password');
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (registerSuccess) {
+            navigate('/register-success');
+        }
+
+    }, [registerSuccess]);
+
 
     const onSubmit = (data: RegistrationForm) => {
         const registrationData = {
             email: data.email,
             password: data.password,
+            firstName: data.firstName,
+            lastName: data.lastName,
             companyName: data.companyName
         } as RegistrationData;
 
@@ -39,6 +52,43 @@ export function RegistrationForm() {
                     <p className="mt-1 text-main-orange-light">{errors.email.message}</p>
                 )}
             </div>
+
+            <div>
+                <label className="block text-main-blue-light mb-2">First Name</label>
+                <input
+                    {...register('firstName', {
+                        required: 'First name is required',
+                        pattern: {
+                            value: /^[A-Za-z]+$/i,
+                            message: 'Invalid first name'
+                        }
+                    })}
+                    className="w-full p-3 rounded-lg bg-white/5 border border-white/10 text-white"
+                    type="text"
+                />
+                {errors.firstName && (
+                    <p className="mt-1 text-main-orange-light">{errors.firstName.message}</p>
+                )}
+            </div>
+
+            <div>
+                <label className="block text-main-blue-light mb-2">Last Name</label>
+                <input
+                    {...register('lastName', {
+                        required: 'Last name is required',
+                        pattern: {
+                            value: /^[A-Za-z]+$/i,
+                            message: 'Invalid last name'
+                        }
+                    })}
+                    className="w-full p-3 rounded-lg bg-white/5 border border-white/10 text-white"
+                    type="text"
+                />
+                {errors.lastName && (
+                    <p className="mt-1 text-main-orange-light">{errors.lastName.message}</p>
+                )}
+            </div>
+
 
             <div>
                 <label className="block text-main-blue-light mb-2">Password</label>

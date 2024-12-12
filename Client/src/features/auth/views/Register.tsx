@@ -13,7 +13,7 @@ export default function Register() {
                         </p>
                     </div>
 
-                    <RegistrationForm/>
+                    <RegistrationForm />
 
                     <div className="mt-6 text-center">
                         <p className={textStyles.paragraph}>

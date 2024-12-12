@@ -8,16 +8,17 @@ public interface IUserDomainService
         string email, 
         string passwordHash, 
         string firstName, 
-        string lastName
+        string lastName,
+        string companyName
     );
     
-    Task<Result> VerifyEmailAsync(
-        string userId, 
+    Task<Result<User>> VerifyEmailAsync(
+        Guid userId, 
         string token
     );
     
-    Task<Result> ResetPasswordAsync(
-        string userId,
+    Task<Result<User>> ResetPasswordAsync(
+        Guid userId,
         string resetToken,
         string newPasswordHash
     );

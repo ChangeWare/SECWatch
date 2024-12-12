@@ -3,6 +3,9 @@ import { authApi } from "../api/authApi.ts";
 import { useState } from "react";
 import { getAuthToken, isTokenExpired, setAuthToken } from "../utils";
 import { toast } from "react-toastify";
+import {redirect} from "react-router-dom";
+import {AxiosError} from "axios";
+import {ApiErrorResponse} from "@common/api/types.ts";
 
 /**
  * Custom hook for handling authentication logic.
@@ -32,14 +35,19 @@ export const useAuth = () => {
     const registerMutation = useMutation({
         mutationFn: authApi.register,
         onSuccess: (resp) => {
-            // Update auth state
-            setAuthToken(resp.token, resp.tokenExpires);
-            setIsAuthenticated(true);
-            queryClient.setQueryData(['currentUser'], resp.user);
-            toast.success(`Welcome ${resp.user?.email}`);
+            toast.success('Registration successful.');
         },
-        onError: (error: Error) => {
-          toast.error(`Bad registration response: ${error.message}`);
+        onError: (error: AxiosError<ApiErrorResponse>) => {
+            // If we have a validation error response
+            if (error.response?.data?.errors) {
+                // Get all error messages and flatten them
+                const messages = Object.values(error.response.data.errors).flat();
+                toast.error(`Registration failed: ${messages.join(', ')}`);
+                return;
+            }
+
+            // Fallback for unexpected errors
+            toast.error('Registration failed. Please try again.');
         }
     });
 
@@ -62,6 +70,7 @@ export const useAuth = () => {
         isLoggingIn: loginMutation.isPending,
         loginError: loginMutation.error,
         register: registerMutation.mutate,
+        registerSuccess: registerMutation.isSuccess,
         isRegistering: registerMutation.isPending,
         registerError: registerMutation.error,
         isAuthenticated 

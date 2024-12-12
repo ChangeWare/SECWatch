@@ -6,7 +6,7 @@ namespace SECWatch.Infrastructure.Features.Users;
 
 public class UserRepository(ApplicationDbContext context) : IUserRepository
 {
-    public async Task<User?> GetByIdAsync(string id)
+    public async Task<User?> GetByIdAsync(Guid id)
     {
         return await context.Users.FindAsync(id);
     }

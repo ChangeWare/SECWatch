@@ -12,10 +12,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Features\Authentication\Services\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="FluentResults" Version="3.16.0" />
     </ItemGroup>
 

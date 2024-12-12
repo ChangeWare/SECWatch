@@ -1,4 +1,5 @@
 using FluentResults;
+using SECWatch.Application.Common;
 using SECWatch.Application.Features.Authentication.Utils;
 using SECWatch.Application.Features.Communication.Services;
 using SECWatch.Application.Features.Users.DTOs;
@@ -13,7 +14,8 @@ public class UserService(
     IEmailService emailService,
     ITokenGenerator tokenService,
     IPasswordHasher passwordHasher,
-    IUserRepository userRepository
+    IUserRepository userRepository,
+    ISystemEventService eventService
     ) : IUserService
 {
     
@@ -25,7 +27,8 @@ public class UserService(
             req.Email,
             passwordHash,
             req.FirstName,
-            req.LastName);
+            req.LastName,
+            req.CompanyName);
         
         if (userResult.IsFailed)
         {
@@ -40,15 +43,25 @@ public class UserService(
         // Store the token in the user entity
         user.UpdateEmailVerificationToken(verificationToken);
         
+        await userRepository.AddAsync(user);
+        
         await emailService.SendVerificationEmailAsync(user.Email, verificationToken);
         
-        await userRepository.AddAsync(user);
-        await userRepository.SaveChangesAsync();
+        await eventService.TrackEventAsync(
+            "UserRegistered",
+            "User",
+            user.Id,
+            user.Id,
+            new Dictionary<string, string>
+            {
+                { "email", user.Email }
+            }
+        );
         
         return Result.Ok(new UserResponse(user));
     }
 
-    public async Task<Result<UserResponse>> GetByIdAsync(string id)
+    public async Task<Result<UserResponse>> GetByIdAsync(Guid id)
     {
         var user = await userRepository.GetByIdAsync(id);
         
@@ -60,8 +73,24 @@ public class UserService(
 
     public async Task<Result> VerifyEmailAsync(VerifyEmailRequest req)
     {
-        return await userDomainService.VerifyEmailAsync(
+        var result = await userDomainService.VerifyEmailAsync(
             req.UserId,
             req.Token);
+        
+        await eventService.TrackEventAsync(
+            "EmailVerified",
+            "User",
+            req.UserId,
+            req.UserId,
+            new Dictionary<string, string>
+            {
+                { "email", result.Value.Email },
+                { "verifiedAt", result.Value.VerifiedAt.ToString() },
+                { "success", result.IsSuccess.ToString() },
+                { "errors", string.Join(", ", result.Errors) }
+            }
+        );
+
+        return result.ToResult();
     }
 }

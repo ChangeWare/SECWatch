@@ -6,15 +6,15 @@ using SECWatch.Application.Features.Authentication.Utils;
 using SECWatch.Domain.Features.Authentication;
 using SECWatch.Domain.Features.Users;
 
-namespace SECWatch.Infrastructure.Authentication.Utils;
+namespace SECWatch.Infrastructure.Features.Authentication.Utils;
 
 public class JwtTokenConfiguration
 {
     public string Secret { get; init; } = string.Empty;
-    public int EmailVerificationTokenExpiryHours { get; init; } = 24;
-    public int PasswordResetTokenExpiryHours { get; init; } = 1;
+    public int EmailVerificationTokenExpiryHours { get; init; }
+    public int PasswordResetTokenExpiryHours { get; init; } 
     
-    public int UserTokenExpiryHours { get; init; } = 24;
+    public int UserTokenExpiryHours { get; init; } 
 }
 
 public class JwtTokenGenerator(JwtTokenConfiguration config) : ITokenGenerator
