@@ -7,26 +7,22 @@ namespace SECWatch.Domain.Features.Users;
 public class User : AggregateRoot
 {
     public required string Email { get; init; }
-    public string? PasswordHash { get; private set; }
+    public string PasswordHash { get; private set; }
     public required string FirstName { get; init; }
     public required string LastName { get; init; }
     
     public string? CompanyName { get; init; }
-    
-    public string? RefreshToken { get; private set; }
-    
-    public DateTime? RefreshTokenExpiry { get; private set; }
     
     public required DateTime CreatedAt { get; init; }
     public DateTime? LastLoginAt { get; private set; }
     
     public bool EmailVerified { get; private set; }
     
-    public DateTime? EmailVerificationTokenExpiry { get; private set; }
-    
     public DateTime? VerifiedAt { get; private set; }
     
     private string? EmailVerificationToken { get;  set; }
+    
+    public DateTime? EmailVerificationTokenExpiry { get; private set; }
 
     private User() { }
 
@@ -95,10 +91,8 @@ public class User : AggregateRoot
         return Result.Ok(this);
     }
     
-    public void UpdateRefreshToken(UserToken refreshToken)
+    public void UpdateLastLogin()
     {
-        RefreshToken = refreshToken.Token;
-        RefreshTokenExpiry = refreshToken.Expiry;
         LastLoginAt = DateTime.UtcNow;
     }
     
@@ -106,10 +100,5 @@ public class User : AggregateRoot
     {
         EmailVerificationToken = token.Token;
         EmailVerificationTokenExpiry = token.Expiry;
-    }
-
-    public void ClearRefreshToken()
-    {
-        RefreshToken = null;
     }
 }

@@ -71,6 +71,11 @@ namespace SECWatch.Infrastructure.Persistence.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<string>("EmailVerificationToken")
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)")
+                        .HasColumnName("EmailVerificationToken");
+
                     b.Property<DateTime?>("EmailVerificationTokenExpiry")
                         .HasColumnType("datetime2");
 
@@ -93,13 +98,6 @@ namespace SECWatch.Infrastructure.Persistence.Migrations
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RefreshToken")
-                        .HasMaxLength(44)
-                        .HasColumnType("nvarchar(44)");
-
-                    b.Property<DateTime?>("RefreshTokenExpiry")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("VerifiedAt")
                         .HasColumnType("datetime2");

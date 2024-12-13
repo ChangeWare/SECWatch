@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using SECWatch.Application.Features.Authentication.DTOs;
 using SECWatch.Application.Features.Authentication.Services;
@@ -29,17 +28,17 @@ public class AuthController(IAuthService authService) : ControllerBase
     }
     
     [HttpPost("refresh")]
-    public async Task<IActionResult> Refresh(RefreshTokenRequest req, CancellationToken ct)
+    public Task<IActionResult> Refresh(RefreshTokenRequest req, CancellationToken ct)
     {
-        var result = await authService.RefreshTokenAsync(req);
+        var result = authService.RefreshToken(req);
 
         if (result.IsFailed)
-            return BadRequest(new ValidationProblemDetails(
+            return Task.FromResult<IActionResult>(BadRequest(new ValidationProblemDetails(
                 new Dictionary<string, string[]>
                 {
                     { "Refresh",  result.Errors.Select(e => e.Message).ToArray() }
-                }));
+                })));
 
-        return Ok(result.Value);
+        return Task.FromResult<IActionResult>(Ok(result.Value));
     }
 }

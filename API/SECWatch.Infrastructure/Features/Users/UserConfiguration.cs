@@ -19,6 +19,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(u => u.PasswordHash)
             .IsRequired();
+        
+        builder.Property<string>("EmailVerificationToken")
+            .HasMaxLength(1024)
+            .HasColumnName("EmailVerificationToken");
 
         builder.Property(u => u.FirstName)
             .HasMaxLength(100)
@@ -27,9 +31,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.LastName)
             .HasMaxLength(100)
             .IsRequired();
-
-        builder.Property(u => u.RefreshToken)
-            .HasMaxLength(44);
 
         builder.Property(u => u.CreatedAt)
             .IsRequired();
