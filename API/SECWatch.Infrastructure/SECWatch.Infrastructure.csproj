@@ -36,6 +36,7 @@
 
     <ItemGroup>
       <Folder Include="Features\Communication\" />
+      <Folder Include="Persistence\Migrations\" />
     </ItemGroup>
 
 </Project>

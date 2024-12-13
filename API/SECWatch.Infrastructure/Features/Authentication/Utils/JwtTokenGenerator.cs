@@ -45,7 +45,7 @@ public class JwtTokenGenerator(JwtTokenConfiguration config) : ITokenGenerator
         return new VerificationToken(tokenHandler.WriteToken(securityToken), expiry);
     }
 
-    public VerificationToken GeneratePasswordResetToken()
+    public VerificationToken GeneratePasswordResetToken(Guid userId)
     {
         var expiry = DateTime.UtcNow.AddHours(config.EmailVerificationTokenExpiryHours);
       
@@ -54,6 +54,7 @@ public class JwtTokenGenerator(JwtTokenConfiguration config) : ITokenGenerator
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
+            Subject = new ClaimsIdentity([new Claim(ClaimTypes.NameIdentifier, userId.ToString())]),
             Claims = new Dictionary<string, object>
             {
                 { "purpose", "password_verification" },
@@ -71,7 +72,7 @@ public class JwtTokenGenerator(JwtTokenConfiguration config) : ITokenGenerator
         return new VerificationToken(tokenHandler.WriteToken(securityToken), expiry);
     }
 
-    public UserToken GenerateUserToken()
+    public UserToken GenerateUserToken(Guid userId)
     {
         var expiry = DateTime.UtcNow.AddHours(config.UserTokenExpiryHours);
 
@@ -97,7 +98,7 @@ public class JwtTokenGenerator(JwtTokenConfiguration config) : ITokenGenerator
         return new UserToken(tokenHandler.WriteToken(securityToken), expiry);
     }
 
-    public UserToken GenerateRefreshToken()
+    public UserToken GenerateRefreshToken(Guid userId)
     {
         var expiry = DateTime.UtcNow.AddHours(config.UserTokenExpiryHours);
 
@@ -106,6 +107,7 @@ public class JwtTokenGenerator(JwtTokenConfiguration config) : ITokenGenerator
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
+            Subject = new ClaimsIdentity([new Claim(ClaimTypes.NameIdentifier, userId.ToString())]),
             Claims = new Dictionary<string, object>
             {
                 { "purpose", "refresh_token" },
@@ -127,18 +129,23 @@ public class JwtTokenGenerator(JwtTokenConfiguration config) : ITokenGenerator
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(config.Secret);
-
+        
+        var validationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateLifetime = true
+        };
+        
         try
         {
-            var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(key),
-                ValidateIssuer = false,
-                ValidateAudience = false,
-                ClockSkew = TimeSpan.Zero
-            }, out var securityToken);
-
+            var principal = tokenHandler.ValidateToken(
+                token, 
+                validationParameters,
+                out var securityToken);
+            
             return principal;
         }
         catch

@@ -2,11 +2,10 @@ using SECWatch.Domain.Features.Users;
 
 namespace SECWatch.Application.Features.Authentication.DTOs;
 
-public class AuthenticationResponse
+public record AuthenticationResponse
 {
-    public string UserId { get; init; }
-    public string Email { get; init; }
-    public UserToken Token { get; init; }
-    public UserToken RefreshToken { get; init; }
-    public DateTime TokenExpiration { get; init; }
+    public required string UserId { get; init; }
+    public required UserToken Token { get; init; }
+    public required UserToken RefreshToken { get; init; }
+    public required DateTime TokenExpiration { get; init; }
 }

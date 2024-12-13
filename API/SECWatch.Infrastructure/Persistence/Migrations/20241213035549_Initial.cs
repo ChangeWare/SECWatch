@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SECWatch.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialUserAndSystemEventMigration : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -37,13 +37,13 @@ namespace SECWatch.Infrastructure.Persistence.Migrations
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    RefreshToken = table.Column<string>(type: "nvarchar(44)", maxLength: 44, nullable: true),
-                    RefreshTokenExpiry = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CompanyName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastLoginAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     EmailVerified = table.Column<bool>(type: "bit", nullable: false),
-                    EmailVerificationTokenExpiry = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    VerifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    VerifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    EmailVerificationToken = table.Column<string>(type: "nvarchar(1024)", maxLength: 1024, nullable: true),
+                    EmailVerificationTokenExpiry = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {

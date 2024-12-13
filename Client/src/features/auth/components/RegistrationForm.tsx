@@ -1,13 +1,13 @@
 import React, {useEffect} from 'react';
 import { useForm } from 'react-hook-form';
 import { glassStyles, textStyles, layoutStyles } from '@/common/styles/components';
-import type {RegistrationData, RegistrationForm} from '../types';
+import type {RegistrationFormData} from '../types';
 import Button from "@common/components/Button.tsx";
 import {useAuth} from "@features/auth";
 import {useNavigate} from "react-router-dom";
 
 export function RegistrationForm() {
-    const { register, handleSubmit, formState: { errors }, watch } = useForm<RegistrationForm>();
+    const { register, handleSubmit, formState: { errors }, watch } = useForm<RegistrationFormData>();
     const { register: registerUser, isRegistering, registerSuccess } = useAuth();
     const password = watch('password');
 
@@ -21,16 +21,8 @@ export function RegistrationForm() {
     }, [registerSuccess]);
 
 
-    const onSubmit = (data: RegistrationForm) => {
-        const registrationData = {
-            email: data.email,
-            password: data.password,
-            firstName: data.firstName,
-            lastName: data.lastName,
-            companyName: data.companyName
-        } as RegistrationData;
-
-        registerUser(registrationData);
+    const onSubmit = (data: RegistrationFormData) => {
+        registerUser(data);
     };
 
     return (

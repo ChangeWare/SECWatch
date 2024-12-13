@@ -24,7 +24,7 @@ export interface RegisterResponse {
     message: string;
 }
 
-export interface RegistrationForm {
+export interface RegistrationFormData {
     email: string;
     firstName: string;
     lastName: string;
@@ -43,21 +43,10 @@ export interface User {
     lastLoginAt: string;
 }
 
-// Type for registration data
-export interface RegistrationData {
-    email: string;
-    password: string;
-    firstName: string;
-    lastName: string;
-    companyName?: string;
-}
-
-// Type for password reset request
 export interface PasswordResetRequest {
     email: string;
 }
 
-// Type for password update
 export interface PasswordUpdateData {
     currentPassword: string;
     newPassword: string;

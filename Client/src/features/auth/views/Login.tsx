@@ -13,7 +13,7 @@ export default function Login() {
                         </p>
                     </div>
 
-                    <LoginForm/>
+                    <LoginForm />
 
                     <div className="mt-6 text-center">
                         <p className={textStyles.paragraph}>

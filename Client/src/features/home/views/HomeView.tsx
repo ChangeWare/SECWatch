@@ -35,7 +35,7 @@ function FeaturesSection() {
         <div className="py-24" id="features">
             <div className={layoutStyles.contentSection}>
                 <h2 className={`${textStyles.heading} text-center mb-16`}>
-                    Powerful Features for Market Intelligence
+                    Powerful Features for Corporate Intelligence
                 </h2>
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {features.map((feature, index) => (
@@ -53,12 +53,14 @@ function HeroSection() {
             <div className={layoutStyles.contentSection}>
                 <div className="text-center">
                     <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-                        Monitor SEC Filings <br/>
-                        <span className="text-main-orange-light">Like Never Before</span>
+                        SECWatch
+                        <h2 className="text-2xl md:text-4xl font-bold text-main-orange-light">Empowering Public
+                            Oversight</h2>
                     </h1>
+
                     <p className={textStyles.subheading}>
-                        Stay ahead of the market with real-time SEC filing alerts, advanced analytics, and powerful
-                        search capabilities.
+                        Empowering unions, journalists, and progressives with real-time SEC alerts, powerful search capabilities,
+                        AI-driven analytics, and insights from labor data and news streams.
                     </p>
                     <div className={layoutStyles.flexCenter}>
                         <Button className="px-8 py-3 text-lg flex items-center" to={paths.auth.register}>

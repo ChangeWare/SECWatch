@@ -6,10 +6,12 @@ namespace SECWatch.Application.Features.Authentication.Utils;
 
 public interface ITokenGenerator
 {
-    UserToken GenerateUserToken();
+    UserToken GenerateUserToken(Guid userId);
+    
+    UserToken GenerateRefreshToken(Guid userId);
     
     VerificationToken GenerateEmailVerificationToken();
     
-    UserToken GenerateRefreshToken();
+    
     ClaimsPrincipal? ValidateToken(string token);
 }
