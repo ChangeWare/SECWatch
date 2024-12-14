@@ -8,7 +8,7 @@ export function HomeFooter() {
   ];
 
   return (
-      <footer className="border-t border-main-blue/20">
+      <footer className="border-t border-secondary/20">
         <div className={layoutStyles.section}>
           <div className="flex flex-col md:flex-row justify-between items-center py-8">
             <div className={`${textStyles.paragraph} mb-4 md:mb-0`}>
@@ -19,7 +19,7 @@ export function HomeFooter() {
                   <a
                       key={item}
                       href="#"
-                      className="text-main-blue-light hover:text-main-orange-light transition"
+                      className="text-ring hover:text-accent transition"
                   >
                     {item}
                   </a>

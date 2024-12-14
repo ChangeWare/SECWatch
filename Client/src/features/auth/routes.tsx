@@ -8,6 +8,7 @@ import ResetPassword from "./views/ResetPassword";
 import VerifyEmail from "./views/VerifyEmail";
 import { authPaths } from "./paths";
 import RegistrationSuccessful from "@features/auth/views/RegistrationSuccessful.tsx";
+import Logout from "@features/auth/views/Logout.tsx";
 
 export const authRoutes: RouteObject[] = [
     {
@@ -17,6 +18,14 @@ export const authRoutes: RouteObject[] = [
           <Login />
         </Suspense>
       )
+    },
+    {
+        path: authPaths.logout,
+        element: (
+            <Suspense fallback={<LoadingScreen />}>
+                <Logout />
+            </Suspense>
+        )
     },
     {
       path: authPaths.register,

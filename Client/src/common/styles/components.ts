@@ -1,6 +1,6 @@
 // styles/components.ts
 export const glassStyles = {
-    card: "bg-white/10 backdrop-blur-sm rounded-xl border border-white/10 hover:border-main-orange-light/50 hover:transform hover:scale-105 transition",
+    card: "bg-white/10 backdrop-blur-sm rounded-xl border border-white/10 hover:border-primary-light/50 hover:transform hover:scale-105 transition",
     container: "bg-white/10 backdrop-blur-sm rounded-2xl border border-white/10",
 };
 

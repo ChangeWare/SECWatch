@@ -8,7 +8,7 @@ export const isTokenExpired = (token?: string, tokenExpires?: string): boolean =
     return !token || expires < new Date();
 }
 
-export const logout = (queryClient: QueryClient) => {
+export const logoutAndCleanup = (queryClient: QueryClient) => {
     Cookies.remove('authToken');
     queryClient.removeQueries({ queryKey: ['currentUser'] });
 };

@@ -6,3 +6,58 @@ html, body, #root {
     min-height: 100%;
     background-color: rgb(2, 48, 71); /* This is the main-blue-dark color */
 }
+
+@layer base {
+    :root {
+        --background: 201 91% 14%;    /* main-blue-dark: #023047 */
+        --foreground: 0 0% 98%;       /* keeping white text */
+
+        /* Using your orange as primary */
+        --primary: 37 100% 49%;       /* main-orange: #fb8500 */
+        --primary-foreground: 0 0% 98%;
+
+        /* Using your blue as secondary */
+        --secondary: 197 70% 43%;     /* main-blue: #219ebc */
+        --secondary-foreground: 0 0% 98%;
+
+        /* Light orange for accents */
+        --accent: 41 100% 51%;        /* main-orange-light: #ffb703 */
+        --accent-foreground: 0 0% 98%;
+
+        /* Keep existing card, popover, etc. but adjust to your blue theme */
+        --card: 201 91% 14%;
+        --card-foreground: 0 0% 98%;
+        --popover: 201 91% 14%;
+        --popover-foreground: 0 0% 98%;
+
+        /* Keep your existing muted and destructive colors */
+        --muted: 0 0% 14.9%;
+        --muted-foreground: 0 0% 63.9%;
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 0 0% 98%;
+
+        /* Light blue for rings/focus */
+        --ring: 197 70% 73%;          /* main-blue-light: #8ecae6 */
+
+        /* Keep your existing border and input colors */
+        --border: 0 0% 14.9%;
+        --input: 0 0% 14.9%;
+
+        /* Keep your existing chart colors */
+        --chart-1: 220 70% 50%;
+        --chart-2: 160 60% 45%;
+        --chart-3: 30 80% 55%;
+        --chart-4: 280 65% 60%;
+        --chart-5: 340 75% 55%;
+        --radius: 0.5rem;
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+    body {
+        @apply bg-background text-foreground;
+    }
+}

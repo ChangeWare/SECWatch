@@ -1,6 +1,7 @@
-import { useAuth } from "features/auth";
+import { useAuth } from "@features/auth";
 import { Navigate, useLocation } from "react-router-dom";
-import { paths } from "routes/paths";
+import { paths } from "@routes/paths.ts";
+import React from "react";
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
     const { isAuthenticated } = useAuth();

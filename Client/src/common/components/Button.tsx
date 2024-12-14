@@ -22,8 +22,8 @@ function Button({
 
     const baseStyles = "px-6 py-2 rounded-lg transition";
     const variants: Record<ButtonVariant, string> = {
-        primary: "bg-main-orange text-white hover:bg-main-orange-light",
-        secondary: "border border-main-blue text-main-blue-light hover:bg-main-blue hover:text-white",
+        primary: "bg-primary text-white hover:bg-accent",
+        secondary: "border border-secondary text-secondary hover:text-accent",
     };
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {

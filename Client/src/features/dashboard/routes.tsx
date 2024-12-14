@@ -1,12 +1,12 @@
 import { RouteObject } from "react-router-dom";
 import DashboardView from "./views/DashboardView";
-import { paths } from "@/routes/paths";
+import { dashboardPaths } from "@features/dashboard";
 
-export const dasboardRoutes: RouteObject[] = [
+export const dashboardRoutes: RouteObject[] = [
     {
-      path: paths.app.default,
+      path: dashboardPaths.default,
       element: <DashboardView />
     },
 ];
 
-export default dasboardRoutes;
+export default dashboardRoutes;
