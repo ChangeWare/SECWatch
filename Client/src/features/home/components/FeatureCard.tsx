@@ -10,7 +10,7 @@ interface FeatureCardProps {
 
 const FeatureCard = (props: FeatureCardProps) => (
     <div className={`${glassStyles.card} p-6`}>
-        <div className="bg-main-orange-light/10 w-16 h-16 rounded-lg flex items-center justify-center mb-4">
+        <div className="bg-accent/10 w-16 h-16 rounded-lg flex items-center justify-center mb-4">
             {props.icon}
         </div>
         <h3 className={textStyles.heading}>{props.title}</h3>

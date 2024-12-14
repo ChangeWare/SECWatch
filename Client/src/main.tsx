@@ -9,12 +9,10 @@ import { Routes } from './routes/router.tsx'
 import {ToastContainer} from "react-toastify";
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
     <QueryClientProvider client={queryClient} >
         <ToastContainer />
       <BrowserRouter>
         <Routes />
       </BrowserRouter>
     </QueryClientProvider>
-  </StrictMode>,
 )

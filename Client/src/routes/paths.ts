@@ -1,10 +1,9 @@
 import { authPaths } from '@features/auth';
 import { homePaths } from '@features/home';
+import { dashboardPaths } from "@features/dashboard";
 
 export const paths = {
-    app: {
-        default: '/app'
-    },
+    dashboard: dashboardPaths,
     home: homePaths,
     auth: authPaths
 }

@@ -28,7 +28,7 @@ export function RegistrationForm() {
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div>
-                <label className="block text-main-blue-light mb-2">Email</label>
+                <label className="block text-ring mb-2">Email</label>
                 <input
                     {...register('email', {
                         required: 'Email is required',
@@ -41,12 +41,12 @@ export function RegistrationForm() {
                     type="email"
                 />
                 {errors.email && (
-                    <p className="mt-1 text-main-orange-light">{errors.email.message}</p>
+                    <p className="mt-1 text-primary">{errors.email.message}</p>
                 )}
             </div>
 
             <div>
-                <label className="block text-main-blue-light mb-2">First Name</label>
+                <label className="block text-ring mb-2">First Name</label>
                 <input
                     {...register('firstName', {
                         required: 'First name is required',
@@ -59,12 +59,12 @@ export function RegistrationForm() {
                     type="text"
                 />
                 {errors.firstName && (
-                    <p className="mt-1 text-main-orange-light">{errors.firstName.message}</p>
+                    <p className="mt-1 text-accent">{errors.firstName.message}</p>
                 )}
             </div>
 
             <div>
-                <label className="block text-main-blue-light mb-2">Last Name</label>
+                <label className="block text-ring mb-2">Last Name</label>
                 <input
                     {...register('lastName', {
                         required: 'Last name is required',
@@ -77,13 +77,13 @@ export function RegistrationForm() {
                     type="text"
                 />
                 {errors.lastName && (
-                    <p className="mt-1 text-main-orange-light">{errors.lastName.message}</p>
+                    <p className="mt-1 text-accent">{errors.lastName.message}</p>
                 )}
             </div>
 
 
             <div>
-                <label className="block text-main-blue-light mb-2">Password</label>
+                <label className="block text-ring mb-2">Password</label>
                 <input
                     {...register('password', {
                         required: 'Password is required',
@@ -96,12 +96,12 @@ export function RegistrationForm() {
                     type="password"
                 />
                 {errors.password && (
-                    <p className="mt-1 text-main-orange-light">{errors.password.message}</p>
+                    <p className="mt-1 text-accent">{errors.password.message}</p>
                 )}
             </div>
 
             <div>
-                <label className="block text-main-blue-light mb-2">Confirm Password</label>
+                <label className="block text-ring mb-2">Confirm Password</label>
                 <input
                     {...register('confirmPassword', {
                         required: 'Please confirm your password',
@@ -111,12 +111,12 @@ export function RegistrationForm() {
                     type="password"
                 />
                 {errors.confirmPassword && (
-                    <p className="mt-1 text-main-orange-light">{errors.confirmPassword.message}</p>
+                    <p className="mt-1 text-accent">{errors.confirmPassword.message}</p>
                 )}
             </div>
 
             <div>
-                <label className="block text-main-blue-light mb-2">Company Name (Optional)</label>
+                <label className="block text-ring mb-2">Company Name (Optional)</label>
                 <input
                     {...register('companyName')}
                     className="w-full p-3 rounded-lg bg-white/5 border border-white/10 text-white"
@@ -132,12 +132,12 @@ export function RegistrationForm() {
                     type="checkbox"
                     className="mr-2"
                 />
-                <label className="text-main-blue-light">
+                <label className="text-ring">
                     I agree to the terms and conditions
                 </label>
             </div>
             {errors.agreeToTerms && (
-                <p className="mt-1 text-main-orange-light">{errors.agreeToTerms.message}</p>
+                <p className="mt-1 text-accent">{errors.agreeToTerms.message}</p>
             )}
 
             <Button

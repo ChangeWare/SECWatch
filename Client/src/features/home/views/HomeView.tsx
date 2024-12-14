@@ -1,4 +1,3 @@
-import HomeLayout from "@common/layouts/HomeLayout";
 import {ArrowRight, BarChart2, Bell, Search} from "lucide-react";
 import React from "react";
 import FeatureCard from "../components/FeatureCard.tsx";
@@ -6,26 +5,27 @@ import Button from "@common/components/Button.tsx";
 import {glassStyles, layoutStyles, textStyles} from "@common/styles/components.ts";
 import {paths} from "@routes/paths.ts";
 import {homePaths} from "@features/home";
+import {useAuth} from "@features/auth";
 
 function FeaturesSection() {
     const features = [
         {
-            icon: <Search className="w-8 h-8 text-main-orange-light"/>,
+            icon: <Search className="w-8 h-8 text-accent"/>,
             title: "Advanced Search",
             description: "Search through millions of SEC filings with our powerful search engine."
         },
         {
-            icon: <Bell className="w-8 h-8 text-main-orange-light"/>,
+            icon: <Bell className="w-8 h-8 text-accent"/>,
             title: "Real-time Alerts",
             description: "Get instant notifications when new filings match your criteria."
         },
         {
-            icon: <BarChart2 className="w-8 h-8 text-main-orange-light" />,
+            icon: <BarChart2 className="w-8 h-8 text-accent" />,
             title: "Analytics Dashboard",
             description: "Visualize filing trends and extract meaningful insights."
         },
         {
-            icon: <BarChart2 className="w-8 h-8 text-main-orange-light" />,
+            icon: <BarChart2 className="w-8 h-8 text-accent" />,
             title: "AI Powered Analysis",
             description: "Leverage powerful AI models to extract valuable insights from filings"
         }
@@ -47,16 +47,20 @@ function FeaturesSection() {
     );
 }
 
-function HeroSection() {
+interface HeroSectionProps {
+    isAuthenticated: boolean;
+}
+
+function HeroSection(props: HeroSectionProps) {
     return (
         <div className="relative overflow-hidden">
             <div className={layoutStyles.contentSection}>
                 <div className="text-center">
-                    <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
+                    <div className="text-4xl md:text-6xl font-bold text-white mb-6">
                         SECWatch
-                        <h2 className="text-2xl md:text-4xl font-bold text-main-orange-light">Empowering Public
+                        <h2 className="text-2xl md:text-4xl font-bold text-accent">Empowering Public
                             Oversight</h2>
-                    </h1>
+                    </div>
 
                     <p className={textStyles.subheading}>
                         Empowering unions, journalists, and progressives with real-time SEC alerts, powerful search capabilities,
@@ -64,7 +68,7 @@ function HeroSection() {
                     </p>
                     <div className={layoutStyles.flexCenter}>
                         <Button className="px-8 py-3 text-lg flex items-center" to={paths.auth.register}>
-                            Start Now <ArrowRight className="ml-2"/>
+                            {props.isAuthenticated ? "Go to Dashboard" : "Start Now" } <ArrowRight className="ml-2"/>
                         </Button>
                         <Button variant="secondary" className="px-8 py-3 text-lg ml-4" to={homePaths.about}>
                             Learn More
@@ -77,7 +81,11 @@ function HeroSection() {
     )
 }
 
-function CTASection() {
+interface CTASectionProps {
+    isAuthenticated: boolean;
+}
+
+function CTASection(props: CTASectionProps) {
     return (
         <div className="py-16">
             <div className={layoutStyles.contentSection}>
@@ -92,7 +100,7 @@ function CTASection() {
                         </p>
                     </div>
                     <Button className="px-8 py-3 text-lg whitespace-nowrap">
-                        Start Free Trial
+                        {props.isAuthenticated ? "Go to Dashboard" : "Get Started"}
                     </Button>
                 </div>
             </div>
@@ -102,11 +110,13 @@ function CTASection() {
 
 
 export default function HomeView() {
+    const { isAuthenticated } = useAuth();
+
     return (
         <>
-            <HeroSection/>
-            <FeaturesSection/>
-            <CTASection/>
+            <HeroSection isAuthenticated={isAuthenticated} />
+            <FeaturesSection />
+            <CTASection isAuthenticated={isAuthenticated} />
         </>
     );
 }

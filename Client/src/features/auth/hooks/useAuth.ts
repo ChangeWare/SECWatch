@@ -1,9 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { authApi } from "../api/authApi.ts";
 import { useState } from "react";
-import { getAuthToken, isTokenExpired, setAuthToken } from "../utils";
+import {getAuthToken, isTokenExpired, logoutAndCleanup, setAuthToken} from "../utils";
 import { toast } from "react-toastify";
-import {redirect} from "react-router-dom";
 import {AxiosError} from "axios";
 import {ApiErrorResponse} from "@common/api/types.ts";
 
@@ -64,15 +63,23 @@ export const useAuth = () => {
           toast.error(`Bad login response: ${error.message}`);
         }
     });
+
+    const logout = () => {
+        setIsAuthenticated(false);
+        logoutAndCleanup(queryClient);
+        toast.info('You have been logged out.');
+    }
   
     return { 
         login: loginMutation.mutate,
+        loginSuccess: loginMutation.isSuccess,
         isLoggingIn: loginMutation.isPending,
         loginError: loginMutation.error,
         register: registerMutation.mutate,
         registerSuccess: registerMutation.isSuccess,
         isRegistering: registerMutation.isPending,
         registerError: registerMutation.error,
-        isAuthenticated 
+        isAuthenticated,
+        logout
     };
   }

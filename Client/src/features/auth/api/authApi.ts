@@ -1,5 +1,13 @@
 import { apiClient } from "@common/api/apiClient";
-import { LoginResponse, LoginCredentials, User, RegistrationData, PasswordResetRequest, PasswordUpdateData, RegisterResponse } from "../types";
+import {
+  LoginResponse,
+  LoginCredentials,
+  User,
+  PasswordResetRequest,
+  PasswordUpdateData,
+  RegisterResponse,
+  RegistrationFormData
+} from "../types";
 
 /**
  * Authentication API methods
@@ -25,7 +33,7 @@ export const authApi = {
   /**
    * Register a new user
    */
-  register: async (data: RegistrationData): Promise<RegisterResponse> => {
+  register: async (data: RegistrationFormData): Promise<RegisterResponse> => {
     const response = await apiClient.post<RegisterResponse>('/users/register', data);
     return response.data;
   },

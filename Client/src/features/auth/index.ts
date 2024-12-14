@@ -7,3 +7,5 @@ export * from './views/ResetPassword';
 export * from './views/VerifyEmail';
 export * from './hooks/useAuth';
 export * from './utils';
+export { default as GuestGuard } from './components/GuestGuard';
+export { default as AuthGuard } from './components/AuthGuard';

@@ -3,7 +3,7 @@ import {RegistrationForm} from "@features/auth/components/RegistrationForm.tsx";
 
 export default function Register() {
     return (
-        <div className="min-h-screen bg-main-blue-dark">
+        <div className="min-h-screen bg-background">
             <div className={`min-h-screen ${layoutStyles.flexCenter} py-8`}>
                 <div className={`w-full max-w-md p-8 m-4 ${glassStyles.card}`}>
                     <div className="text-center mb-8">
@@ -18,7 +18,7 @@ export default function Register() {
                     <div className="mt-6 text-center">
                         <p className={textStyles.paragraph}>
                             Already have an account?{' '}
-                            <a href="/login" className="text-main-orange-light hover:text-main-orange">
+                            <a href="/login" className="text-primary hover:text-accent">
                                 Sign in
                             </a>
                         </p>

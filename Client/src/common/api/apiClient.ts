@@ -1,7 +1,7 @@
 import { QueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { paths } from "@routes/paths";
-import { getAuthToken, logout, refreshAuthToken } from "@features/auth";
+import {getAuthToken, logoutAndCleanup, refreshAuthToken} from "@features/auth";
 import { toast } from "react-toastify";
 
 // Initialize with undefined and set it later
@@ -120,7 +120,7 @@ const handleAuthFailure = () => {
   processPendingRequests(new Error('Authentication failed'));
   
   toast.error('Your session has expired. Please log in again.');
-  logout(queryClient!);
+  logoutAndCleanup(queryClient!);
 
   window.location.href = paths.auth.login;
 };

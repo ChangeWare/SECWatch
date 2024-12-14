@@ -2,9 +2,12 @@ import Button from "@common/components/Button.tsx";
 import {glassStyles, layoutStyles} from "@common/styles/components.ts";
 import {Logo} from "@common/components/Logo.tsx";
 import {paths} from "@routes/paths.ts";
+import { useAuth } from "@features/auth";
 
 export function HomeNav() {
   const navItems = ['Features', 'About', 'Contact'];
+
+  const { isAuthenticated } = useAuth();
 
   return (
       <nav className={`fixed w-full top-0 z-50 ${glassStyles.container} bg-white/5`}>
@@ -19,7 +22,7 @@ export function HomeNav() {
                   <a
                       key={item}
                       href={`#${item.toLowerCase()}`}
-                      className="text-main-blue-light hover:text-main-orange-light transition"
+                      className="text-ring hover:text-accent transition"
                   >
                     {item}
                   </a>
@@ -27,8 +30,17 @@ export function HomeNav() {
             </div>
 
             <div className="flex items-center space-x-4">
-              <Button variant="primary" to={paths.auth.register}>Get Started</Button>
-              <Button variant="secondary" to={paths.auth.login}>Login</Button>
+              {isAuthenticated ? (
+                  <>
+                    <Button variant="primary" to={paths.dashboard.default}>Dashboard</Button>
+                    <Button variant="secondary" to={paths.auth.logout}>Logout</Button>
+                  </>
+              ) : (
+                  <>
+                    <Button variant="primary" to={paths.auth.register}>Get Started</Button>
+                    <Button variant="secondary" to={paths.auth.login}>Login</Button>
+                  </>
+              )}
             </div>
           </div>
         </div>
