@@ -1,4 +1,4 @@
-import AuthFooter from "features/auth/components/AuthFooter";
+import AuthFooter from "@features/auth/components/AuthFooter.tsx";
 import { PropsWithChildren } from "react";
 import {Outlet} from "react-router-dom";
 

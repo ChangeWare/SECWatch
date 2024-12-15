@@ -1,27 +1,7 @@
-import React, { useState } from 'react';
-import { Search, Pin, Bell, ChevronRight, X } from 'lucide-react';
+import { Pin, Bell, ChevronRight, X } from 'lucide-react';
 import {Card, CardContent, CardHeader, CardTitle} from '../components/Card';
-
-// Search Component
-const CompanySearch = () => {
-    const [searchQuery, setSearchQuery] = useState('');
-
-    return (
-        <div className="relative">
-            <div className="relative">
-                <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search companies..."
-                    className="w-full px-4 py-2 bg-white/10 backdrop-blur-sm rounded-lg border border-white/10
-                     text-gray-300 placeholder-gray-400 focus:outline-none focus:border-accent"
-                />
-                <Search className="absolute right-3 top-2.5 h-5 w-5 text-gray-400" />
-            </div>
-        </div>
-    );
-};
+import AlertStream from "../components/AlertStream/AlertStream.tsx";
+import {AlertItem} from "@features/dashboard/components/AlertStream/AlertFeed.tsx";
 
 // Tracked Companies Section
 const TrackedCompanies = () => {
@@ -38,6 +18,7 @@ const TrackedCompanies = () => {
             </CardHeader>
             <CardContent>
                 <div className="space-y-4">
+                    <p className="text-gray-400 text-sm text-right">Latest Filing</p>
                     {companies.map(company => (
                         <div key={company.symbol}
                              className="flex items-center justify-between p-3 rounded-lg
@@ -91,49 +72,51 @@ const PinnedCharts = () => {
     );
 };
 
-// Alert Stream Section
-const AlertStream = () => {
-    const alerts = [
+// Main Dashboard Component
+function DashboardView() {
+    const alerts: AlertItem[] = [
         {
-            id: 1,
+            id: '1',
             type: 'filing',
-            company: 'AAPL',
-            message: 'New 10-K filing available',
-            timestamp: '10 min ago'
+            priority: 'high',
+            title: 'New 10-K Filing Available',
+            description: 'Apple Inc. has filed their annual report (10-K) with significant changes in revenue projections.',
+            timestamp: '2024-03-14T10:30:00',
+            company: {
+                name: 'Apple Inc.',
+                symbol: 'AAPL'
+            }
         },
         {
-            id: 2,
+            id: '2',
             type: 'threshold',
-            company: 'MSFT',
-            message: 'Revenue exceeded alert threshold',
-            timestamp: '1 hour ago'
+            priority: 'medium',
+            title: 'Revenue Alert Threshold Exceeded',
+            description: 'Microsoft quarterly revenue exceeded your alert threshold of $50B.',
+            timestamp: '2024-03-14T09:15:00',
+            company: {
+                name: 'Microsoft',
+                symbol: 'MSFT'
+            }
+        },
+        {
+            id: '3',
+            type: 'watchlist',
+            priority: 'low',
+            title: 'New Company Added to Watchlist',
+            description: 'Tesla, Inc. has been successfully added to your watchlist.',
+            timestamp: '2024-03-13T15:45:00',
+            company: {
+                name: 'Tesla',
+                symbol: 'TSLA'
+            },
+            read: true
         }
     ];
 
     return (
-        <Card className="bg-white/10 backdrop-blur-sm">
-            <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle className="text-xl text-white">Alerts</CardTitle>
-                <Bell className="h-5 w-5 text-gray-400" />
-            </CardHeader>
-            <CardContent>
-                <div className="space-y-3">
-                    {alerts.map(alert => (
-                        <></>
-                    ))}
-                </div>
-            </CardContent>
-        </Card>
-    );
-};
-
-// Main Dashboard Component
-const DashboardView = () => {
-    return (
         <div className="min-h-screen bg-background p-6">
             <div className="max-w-7xl mx-auto space-y-6">
-                <CompanySearch />
-
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div className="lg:col-span-2 space-y-6">
                         <TrackedCompanies />
@@ -141,7 +124,7 @@ const DashboardView = () => {
                     </div>
 
                     <div className="lg:col-span-1">
-                        <AlertStream />
+                        <AlertStream alerts={alerts} />
                     </div>
                 </div>
             </div>

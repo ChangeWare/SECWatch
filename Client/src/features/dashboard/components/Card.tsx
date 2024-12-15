@@ -1,46 +1,74 @@
-import React from "react";
+import * as React from "react";
+import { cn } from "@/common/lib/utils";
+import {
+    Card as CardPrimitive,
+    CardHeader as CardHeaderPrimitive,
+    CardTitle as CardTitlePrimitive,
+    CardContent as CardContentPrimitive,
+} from "@/common/components/ui/card";
 
-interface CardProps {
-    children: React.ReactNode;
-    className?: string;
-}
+const Card = React.forwardRef<
+    React.ElementRef<typeof CardPrimitive>,
+    React.ComponentPropsWithoutRef<typeof CardPrimitive>
+>(({ className, ...props }, ref) => (
+    <CardPrimitive
+        ref={ref}
+        className={cn(
+            // Override any default background colors from shadcn
+            "!bg-white/10 !backdrop-blur-sm rounded-xl",
+            "border border-white/10",
+            "hover:border-accent/50 transition",
+            // Allow custom classes to override if needed
+            className
+        )}
+        {...props}
+    />
+));
+Card.displayName = "Card";
 
-export const Card = ({ children, className = '' }: CardProps) => (
-    <div className={`bg-white/10 backdrop-blur-sm rounded-xl border border-white/10 
-                   hover:border-accent/50 transition ${className}`}>
-        {children}
-    </div>
-);
+const CardHeader = React.forwardRef<
+    React.ElementRef<typeof CardHeaderPrimitive>,
+    React.ComponentPropsWithoutRef<typeof CardHeaderPrimitive>
+>(({ className, ...props }, ref) => (
+    <CardHeaderPrimitive
+        ref={ref}
+        className={cn(
+            "flex flex-col space-y-1.5 p-6",
+            className
+        )}
+        {...props}
+    />
+));
+CardHeader.displayName = "CardHeader";
 
-interface CardHeaderProps {
-    children: React.ReactNode;
-    className?: string;
-}
+const CardTitle = React.forwardRef<
+    React.ElementRef<typeof CardTitlePrimitive>,
+    React.ComponentPropsWithoutRef<typeof CardTitlePrimitive>
+>(({ className, ...props }, ref) => (
+    <CardTitlePrimitive
+        ref={ref}
+        className={cn(
+            "text-xl font-semibold text-white leading-none tracking-tight",
+            className
+        )}
+        {...props}
+    />
+));
+CardTitle.displayName = "CardTitle";
 
-export const CardHeader = ({ children, className = '' }: CardHeaderProps) => (
-    <div className={`p-6 ${className}`}>
-        {children}
-    </div>
-);
+const CardContent = React.forwardRef<
+    React.ElementRef<typeof CardContentPrimitive>,
+    React.ComponentPropsWithoutRef<typeof CardContentPrimitive>
+>(({ className, ...props }, ref) => (
+    <CardContentPrimitive
+        ref={ref}
+        className={cn(
+            "p-6 pt-0",
+            className
+        )}
+        {...props}
+    />
+));
+CardContent.displayName = "CardContent";
 
-interface CardTitleProps {
-    children: React.ReactNode;
-    className?: string;
-}
-
-export const CardTitle = ({ children, className = '' }: CardTitleProps) => (
-    <h3 className={`text-xl font-semibold text-white ${className}`}>
-        {children}
-    </h3>
-);
-
-interface CardContentProps {
-    children: React.ReactNode;
-    className?: string;
-}
-
-export const CardContent = ({ children, className = '' }: CardContentProps) => (
-    <div className={`p-6 pt-0 ${className}`}>
-        {children}
-    </div>
-);
+export { Card, CardHeader, CardTitle, CardContent };
