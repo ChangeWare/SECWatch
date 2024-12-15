@@ -1,5 +1,5 @@
-import { HomeNav } from '@common/components/Nav/HomeNav';
-import { HomeFooter } from '@common/components/Footer/HomeFooter';
+import { HomeNav } from '@features/home/components/HomeNav.tsx';
+import { HomeFooter } from '@features/home/components/HomeFooter.tsx';
 import { PropsWithChildren } from 'react';
 import {Outlet} from "react-router-dom";
 

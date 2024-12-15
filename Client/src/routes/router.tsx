@@ -1,11 +1,11 @@
 import { Navigate, useRoutes } from "react-router-dom";
-import AuthLayout from "@common/layouts/AuthLayout";
-import { AppLayout } from "@common/layouts/AppLayout";
+import AuthLayout from "@features/auth/AuthLayout.tsx";
 import { dashboardRoutes } from "features/dashboard";
 import NotFoundView from "@common/views/NotFoundView";
-import HomeLayout from "@/common/layouts/HomeLayout";
+import HomeLayout from "@features/home/HomeLayout.tsx";
 import { homeRoutes } from "@/features/home";
 import {GuestGuard, AuthGuard, authRoutes} from "@features/auth";
+import DashboardLayout from "@features/dashboard/DashboardLayout.tsx";
 
 export const Routes = () => {
 
@@ -18,7 +18,7 @@ export const Routes = () => {
       },
       {
         element: <AuthGuard>
-                    <AppLayout />
+                    <DashboardLayout />
                   </AuthGuard>,
         children: dashboardRoutes
       },
