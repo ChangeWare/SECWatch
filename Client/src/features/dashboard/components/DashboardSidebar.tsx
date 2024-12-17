@@ -63,16 +63,20 @@ function SideNavMenuItem(props: SideNavMenuItemProps) {
                     </button>
                     {props.sidebarOpen && props.item.isOpen && (
                         <div className="ml-9 space-y-1">
-                            {props.item.items?.map((subItem, subIndex) => (
-                                <a
-                                    key={subIndex}
-                                    href={subItem.href}
-                                    className="block p-2 rounded-lg text-gray-400
-                                     hover:text-white hover:bg-white/10 transition"
-                                >
-                                    {subItem.label}
-                                </a>
-                            ))}
+                            {props.item.items?.map((subItem, subIndex) => {
+                                const subItemIsActive = subItem.href && location.pathname.includes(subItem.href);
+                                return (
+                                    <a
+                                        key={subIndex}
+                                        href={subItem.href}
+                                        className={`block p-2 rounded-lg text-gray-400
+                                         hover:text-white hover:bg-white/10 transition
+                                         ${subItemIsActive ? 'bg-white/10 text-white' : ''}`}
+                                    >
+                                        {subItem.label}
+                                    </a>
+                                );
+                            })}
                         </div>
                     )}
                 </div>
