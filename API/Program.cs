@@ -1,6 +1,9 @@
+using System.Text;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using SECWatch.Application.Common;
 using SECWatch.Application.Features.Authentication.Services;
+using SECWatch.Application.Features.Companies;
 using SECWatch.Application.Features.Users.Services;
 using SECWatch.Domain.Features.Users.Services;
 using SECWatch.Infrastructure;
@@ -41,6 +44,8 @@ builder.Services.AddTransient<ISystemEventService, SystemEventService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserDomainService, UserDomainService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddTransient<HttpClient>();
+builder.Services.AddScoped<ISecApiService, SecApiService>();
 
 var app = builder.Build();
 

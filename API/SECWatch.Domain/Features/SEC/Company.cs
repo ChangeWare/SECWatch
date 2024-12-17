@@ -1,0 +1,28 @@
+using System.Collections.ObjectModel;
+using SECWatch.Domain.Common;
+
+namespace SECWatch.Domain.Features.SEC;
+
+public class Company : AggregateRoot
+{
+    public string CIK { get; private set; }
+    
+    public string Ticker { get; private set; }
+    
+    public string Name { get; private set; }
+    
+    public string State { get; private set; }
+    
+    public string Country { get; private set; }
+    
+    public string SIC { get; private set; }
+    
+    private List<Address> _addresses = [];
+    
+    public IReadOnlyCollection<Address> Addresses => _addresses.AsReadOnly();
+
+    public void AddAddress(Address address)
+    {
+        _addresses.Add(address);
+    }
+}
