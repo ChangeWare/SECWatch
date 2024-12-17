@@ -1,6 +1,6 @@
 @API_HostAddress = http://localhost:5181
 
-GET {{API_HostAddress}}/weatherforecast/
-Accept: application/json
 
-###
+GET {{API_HostAddress}}/api/Companies/search?searchTerm=SFM&searchField=Ticker
+Accept: application/json
+Content-Type: application/json
