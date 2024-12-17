@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SECWatch.API.Features.Authentication;
+using SECWatch.API.Features.Companies.DTOs;
 using SECWatch.Application.Features.Companies;
 using SECWatch.Application.Features.Companies.DTOs;
 
@@ -22,7 +23,6 @@ public class CompaniesController(
             SearchTerm = searchTerm,
             SearchField = searchField
         };
-
         
         if (string.IsNullOrWhiteSpace(req.SearchTerm) || req.SearchTerm.Length < 2)
         {
@@ -33,8 +33,13 @@ public class CompaniesController(
         {
             // TODO: check whether we already have this data
             var companies = await secApiService.SearchCompaniesAsync(req);
+
+            var result = new CompanyResults()
+            {
+                Companies = companies.Value
+            };
        
-            return Ok(companies);
+            return Ok(result);
         }
         catch (Exception ex)
         {

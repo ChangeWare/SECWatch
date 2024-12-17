@@ -62,7 +62,7 @@ export default {
   	}
   },
   plugins: [
-    require('@tailwindcss/forms'),
+    import('@tailwindcss/forms'),
     plugin(({ addComponents }) => {
       addComponents({
         '.glass-card': {
@@ -76,7 +76,7 @@ export default {
         },
       });
     }),
-  	require("tailwindcss-animate")
+  	import("tailwindcss-animate")
 ],
 }
 
