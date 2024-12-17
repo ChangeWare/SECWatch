@@ -29,9 +29,16 @@ def update_company_list(self):
                 mapping={
                     'ticker': company_data['ticker'],
                     'name': company_data['title'],
-                    'updated_at': datetime.now().isoformat()
+                    'updated_at': datetime.now().isoformat(),
+                    'cik': cik
                 }
             )
+            # Store searchable indices
+            pipeline.set(f"company:name:{company_data['title'].lower()}", cik)
+            pipeline.set(f"company:ticker:{company_data['ticker'].lower()}", cik)
+            pipeline.sadd('company:names', company_data['title'].lower())
+            pipeline.sadd('company:tickers', company_data['ticker'].lower())
+
         pipeline.execute()
 
         logger.info("Successfully updated company list")

@@ -1,4 +1,4 @@
-import CompanySearch from "../components/CompanySearch.tsx";
+import CompanySearch from "../../companySearch/components/CompanySearch.tsx";
 
 
 export default function CompanySearchView() {

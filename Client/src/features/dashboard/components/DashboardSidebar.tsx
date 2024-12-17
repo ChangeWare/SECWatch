@@ -9,6 +9,7 @@ import {
     Settings,
 } from "lucide-react";
 import {useLocation} from "react-router-dom";
+import {dashboardPaths} from "@features/dashboard";
 
 interface DashboardSidebarProps {
     sidebarOpen: boolean;
@@ -105,9 +106,10 @@ export default function DashboardSidebar(props: DashboardSidebarProps) {
             isGroup: true,
             isOpen: companiesOpen,
             setOpen: setCompaniesOpen,
+            href: dashboardPaths.companies.default,
             items: [
                 {label: 'Tracked Companies', href: '#'},
-                {label: 'Company Search', href: '#'},
+                {label: 'Company Search', href: dashboardPaths.companies.search},
                 {label: 'Watchlists', href: '#'},
             ],
         },
