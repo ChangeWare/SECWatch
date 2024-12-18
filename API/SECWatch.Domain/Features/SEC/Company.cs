@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using SECWatch.Domain.Common;
 
 namespace SECWatch.Domain.Features.SEC;
@@ -11,11 +10,9 @@ public class Company : AggregateRoot
     
     public string Name { get; private set; }
     
-    public string State { get; private set; }
-    
-    public string Country { get; private set; }
-    
     public string SIC { get; private set; }
+    
+    public DateTime LastUpdated { get; private set; }
     
     private List<Address> _addresses = [];
     

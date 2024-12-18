@@ -1,13 +1,11 @@
 from sec_miner.celery_app import celery_app
 from sec_miner.config import Config
 from sec_miner.utils.sec_rate_limit import sec_rate_limit
-import redis
 import requests
-import logging
+import redis
+from sec_miner.utils.logger_factory import get_logger
 
-
-logger = logging.getLogger(__name__)
-redis_client = redis.from_url(Config.REDIS_URL)
+logger = get_logger(__name__)
 
 
 @celery_app.task(
@@ -20,6 +18,8 @@ redis_client = redis.from_url(Config.REDIS_URL)
 def fetch_filing(self, cik: str, accession_number: str):
     """Fetch a specific filing from SEC"""
     try:
+        redis_client = redis.from_url(Config.REDIS_URL)
+
         url = f"{Config.SEC_API_BASE_URL}/{cik}/{accession_number}.txt"
         response = requests.get(
             url,

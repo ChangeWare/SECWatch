@@ -7,11 +7,11 @@ from celery_app import celery_app
 from tasks.company import update_company_list
 from config import Config
 import uvicorn
-import logging
+from sec_miner.utils.logger_factory import get_logger
 
 app = FastAPI(title="SEC Miner API")
 redis_client = redis.from_url(Config.REDIS_URL)
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 @app.get("/health")

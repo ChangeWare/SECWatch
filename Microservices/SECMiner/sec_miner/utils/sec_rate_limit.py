@@ -2,10 +2,10 @@ import redis
 from datetime import datetime
 import time
 
-redis_client = redis.Redis(host='localhost', port=6379, db=0)
-
 
 def sec_rate_limit(func):
+    redis_client = redis.Redis(host='localhost', port=6379, db=0)
+
     def wrapper(*args, **kwargs):
         # Check Redis for rate limit status
         last_request = redis_client.get('sec_last_request')
