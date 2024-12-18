@@ -1,6 +1,7 @@
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using SECWatch.Domain.Common;
+using SECWatch.Domain.Features.SEC;
 using SECWatch.Domain.Features.Users;
 
 namespace SECWatch.Infrastructure.Persistence;
@@ -9,6 +10,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     : DbContext(options), IApplicationDbContext
 {
     public DbSet<User> Users => Set<User>();
+    
+    public DbSet<Company> Companies => Set<Company>();
+    
     public DbSet<SystemEvent> SystemEvents => Set<SystemEvent>();
 
     protected override void OnModelCreating(ModelBuilder builder)
