@@ -1,11 +1,13 @@
-import {glassStyles, layoutStyles, textStyles} from "@common/styles/components.ts";
+import { layoutStyles, textStyles} from "@common/styles/components.ts";
 import {LoginForm} from "@features/auth/components/LoginForm.tsx";
+import HyperLink from "@common/components/HyperLink.tsx";
+import {Card} from "@common/components/Card.tsx";
 
 export default function Login() {
     return (
         <div className="min-h-screen bg-background">
             <div className={`min-h-screen ${layoutStyles.flexCenter} py-8`}>
-                <div className={`w-full max-w-md p-8 m-4 ${glassStyles.card}`}>
+                <Card className={'w-full max-w-md p-8 m-4'}>
                     <div className="text-center mb-8">
                         <h1 className={textStyles.heading}>Welcome Back</h1>
                         <p className={textStyles.paragraph}>
@@ -13,17 +15,16 @@ export default function Login() {
                         </p>
                     </div>
 
-                    <LoginForm />
+                    <LoginForm/>
 
                     <div className="mt-6 text-center">
                         <p className={textStyles.paragraph}>
                             Don't have an account?{' '}
-                            <a href="/register" className="text-primary hover:text-accent">
-                                Create one
-                            </a>
+
+                            <HyperLink href="/register">Create one</HyperLink>
                         </p>
                     </div>
-                </div>
+                </Card>
             </div>
         </div>
     );

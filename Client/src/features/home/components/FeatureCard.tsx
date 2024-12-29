@@ -1,5 +1,6 @@
 import React from "react";
-import {glassStyles, textStyles} from "@common/styles/components.ts";
+import { textStyles} from "@common/styles/components.ts";
+import {Card} from "@common/components/Card.tsx";
 
 
 interface FeatureCardProps {
@@ -9,13 +10,13 @@ interface FeatureCardProps {
 }
 
 const FeatureCard = (props: FeatureCardProps) => (
-    <div className={`${glassStyles.card} p-6`}>
-        <div className="bg-accent/10 w-16 h-16 rounded-lg flex items-center justify-center mb-4">
+    <Card className='p-6'>
+        <div className="bg-info/10 w-16 h-16 rounded-lg flex items-center justify-center mb-4">
             {props.icon}
         </div>
         <h3 className={textStyles.heading}>{props.title}</h3>
         <p className={textStyles.paragraph}>{props.description}</p>
-    </div>
+    </Card>
 );
 
 export default FeatureCard;

@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {AlertFeed, AlertItem} from "@features/dashboard/components/AlertStream/AlertFeed.tsx";
-import {Card, CardContent, CardHeader, CardTitle} from "@features/dashboard/components/Card.tsx";
+import {Card, CardContent, CardHeader, CardTitle} from "@common/components/Card.tsx";
 import {Bell} from "lucide-react";
 
 interface AlertStreamProps {

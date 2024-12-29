@@ -15,11 +15,8 @@ public class Company : AggregateRoot
     public DateTime LastUpdated { get; private set; }
     
     private List<Address> _addresses = [];
+    private List<CompanyFinancialMetric> _financialMetrics = [];
     
     public IReadOnlyCollection<Address> Addresses => _addresses.AsReadOnly();
-
-    public void AddAddress(Address address)
-    {
-        _addresses.Add(address);
-    }
+    public IReadOnlyCollection<CompanyFinancialMetric> FinancialMetrics => _financialMetrics.AsReadOnly();
 }

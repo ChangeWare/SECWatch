@@ -21,7 +21,7 @@ export default function Logout() {
         <div className="min-h-screen bg-background flex items-center justify-center">
             <div className="text-center p-8 bg-white/5 rounded-lg">
                 <h1 className="text-3xl font-semibold text-white">You have been logged out</h1>
-                <p className="text-accent">Beaming you home...</p>
+                <p className="text-info pt-3">Beaming you home...</p>
             </div>
         </div>
     );

@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using SECWatch.API.Features.Authentication;
 using SECWatch.API.Features.Companies.DTOs;
 using SECWatch.Application.Features.Companies;
 using SECWatch.Application.Features.Companies.DTOs;
@@ -8,13 +7,48 @@ namespace SECWatch.API.Features.Companies;
 
 [ApiController]
 [Route("api/[controller]")]
-//[RequireAuth]
+//TODO: [RequireAuth]
 public class CompaniesController(
-    ISecApiService secApiService,
+    ICompanyService companyService,
     ILogger<CompaniesController> logger) : ControllerBase
 {
+    
+    [HttpGet("details/{cik}")]
+    [ProducesResponseType(typeof(CompanyDetails), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetDetails(string cik)
+    {
+        try
+        {
+            var result = await companyService.GetCompanyDetailsAsync(cik);
+            if (result.IsFailed)
+            {
+                return BadRequest(result.Errors);
+            }
+            
+            if (result.Value == null)
+            {
+                return NotFound();
+            }
+            
+            var response = new CompanyDetailsResponse()
+            {
+                Company = result.Value
+            };
+
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error processing company details for CIK: {CIK}", cik);
+            return StatusCode(500, "An error occurred while processing your request");
+        }
+    }
+    
+    
+    
     [HttpGet("search")]
-    [ProducesResponseType(typeof(List<CompanySearchResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(List<CompanySearchResult>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Search([FromQuery] string searchTerm, [FromQuery] SearchField searchField)
     {
@@ -31,10 +65,9 @@ public class CompaniesController(
 
         try
         {
-            // TODO: check whether we already have this data
-            var companies = await secApiService.SearchCompaniesAsync(req);
+            var companies = await companyService.SearchCompaniesAsync(req);
 
-            var result = new CompanyResults()
+            var result = new CompanySearchResponse()
             {
                 Companies = companies.Value
             };

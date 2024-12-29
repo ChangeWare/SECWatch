@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  db:
+    image: mcr.microsoft.com/azure-sql-edge
+    environment:
+      - ACCEPT_EULA=1
+      - MSSQL_SA_PASSWORD=MakingChange@2024
+    ports:
+      - "1433:1433"
+    cap_add:
+      - SYS_PTRACE
+    volumes:
+      - secwatch_sql_data:/var/opt/mssql
+      - secwatch_sql_ext_data:/var/opt/mssql-extensibility/data
+      - secwatch_sql_ext_log:/var/opt/mssql-extensibility/log
+    restart: unless-stopped
+
+volumes:
+  secwatch_sql_data:
+  secwatch_sql_ext_data:
+  secwatch_sql_ext_log:

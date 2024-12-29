@@ -6,9 +6,9 @@ namespace SECWatch.Infrastructure.Features.Companies;
 
 public interface ISecCompanyRedisRepository
 {
-    Task<Result<IEnumerable<CompanyInfo>>> SearchCompaniesAsync(CompanySearchRequest req);
+    Task<Result<IEnumerable<CompanyDetails>>> SearchCompaniesAsync(CompanySearchRequest req);
     
-    Task<CompanyInfo?> GetCompany(string cik);
+    Task<CompanyDetails?> GetCompany(string cik);
 
 }
 
@@ -16,7 +16,7 @@ public class SecCompanyRedisRepository(IConnectionMultiplexer redis) : ISecCompa
 {
     private const string CompanyKeyPrefix = "company:";
     
-    public async Task<Result<IEnumerable<CompanyInfo>>> SearchCompaniesAsync(CompanySearchRequest req)
+    public async Task<Result<IEnumerable<CompanyDetails>>> SearchCompaniesAsync(CompanySearchRequest req)
     { 
         var db = redis.GetDatabase();
         var server = redis.GetServer(redis.GetEndPoints().First());
@@ -32,7 +32,7 @@ public class SecCompanyRedisRepository(IConnectionMultiplexer redis) : ISecCompa
         };
         
         var keys = server.Keys(pattern: pattern);
-        var companies = new List<CompanyInfo>();
+        var companies = new List<CompanyDetails>();
         
         foreach (var key in keys)
         {
@@ -44,7 +44,7 @@ public class SecCompanyRedisRepository(IConnectionMultiplexer redis) : ISecCompa
             
             if (hashEntries.Length <= 0) continue;
             
-            var company = new CompanyInfo()
+            var company = new CompanyDetails()
             {
                 CIK = hashEntries.FirstOrDefault(x => x.Name == "cik").Value!,
                 Ticker = hashEntries.FirstOrDefault(x => x.Name == "ticker").Value!,
@@ -58,7 +58,7 @@ public class SecCompanyRedisRepository(IConnectionMultiplexer redis) : ISecCompa
         return Result.Ok(companies.AsEnumerable());
     }
     
-    public async Task<CompanyInfo?> GetCompany(string cik)
+    public async Task<CompanyDetails?> GetCompany(string cik)
     {
         var db = redis.GetDatabase();
         var hashEntries = await db.HashGetAllAsync($"{CompanyKeyPrefix}{cik}");
@@ -66,7 +66,7 @@ public class SecCompanyRedisRepository(IConnectionMultiplexer redis) : ISecCompa
         if (hashEntries.Length == 0)
             return null;
 
-        return new CompanyInfo()
+        return new CompanyDetails()
         {
             CIK = cik,
             Ticker = hashEntries.FirstOrDefault(x => x.Name == "ticker").Value!,

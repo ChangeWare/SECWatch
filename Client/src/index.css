@@ -4,59 +4,42 @@
 
 html, body, #root {
     min-height: 100%;
-    background-color: rgb(2, 48, 71); /* This is the main-blue-dark color */
+    background-color: #1a1f35; /* New navy background */
 }
 
 @layer base {
     :root {
-        --background: 201 91% 14%;    /* main-blue-dark: #023047 */
-        --foreground: 0 0% 98%;       /* keeping white text */
+        /* Base Theme */
+        --background: 222 34% 15%;     /* #1a1f35 - Navy background */
+        --foreground: 0 0% 98%;        /* Near white foreground */
+        --surface: 227 31% 21%;        /* #242b45 - Card background */
+        --surface-foreground: 228 31% 25%; /* #2d3555 - Inner cards */
 
-        /* Using your orange as primary */
-        --primary: 37 100% 49%;       /* main-orange: #fb8500 */
-        --primary-foreground: 0 0% 98%;
+        /* UI Action Colors */
+        --primary: 245 85% 59%;        /* #4f46e5 - Royal indigo */
+        --success: 160 84% 39%;        /* #10b981 - Emerald */
+        --error: 350 89% 60%;          /* #f43f5e - Coral */
+        --info: 200 94% 48%;           /* #0ea5e9 - Ocean blue */
 
-        /* Using your blue as secondary */
-        --secondary: 197 70% 43%;     /* main-blue: #219ebc */
-        --secondary-foreground: 0 0% 98%;
+        /* Metrics-specific Colors */
+        --metrics-strong: 35 100% 49%;  /* #fb8500 - Deep orange */
+        --metrics-growth: 41 100% 51%;  /* #ffb703 - Warm orange */
+        --metrics-stable: 160 84% 39%;  /* #10b981 - Emerald */
+        --metrics-decline: 350 89% 60%; /* #f43f5e - Coral */
 
-        /* Light orange for accents */
-        --accent: 41 100% 51%;        /* main-orange-light: #ffb703 */
-        --accent-foreground: 0 0% 98%;
+        --primary-foreground: 0 0% 100%;
+        --success-foreground: 0 0% 100%;
+        --error-foreground: 0 0% 100%;
+        --info-foreground: 0 0% 100%;
 
-        /* Keep existing card, popover, etc. but adjust to your blue theme */
-        --card: 201 91% 14%;
-        --card-foreground: 0 0% 98%;
-        --popover: 201 91% 14%;
+        --popover: 223 32% 17%;
         --popover-foreground: 0 0% 98%;
 
-        /* Keep your existing muted and destructive colors */
-        --muted: 0 0% 14.9%;
-        --muted-foreground: 0 0% 63.9%;
-        --destructive: 0 62.8% 30.6%;
-        --destructive-foreground: 0 0% 98%;
-
-        /* Light blue for rings/focus */
-        --ring: 197 70% 73%;          /* main-blue-light: #8ecae6 */
-
-        /* Keep your existing border and input colors */
-        --border: 0 0% 14.9%;
-        --input: 0 0% 14.9%;
-
-        /* Keep your existing chart colors */
-        --chart-1: 220 70% 50%;
-        --chart-2: 160 60% 45%;
-        --chart-3: 30 80% 55%;
-        --chart-4: 280 65% 60%;
-        --chart-5: 340 75% 55%;
-        --radius: 0.5rem;
+        --border: 240 20% 40%;
     }
 }
 
 @layer base {
-    * {
-        @apply border-border;
-    }
     body {
         @apply bg-background text-foreground;
     }

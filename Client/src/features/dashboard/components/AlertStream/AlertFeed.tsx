@@ -2,7 +2,6 @@ import React from 'react';
 import { cn } from "@/common/lib/utils";
 import { AlertTriangle, Info, XCircle, Clock, FileText, Bell } from 'lucide-react';
 
-// Types for our alerts
 export interface AlertItem {
     id: string;
     type: 'filing' | 'threshold' | 'news' | 'watchlist';
@@ -32,9 +31,9 @@ const alertTypeIcons = {
 } as const;
 
 const priorityStyles = {
-    high: "border-red-500/50",
-    medium: "border-yellow-500/50",
-    low: "border-secondary/50"
+    high: "before:bg-error",
+    medium: "before:bg-metrics-growth",
+    low: "before:bg-success"
 } as const;
 
 export const AlertNotification = ({
@@ -47,8 +46,14 @@ export const AlertNotification = ({
 
     return (
         <div className={cn(
-            "p-2 rounded-lg border border-white/10 bg-white/5 hover:border-accent/50 transition",
+            // Base card styles
+            "p-2 rounded-lg bg-surface/80",
+            "shadow-[0_4px_12px_rgba(0,0,0,0.1)]",
+            "relative overflow-hidden",
+            "before:absolute before:left-0 before:top-0 before:bottom-0 before:w-0.5",
+            // Read state
             alert.read ? "opacity-75" : "opacity-100",
+            // Priority indicator
             priorityStyles[alert.priority],
             "group",
             className
@@ -56,8 +61,8 @@ export const AlertNotification = ({
             <div className="flex items-start gap-3 mb-4">
                 {/* Icon */}
                 <div className={cn(
-                    "mt-1 p-2 rounded-full bg-white/5",
-                    alert.read ? "text-gray-400" : "text-accent"
+                    "mt-1 p-2 rounded-full bg-surface/40",
+                    alert.read ? "text-foreground/50" : "text-info"
                 )}>
                     <Icon className="h-4 w-4"/>
                 </div>
@@ -65,45 +70,43 @@ export const AlertNotification = ({
                 <div className="flex-1 min-w-0 pt-1.5">
                     {alert.company && (
                         <div className="flex items-center gap-2 mb-1">
-                            <span className="font-medium text-white">
+                            <span className="font-medium text-foreground">
                                 {alert.company.name}
                             </span>
-                            <span className="text-sm text-gray-400">
+                            <span className="text-sm text-foreground/50">
                                 {alert.company.symbol}
                             </span>
                         </div>
                     )}
-                    <h4 className="text-white font-medium mb-1 truncate">
+                    <h4 className="text-foreground font-medium mb-1 truncate">
                         {alert.title}
                     </h4>
-                    <p className="text-sm text-gray-300 line-clamp-2">
+                    <p className="text-sm text-foreground/70 line-clamp-2">
                         {alert.description}
                     </p>
-
-
                 </div>
-
 
                 {/* Dismiss button - only shows on hover */}
                 {onDismiss && (
                     <button
                         onClick={() => onDismiss(alert.id)}
-                        className="opacity-0 group-hover:opacity-100 transition text-gray-400
-                                 hover:text-white p-1 rounded-full hover:bg-white/5"
+                        className="opacity-0 group-hover:opacity-100 transition text-foreground/50
+                                 hover:text-foreground p-1 rounded-full hover:bg-surface/40"
+                        aria-label="Dismiss alert"
                     >
                         <XCircle className="h-4 w-4"/>
                     </button>
                 )}
             </div>
             <div className="flex items-center gap-4 mt-2">
-                        <span className="flex items-center gap-1 text-xs text-gray-400">
-                            <Clock className="h-3 w-3"/>
-                            {new Date(alert.timestamp).toLocaleString()}
-                        </span>
+                <span className="flex items-center gap-1 text-xs text-foreground/50">
+                    <Clock className="h-3 w-3"/>
+                    {new Date(alert.timestamp).toLocaleString()}
+                </span>
                 {!alert.read && onMarkAsRead && (
                     <button
                         onClick={() => onMarkAsRead(alert.id)}
-                        className="text-xs text-accent hover:text-accent/80 transition ml-auto"
+                        className="text-xs text-info hover:text-info/80 transition-colors duration-200 ml-auto"
                     >
                         Mark as read
                     </button>
@@ -126,7 +129,6 @@ export const AlertFeed = ({
                               onMarkAsRead,
                               className
                           }: AlertFeedProps) => {
-    // Group alerts by date
     const groupedAlerts = React.useMemo(() => {
         return alerts.reduce((acc, alert) => {
             const date = new Date(alert.timestamp).toLocaleDateString();
@@ -142,7 +144,7 @@ export const AlertFeed = ({
         <div className={cn("space-y-6", className)}>
             {Object.entries(groupedAlerts).map(([date, dateAlerts]) => (
                 <div key={date} className="space-y-2">
-                    <h3 className="text-sm font-medium text-gray-400 px-1">
+                    <h3 className="text-sm font-medium text-foreground/50 px-1">
                         {date}
                     </h3>
                     <div className="space-y-3">

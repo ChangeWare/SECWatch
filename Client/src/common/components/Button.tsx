@@ -1,7 +1,7 @@
 import React from "react";
 import {useNavigate} from "react-router-dom";
 
-type ButtonVariant = 'primary' | 'secondary';
+type ButtonVariant = 'primary' | 'secondary' | 'success' | 'danger';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     variant?: ButtonVariant;
@@ -22,8 +22,10 @@ function Button({
 
     const baseStyles = "px-6 py-2 rounded-lg transition";
     const variants: Record<ButtonVariant, string> = {
-        primary: "bg-primary text-white hover:bg-accent",
-        secondary: "border border-secondary text-secondary hover:text-accent",
+        primary: "bg-primary text-primary-foreground hover:opacity-90",
+        secondary: "bg-info text-info-foreground hover:opacity-90",
+        success: "bg-success text-success-foreground hover:opacity-90",
+        danger: "bg-error text-error-foreground hover:opacity-90"
     };
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {

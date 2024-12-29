@@ -1,30 +1,45 @@
 import * as React from "react";
-import { cn } from "@/common/lib/utils";
+import { cn } from "@common/lib/utils.ts";
 import {
     Card as CardPrimitive,
     CardHeader as CardHeaderPrimitive,
     CardTitle as CardTitlePrimitive,
     CardContent as CardContentPrimitive,
-} from "@/common/components/ui/card";
+} from "@common/components/ui/card.tsx";
+
+type CardVariant = 'default' | 'subtle' | 'elevated';
+
+interface CardProps extends React.ComponentPropsWithoutRef<typeof CardPrimitive> {
+    variant?: CardVariant;
+    interactive?: boolean;
+}
 
 const Card = React.forwardRef<
     React.ElementRef<typeof CardPrimitive>,
-    React.ComponentPropsWithoutRef<typeof CardPrimitive>
->(({ className, ...props }, ref) => (
-    <CardPrimitive
-        ref={ref}
-        className={cn(
-            // Override any default background colors from shadcn
-            "!bg-white/10 !backdrop-blur-sm rounded-xl",
-            "border border-white/10",
-            "hover:border-accent/50 transition",
-            // Allow custom classes to override if needed
-            className
-        )}
-        {...props}
-    />
-));
-Card.displayName = "Card";
+    CardProps
+>(({ className, ...props }, ref) => {
+
+    const variantStyles: Record<CardVariant, string> = {
+        default: "bg-surface",
+        subtle: "bg-surface-foreground/40 shadow-sm",
+        elevated: "bg-surface-foreground shadow-md",
+    };
+
+    const baseStyles = "rounded-xl border border-border hover:border-success/50 transition";
+
+    return (
+        <CardPrimitive
+            ref={ref}
+            className={cn(
+                variantStyles[props.variant || 'default'],
+                baseStyles,
+                props.interactive && "cursor-pointer",
+                className
+            )}
+            {...props}
+        />
+    );
+});
 
 const CardHeader = React.forwardRef<
     React.ElementRef<typeof CardHeaderPrimitive>,

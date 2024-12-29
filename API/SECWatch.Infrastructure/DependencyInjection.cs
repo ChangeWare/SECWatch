@@ -83,7 +83,7 @@ public static class DependencyInjection
         services.AddTransient<ISystemEventRepository, SystemEventRepository>();
         services.AddTransient<IUserRepository, UserRepository>();
         services.AddTransient<ISecCompanyRedisRepository, SecCompanyRedisRepository>();
-        services.AddTransient<ISecCompanyRepository, SecCompanyRepository>();
+        services.AddTransient<ICompanyRepository, CompanyRepository>();
 
         return services;
     }

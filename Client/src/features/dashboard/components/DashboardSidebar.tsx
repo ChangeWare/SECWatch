@@ -103,17 +103,17 @@ export default function DashboardSidebar(props: DashboardSidebarProps) {
 
     // Navigation items with nested structure
     const navItems: SideNavMenuItemData[] = [
-        { icon: Home, label: 'Dashboard', href: 'dash'},
+        { icon: Home, label: 'Dashboard', href: '/dash'},
         {
             icon: Building2,
             label: 'Companies',
             isGroup: true,
             isOpen: companiesOpen,
             setOpen: setCompaniesOpen,
-            href: dashboardPaths.companies.default,
+            href: dashboardPaths.company.default,
             items: [
                 {label: 'Tracked Companies', href: '#'},
-                {label: 'Company Search', href: dashboardPaths.companies.search},
+                {label: 'Company Search', href: dashboardPaths.company.search},
                 {label: 'Watchlists', href: '#'},
             ],
         },

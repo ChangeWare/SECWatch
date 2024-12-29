@@ -1,14 +1,16 @@
-import json
 from datetime import datetime
 from typing import List, Dict
 from sec_miner.celery_app import celery_app
 from sec_miner.config import Config
+from sec_miner.persistence.mongodb.database import upsert_metric_doc
+from sec_miner.persistence.sql.database import find_missing_ciks, upsert_companies, store_company_financial_metric, \
+    get_all_company_ciks
 from sec_miner.utils.logger_factory import get_logger
-from sec_miner.database import find_missing_ciks, store_new_companies
-import sec_miner.sec_client as sec_client
+import sec_miner.sec.sec_client as sec_client
 import logging
 import redis
-
+import pyodbc
+import json
 
 logger = get_logger(__name__)
 
@@ -46,43 +48,73 @@ def identify_new_companies():
     # Process in batches to avoid memory issues
     sec_ciks = list(sec_companies.keys())
     missing_ciks = find_missing_ciks(sec_ciks)
-    new_companies = [sec_companies[cik] for cik in missing_ciks]
 
-    if len(new_companies) > 0:
-        process_new_companies.delay(new_companies)
+    if len(missing_ciks) > 0:
+        process_companies.delay(missing_ciks)
 
 
-@celery_app.task(name='tasks.company.process_new_companies')
-def process_new_companies(companies: List[Dict]):
+@celery_app.task(
+    max_retries=3,
+    autoretry_for=(pyodbc.OperationalError,),
+    retry_kwargs={'countdown': 60},
+    name='tasks.company.process_companies'
+)
+def process_companies(company_ciks: List[str]):
     """Processes and stores new companies in SQL database"""
     redis_client = redis.from_url(Config.REDIS_URL)
     batch_size = 100
-    new_companies = []
+    processed_companies = []
+
+    # If company_ciks is empty, process all companies in the SEC
+    if not company_ciks:
+        company_list = sec_client.get_company_list()
+        company_ciks = [str(c['cik_str']) for c in company_list]
 
     # Get the last processed index from Redis
     last_index = int(redis_client.get('sec:last_companies_processed_index') or 0)
 
-    for i, company_data in enumerate(companies[last_index:], start=last_index):
+    for i, cik in enumerate(company_ciks[last_index:]):
         # Gather additional company info from SEC
-        cik = str(company_data['cik_str'])
         company = sec_client.get_company_details(cik)
-        new_companies.append(company)
+        processed_companies.append(company)
         logger.log(logging.INFO, f"Processed new company: {company.Name}")
 
-        if len(new_companies) >= batch_size:
-            store_new_companies(new_companies)
+        if len(processed_companies) >= batch_size:
+            logger.log(logging.INFO, f"Storing {len(processed_companies)} new companies")
+            upsert_companies(processed_companies)
             new_companies = []
 
             # Save the current index to Redis
             redis_client.set('sec:last_companies_processed_index', i + 1)
 
     # Insert any remaining companies
-    if new_companies:
-        store_new_companies(new_companies)
+    if processed_companies:
+        logger.log(logging.INFO, f"Storing {len(processed_companies)} new companies")
+        upsert_companies(processed_companies)
 
     # Reset the last processed index
     redis_client.set('sec:last_companies_processed_index', 0)
 
+    process_companies_financial_metrics.delay(new_companies)
 
 
+@celery_app.task(
+    max_retries=3,
+    autoretry_for=(pyodbc.OperationalError,),
+    retry_kwargs={'countdown': 60},
+    name='tasks.company.process_companies_financial_metrics'
+)
+def process_companies_financial_metrics(company_ciks: List[str]):
+    """Processes and stores financial metrics for new companies"""
 
+    # If company_ciks is empty, process all companies in the database
+    if not company_ciks:
+        company_ciks = get_all_company_ciks()
+
+    for cik in company_ciks:
+        financial_metrics_results = sec_client.get_company_financial_metrics(cik)
+
+        for result in financial_metrics_results:
+            if (result.metric_document is not None) and (result.financial_metric is not None):
+                upsert_metric_doc(result.metric_document)
+                store_company_financial_metric(result.financial_metric)
