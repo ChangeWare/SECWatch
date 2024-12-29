@@ -1,6 +1,5 @@
 import React, {useEffect} from 'react';
 import { useForm } from 'react-hook-form';
-import { glassStyles, textStyles, layoutStyles } from '@/common/styles/components';
 import type {RegistrationFormData} from '../types';
 import Button from "@common/components/Button.tsx";
 import {useAuth} from "@features/auth";
@@ -41,7 +40,7 @@ export function RegistrationForm() {
                     type="email"
                 />
                 {errors.email && (
-                    <p className="mt-1 text-primary">{errors.email.message}</p>
+                    <p className="mt-1 text-error">{errors.email.message}</p>
                 )}
             </div>
 
@@ -59,7 +58,7 @@ export function RegistrationForm() {
                     type="text"
                 />
                 {errors.firstName && (
-                    <p className="mt-1 text-accent">{errors.firstName.message}</p>
+                    <p className="mt-1 text-error">{errors.firstName.message}</p>
                 )}
             </div>
 
@@ -77,7 +76,7 @@ export function RegistrationForm() {
                     type="text"
                 />
                 {errors.lastName && (
-                    <p className="mt-1 text-accent">{errors.lastName.message}</p>
+                    <p className="mt-1 text-error">{errors.lastName.message}</p>
                 )}
             </div>
 
@@ -96,7 +95,7 @@ export function RegistrationForm() {
                     type="password"
                 />
                 {errors.password && (
-                    <p className="mt-1 text-accent">{errors.password.message}</p>
+                    <p className="mt-1 text-error">{errors.password.message}</p>
                 )}
             </div>
 
@@ -111,7 +110,7 @@ export function RegistrationForm() {
                     type="password"
                 />
                 {errors.confirmPassword && (
-                    <p className="mt-1 text-accent">{errors.confirmPassword.message}</p>
+                    <p className="mt-1 text-error">{errors.confirmPassword.message}</p>
                 )}
             </div>
 
@@ -137,7 +136,7 @@ export function RegistrationForm() {
                 </label>
             </div>
             {errors.agreeToTerms && (
-                <p className="mt-1 text-accent">{errors.agreeToTerms.message}</p>
+                <p className="mt-1 text-error">{errors.agreeToTerms.message}</p>
             )}
 
             <Button

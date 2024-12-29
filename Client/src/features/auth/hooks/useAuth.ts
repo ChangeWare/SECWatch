@@ -82,4 +82,6 @@ export const useAuth = () => {
         isAuthenticated,
         logout
     };
-  }
+}
+
+export default useAuth;

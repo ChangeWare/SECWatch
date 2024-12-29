@@ -39,13 +39,15 @@ builder.Services.AddSwaggerGen();
 // Add infrastructure (repositories, infrastructure services, etc.)
 builder.Services.AddInfrastructure(builder.Configuration);
 
+builder.Services.AddSingleton<IMetricMetadataFactory, MetricMetadataFactory>();
+
 // Setup application & domain services
 builder.Services.AddTransient<ISystemEventService, SystemEventService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserDomainService, UserDomainService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddTransient<HttpClient>();
-builder.Services.AddScoped<ISecApiService, SecApiService>();
+builder.Services.AddScoped<ICompanyService, CompanyService>();
 
 var app = builder.Build();
 

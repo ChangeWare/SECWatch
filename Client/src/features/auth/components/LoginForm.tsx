@@ -5,6 +5,7 @@ import { useAuth } from "@features/auth";
 import { LoginFormData } from "@features/auth/types.ts";
 import {useNavigate} from "react-router-dom";
 import {paths} from "@routes/paths.ts";
+import HyperLink from "@common/components/HyperLink.tsx";
 
 export function LoginForm() {
     const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>();
@@ -30,7 +31,7 @@ export function LoginForm() {
             )}
 
             <div>
-                <label className="block text-accent mb-2">Email</label>
+                <label className="block text-foreground mb-2">Email</label>
                 <input
                     {...register('email', {
                         required: 'Email is required',
@@ -43,12 +44,12 @@ export function LoginForm() {
                     type="email"
                 />
                 {errors.email && (
-                    <p className="mt-1 text-accent">{errors.email.message}</p>
+                    <p className="mt-1 text-error">{errors.email.message}</p>
                 )}
             </div>
 
             <div>
-                <label className="block text-ring mb-2">Password</label>
+                <label className="block text-foreground mb-2">Password</label>
                 <input
                     {...register('password', {
                         required: 'Password is required'
@@ -57,7 +58,7 @@ export function LoginForm() {
                     type="password"
                 />
                 {errors.password && (
-                    <p className="mt-1 text-accent">{errors.password.message}</p>
+                    <p className="mt-1 text-error">{errors.password.message}</p>
                 )}
             </div>
 
@@ -71,12 +72,7 @@ export function LoginForm() {
                     <label className="text-ring">Remember me</label>
                 </div>
 
-                <a
-                    href="/forgot-password"
-                    className="text-primary hover:text-accent"
-                >
-                    Forgot password?
-                </a>
+                <HyperLink href="/forgot-password">Forgot password?</HyperLink>
             </div>
 
             <Button

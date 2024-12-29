@@ -1,10 +1,8 @@
+import companyPaths from '@features/company/paths';
 
 export const dashboardPaths = {
     default: '/dash',
-    companies: {
-        default: '/companies',
-        search: '/companies/search',
-    }
+    company: companyPaths
 }
 
 export default dashboardPaths;

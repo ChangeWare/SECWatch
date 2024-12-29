@@ -1,10 +1,12 @@
 # api.py
-from fastapi import FastAPI, HTTPException, BackgroundTasks
+from typing import Optional, List
+
+from fastapi import FastAPI, HTTPException, BackgroundTasks, Request
 from celery.result import AsyncResult
 from datetime import datetime
 import redis
 from celery_app import celery_app
-from tasks.company import update_company_list
+from tasks.company import update_company_list, process_companies, process_companies_financial_metrics
 from config import Config
 import uvicorn
 from sec_miner.utils.logger_factory import get_logger
@@ -45,10 +47,54 @@ async def get_metrics():
 
 
 @app.post("/tasks/update-companies")
-async def trigger_company_update(background_tasks: BackgroundTasks):
+async def trigger_update_companies():
     """Manually trigger company list update"""
     try:
         task = update_company_list.delay()
+        return {
+            "task_id": task.id,
+            "status": "started",
+            "check_status_url": f"/tasks/{task.id}"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/tasks/trigger_company_processing")
+async def trigger_company_processing(
+    request: Request
+):
+    """Manually trigger company list update"""
+    try:
+        body = await request.json()
+        ciks: Optional[List[str]] = body.get("ciks") or None
+
+        task = process_companies.delay(ciks)
+
+        return {
+            "task_id": task.id,
+            "status": "started",
+            "check_status_url": f"/tasks/{task.id}"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/tasks/trigger_company_financials_processing")
+async def trigger_company_financials_processing(
+    request: Request
+):
+    """Manually trigger company list update"""
+    try:
+        try:
+            body = await request.json()
+        except:
+            body = {}
+
+        ciks: Optional[List[str]] = body.get("ciks") or None
+
+        task = process_companies_financial_metrics.delay(ciks)
+
         return {
             "task_id": task.id,
             "status": "started",

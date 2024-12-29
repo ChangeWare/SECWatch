@@ -69,6 +69,9 @@ namespace SECWatch.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Country")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("County")
                         .HasColumnType("nvarchar(max)");
 
@@ -99,7 +102,7 @@ namespace SECWatch.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("CIK")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("datetime2");
@@ -119,6 +122,40 @@ namespace SECWatch.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Companies");
+                });
+
+            modelBuilder.Entity("SECWatch.Domain.Features.SEC.CompanyFinancialMetric", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CompanyCIK")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("FirstReported")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("LastReported")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("LastValue")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Metric")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyCIK");
+
+                    b.ToTable("CompanyFinancialMetrics", (string)null);
                 });
 
             modelBuilder.Entity("SECWatch.Domain.Features.Users.User", b =>
@@ -188,9 +225,23 @@ namespace SECWatch.Infrastructure.Persistence.Migrations
                     b.Navigation("Company");
                 });
 
+            modelBuilder.Entity("SECWatch.Domain.Features.SEC.CompanyFinancialMetric", b =>
+                {
+                    b.HasOne("SECWatch.Domain.Features.SEC.Company", "Company")
+                        .WithMany("FinancialMetrics")
+                        .HasForeignKey("CompanyCIK")
+                        .HasPrincipalKey("CIK")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
             modelBuilder.Entity("SECWatch.Domain.Features.SEC.Company", b =>
                 {
                     b.Navigation("Addresses");
+
+                    b.Navigation("FinancialMetrics");
                 });
 #pragma warning restore 612, 618
         }

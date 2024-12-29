@@ -7,7 +7,7 @@ export default function HomeLayout(props: PropsWithChildren) {
     console.log(props.children);
   return (
     <div className="min-h-screen bg-background">
-      <HomeNav />
+        <HomeNav />
         <main className="pt-20">
             <Outlet/>
         </main>

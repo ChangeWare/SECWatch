@@ -11,6 +11,8 @@ public record Address
     public string? State { get; init; }
     public string? Zip { get; init; }
     
+    public string? Country { get; init; }
+    
     public string? County { get; init; }
     
     public string? AddressType { get; init; }
