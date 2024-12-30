@@ -50,7 +50,7 @@ export default function DashboardNav(props: DashboardNavProps) {
                             placeholder="Search companies, filings, or alerts..."
                             className="w-full pl-10 pr-4 py-2 bg-white/10 backdrop-blur-sm rounded-lg
                      border border-white/10 text-gray-300 placeholder-gray-400
-                     focus:outline-none focus:border-accent transition"
+                     focus:outline-none focus:border-info transition"
                         />
                     </div>
                 </div>

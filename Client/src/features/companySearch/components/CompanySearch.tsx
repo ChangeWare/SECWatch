@@ -40,15 +40,19 @@ export default function CompanySearch() {
                     value={debouncedQuery}
                     onChange={handleInputChange}
                     placeholder="Search companies..."
-                    className="w-full px-4 py-2 bg-white/10 backdrop-blur-sm rounded-lg border border-white/10
-                     text-gray-300 placeholder-gray-400 focus:outline-none focus:border-accent"
+                    className="w-full px-4 py-2 bg-white/10 backdrop-blur-sm rounded-lg
+               border border-white/10
+               text-gray-300 placeholder-gray-400
+               focus:outline-none focus:border-info
+               transition-colors" // Added transition for smooth effect
                 />
-                <Search className="absolute right-3 top-2.5 h-5 w-5 text-gray-400" />
+                <Search className="absolute right-3 top-2.5 h-5 w-5 text-gray-400"/>
             </div>
 
             {/* Dropdown Results */}
             {isOpen && (
-                <div className="absolute top-12 left-0 w-full bg-gray-800 border border-white/10 rounded-lg shadow-lg z-10">
+                <div
+                    className="absolute top-12 left-0 w-full bg-gray-800 border border-white/10 rounded-lg shadow-lg z-10">
                     {isLoading ? (
                         <div className="px-4 py-2 text-gray-400 text-sm">Loading...</div>
                     ) : response?.companies.length > 0 ? (

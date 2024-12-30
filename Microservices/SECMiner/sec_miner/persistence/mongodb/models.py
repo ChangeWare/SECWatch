@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from bson.objectid import ObjectId
 from sec_miner.persistence.financial_metric import FinancialMetric
 
@@ -41,11 +41,22 @@ class MetricDataPoint(BaseModel):
         }
 
 
+class FinancialMetricMetadata(BaseModel):
+    first_reported: datetime
+    last_reported: datetime
+    last_updated: datetime
+    last_value: float
+    currency_types: List[str]
+    total_data_points: int
+    date_range: Dict[str, Any]
+
+
 class FinancialMetricDocument(BaseModel):
     cik: str
     metric: FinancialMetric
     data_points: List[MetricDataPoint]
     last_updated: datetime = Field(default_factory=datetime.utcnow)
+    metadata: FinancialMetricMetadata
 
     class Config:
         allow_population_by_field_name = True

@@ -58,7 +58,7 @@ function HeroSection(props: HeroSectionProps) {
                 <div className="text-center">
                     <div className="text-4xl md:text-6xl font-bold text-white mb-6">
                         SECWatch
-                        <h2 className="text-2xl md:text-4xl font-bold text-accent">Empowering Public
+                        <h2 className="text-2xl md:text-4xl font-bold text-info pt-4">Empowering Public
                             Oversight</h2>
                     </div>
 

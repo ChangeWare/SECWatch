@@ -1,39 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { TrendingUp, TrendingDown } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from "@common/components/ui/card";
+import {Card, CardContent} from "@common/components/Card.tsx";
+import ChartTooltip from "@common/components/ChartTooltip.tsx";
 
 
 interface DataPoint {
     date: string;
     value: number;
 }
-
-interface CustomTooltipProps {
-    active?: boolean;
-    payload?: any[];
-    label?: string;
-}
-
-const CustomTooltip = (props: CustomTooltipProps) => {
-    if (!props.active || !props.payload || !props.payload.length) return null;
-
-    return (
-        <Card className="border-border bg-card text-card-foreground">
-            <CardContent className="p-3">
-                <p className="text-sm font-medium">{props.label}</p>
-                <p className="text-sm text-muted-foreground">
-                    {new Intl.NumberFormat('en-US', {
-                        style: 'currency',
-                        currency: 'USD',
-                        minimumFractionDigits: 0,
-                        maximumFractionDigits: 0,
-                    }).format(props.payload[0].value)}
-                </p>
-            </CardContent>
-        </Card>
-    );
-};
 
 const AccountsPayableSection = () => {
     const [data, setData] = useState<DataPoint[]>([
@@ -54,6 +29,22 @@ const AccountsPayableSection = () => {
     };
 
     const formatCurrency = (value: number) => {
+        if (Math.abs(value) >= 1_000_000_000) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 1,
+                maximumFractionDigits: 1,
+            }).format(value / 1_000_000_000) + 'B';
+        }
+        if (Math.abs(value) >= 1_000_000) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 1,
+                maximumFractionDigits: 1,
+            }).format(value / 1_000_000) + 'M';
+        }
         return new Intl.NumberFormat('en-US', {
             style: 'currency',
             currency: 'USD',
@@ -65,12 +56,12 @@ const AccountsPayableSection = () => {
     const change = calculateChange();
 
     return (
-        <Card className="bg-[#D0F5FF]/70 backdrop-blur border-primary/10">
+        <Card>
             <CardContent className="p-6 space-y-6">
                 {/* Section Header */}
                 <div>
                     <h2 className="text-lg font-bold text-foreground">Accounts Payable</h2>
-                    <p className="text-sm text-muted-foreground">Historical accounts payable data and trends</p>
+                    <p className="text-sm text-secondary">Historical accounts payable data and trends</p>
                 </div>
 
                 {/* Key Metrics */}
@@ -117,31 +108,42 @@ const AccountsPayableSection = () => {
                     <CardContent className="pt-6">
                         <div className="h-64">
                             <ResponsiveContainer width="100%" height="100%">
-                                <LineChart data={data}>
+                                <LineChart
+                                    data={data}
+                                    margin={{ left: 15, right: 10, top: 5, bottom: 15 }}  // Smaller margins
+                                >
                                     <CartesianGrid
                                         strokeDasharray="3 3"
-                                        className="stroke-border/50"
+                                        className="stroke-border/30"
                                     />
                                     <XAxis
                                         dataKey="date"
-                                        tick={{ fill: 'hsl(var(--muted-foreground))' }}
+                                        tick={{
+                                            fill: 'hsl(var(--foreground))',
+                                            dy: 10
+                                        }}
+                                        style={{ opacity: 0.7 }}
                                         tickLine={{ stroke: 'hsl(var(--border))' }}
                                         axisLine={{ stroke: 'hsl(var(--border))' }}
                                     />
                                     <YAxis
                                         tickFormatter={formatCurrency}
-                                        tick={{ fill: 'hsl(var(--muted-foreground))' }}
+                                        tick={{
+                                            fill: 'hsl(var(--foreground))',
+                                            dx: -5,
+                                        }}
+                                        style={{ opacity: 0.7 }}
                                         tickLine={{ stroke: 'hsl(var(--border))' }}
                                         axisLine={{ stroke: 'hsl(var(--border))' }}
                                     />
-                                    <Tooltip content={<CustomTooltip />} />
+                                    <Tooltip content={<ChartTooltip />} />
                                     <Line
                                         type="monotone"
                                         dataKey="value"
-                                        className="stroke-secondary"
+                                        className="stroke-info"
                                         strokeWidth={2}
                                         dot={{
-                                            className: "fill-secondary stroke-secondary",
+                                            className: "fill-info stroke-info",
                                             strokeWidth: 2
                                         }}
                                     />
