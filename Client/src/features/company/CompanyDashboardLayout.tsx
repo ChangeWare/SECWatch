@@ -7,10 +7,10 @@ export default function CompanyDashboardLayout() {
     const navigate = useNavigate();
     const { companyId } = useParams();
 
-    const { company, isLoading } = useCompany(companyId);
+    const { company, companyDetailsLoading } = useCompany(companyId);
 
     return (
-        isLoading || !company ? (
+        companyDetailsLoading || !company ? (
             <LoadingScreen />
         ) : (
             <>

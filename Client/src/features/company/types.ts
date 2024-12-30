@@ -2,13 +2,29 @@ export interface CompanyDetailsResponse {
     company: CompanyDetails;
 }
 
-export interface CompanyFinancialMetricsResponse {
+export interface CompanyFinancialMetricResponse {
+    metric: CompanyFinancialMetric;
+}
+
+export interface MetricDataPoint {
+    endDate: Date;
+    value: number;
+    fiscalYear: number;
+    fiscalPeriod: string;
+    formType: string;
+    filingDate: Date;
+    frame: string;
+    currencyType: string;
+}
+
+export interface CompanyFinancialMetric {
+    cik: string;
     metricType: string;
     lastValue: number;
-    companyCik: string;
     lastUpdated: Date;
     lastReported: Date;
 
+    dataPoints: MetricDataPoint[];
 }
 
 export interface CompanyDetails {

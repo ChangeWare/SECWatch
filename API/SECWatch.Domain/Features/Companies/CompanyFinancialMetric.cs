@@ -26,6 +26,8 @@ public class FinancialMetricMetadata
 
 public class CompanyFinancialMetric
 {
+    public string Id { get; set; }
+    
     public string Cik { get; set; }
     
     public FinancialMetricType MetricType { get; set; }

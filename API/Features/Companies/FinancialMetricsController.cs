@@ -7,12 +7,12 @@ using SECWatch.Domain.Features.SEC;
 namespace SECWatch.API.Features.Companies;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/financials")]
 public class FinancialMetricsController(
     ICompanyService companyService,
-    ILogger logger) : ControllerBase
+    ILogger<FinancialMetricsController> logger) : ControllerBase
 {
-    [HttpGet("{metric}/{period}/{cik}")]
+    [HttpGet("companies/{cik}/metrics/{metric}/period/{period}")]
     [ProducesResponseType(typeof(CompanyFinancialMetricResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetFinancialMetric(string cik, FinancialMetricType metric, FinancialMetricPeriodType period)

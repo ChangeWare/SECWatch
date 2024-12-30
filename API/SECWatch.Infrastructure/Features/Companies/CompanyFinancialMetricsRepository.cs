@@ -58,7 +58,7 @@ public class CompanyFinancialMetricsRepository(
         {
             logger.LogError(ex, 
                 "Error retrieving financial metric for CIK: {Cik}, Metric: {Metric}", 
-                cik, metricType);
+                cik, metricType.ToString());
             return Result.Fail(
                 "Failed to retrieve financial metric");
         }
