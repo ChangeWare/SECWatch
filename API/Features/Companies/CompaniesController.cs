@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using SECWatch.API.Features.Companies.DTOs;
 using SECWatch.Application.Features.Companies;
 using SECWatch.Application.Features.Companies.DTOs;
+using SECWatch.Domain.Features.Companies.Queries;
+using SECWatch.Domain.Features.SEC;
 
 namespace SECWatch.API.Features.Companies;
 
@@ -54,11 +56,14 @@ public class CompaniesController(
     {
         var req = new CompanySearchRequest
         {
-            SearchTerm = searchTerm,
-            SearchField = searchField
+            Query = new CompanySearchQuery()
+            {
+                SearchTerm = searchTerm,
+                SearchField = searchField
+            }
         };
         
-        if (string.IsNullOrWhiteSpace(req.SearchTerm) || req.SearchTerm.Length < 2)
+        if (string.IsNullOrWhiteSpace(req.Query.SearchTerm) || req.Query.SearchTerm.Length < 2)
         {
             return BadRequest("Search term must be at least 2 characters long");
         }
@@ -77,7 +82,7 @@ public class CompaniesController(
         catch (Exception ex)
         {
             logger.LogError(ex, "Error processing company search. Term: {SearchTerm}, Field: {SearchField}", 
-                req.SearchTerm, req.SearchField);
+                req.Query.SearchTerm, req.Query.SearchField);
             return StatusCode(500, "An error occurred while processing your request");
         }
     }

@@ -53,7 +53,7 @@ class FinancialMetricMetadata(BaseModel):
 
 class FinancialMetricDocument(BaseModel):
     cik: str
-    metric: FinancialMetric
+    metric_type: FinancialMetric
     data_points: List[MetricDataPoint]
     last_updated: datetime = Field(default_factory=datetime.utcnow)
     metadata: FinancialMetricMetadata
