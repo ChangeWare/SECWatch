@@ -5,10 +5,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Conventions;
+using MongoDB.Bson.Serialization.Serializers;
 using SECWatch.Application.Features.Authentication.Utils;
 using SECWatch.Application.Features.Communication.Services;
 using SECWatch.Domain.Common;
 using SECWatch.Domain.Features.Authentication.Services;
+using SECWatch.Domain.Features.Companies;
 using SECWatch.Domain.Features.Companies.Repositories;
 using SECWatch.Domain.Features.Users;
 using SECWatch.Infrastructure.Common;
@@ -19,6 +24,7 @@ using SECWatch.Infrastructure.Features.Companies;
 using SECWatch.Infrastructure.Features.Users;
 using SECWatch.Infrastructure.Persistence;
 using SECWatch.Infrastructure.Persistence.Configurations;
+using SECWatch.Infrastructure.Persistence.Settings;
 using StackExchange.Redis;
 
 namespace SECWatch.Infrastructure;
@@ -45,6 +51,13 @@ public static class DependencyInjection
             return ConnectionMultiplexer.Connect(redisConfig.ConnectionString);
         });
         
+        // Add MongoDB Configuration
+        services.Configure<MongoDbSettings>(
+            configuration.GetSection("MongoDb"));
+        var conventionPack = new ConventionPack { new MongoSnakeCaseElementNameConvention() };
+        ConventionRegistry.Register("SnakeCase", conventionPack, _ => true);
+        MongoMappings.RegisterMappings();
+        
         // Add authentication configuration
         services.AddAuthentication(options =>
             {
@@ -66,7 +79,6 @@ public static class DependencyInjection
                         Encoding.UTF8.GetBytes(config["Jwt:Secret"]!))
                 };
             });
-        
         
 
         // Register infrastructure & utility services
