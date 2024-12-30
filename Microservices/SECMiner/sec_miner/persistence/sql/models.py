@@ -36,26 +36,3 @@ class Address(Base):
     AddressType = Column(String(50))
 
     Company = relationship("Company", back_populates="Addresses")
-
-
-class CompanyFinancialMetric(Base):
-    __tablename__ = 'CompanyFinancialMetrics'
-
-    Id = Column(UNIQUEIDENTIFIER, primary_key=True, default=uuid.uuid4)
-
-    FirstReported = Column(DateTime, nullable=False)
-    LastReported = Column(DateTime, nullable=False)
-    LastUpdated = Column(DateTime, nullable=False)
-
-    Metric = Column(String(50), nullable=False)
-
-    LastValue = Column(DECIMAL, nullable=False)
-
-    CompanyCIK = Column(UNIQUEIDENTIFIER, ForeignKey('Companies.CIK'))
-    Company = relationship("Company", back_populates="CompanyFinancialMetrics")
-
-    @validates('Metric')
-    def validate_metric(self, key, value):
-        if not isinstance(value, FinancialMetric):
-            raise ValueError(f"Metric must be a FinancialMetric enum, got {type(value)}")
-        return value.value

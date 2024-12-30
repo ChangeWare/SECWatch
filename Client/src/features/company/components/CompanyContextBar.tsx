@@ -21,10 +21,12 @@ export default function CompanyContextBar(props: CompanyContextBarProps) {
     };
 
     return (
-        <div className=" top-16 z-30 border-b border-gray-800 bg-gray-800/50 backdrop-blur-sm">
+        <div className="top-16 z-30 border-b border-border bg-surface/50 backdrop-blur-sm">
             <div className="flex h-14 items-center justify-between px-4 sm:px-6">
                 <div className="flex items-center">
-                    <span className="text-lg font-semibold text-white">{props.companyName}</span>
+                <span className="text-lg font-semibold text-foreground">
+                    {props.companyName}
+                </span>
                 </div>
 
                 <nav className="flex space-x-12">
@@ -34,13 +36,13 @@ export default function CompanyContextBar(props: CompanyContextBarProps) {
                             to={item.path}
                             className={`relative py-1 text-sm font-medium transition-colors ${
                                 isActive(item.path)
-                                    ? 'text-white'
-                                    : 'text-gray-400 hover:text-white'
+                                    ? 'text-foreground'
+                                    : 'text-foreground/60 hover:text-foreground'
                             }`}
                         >
                             {item.label}
                             {isActive(item.path) && (
-                                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-500 rounded-full" />
+                                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-info rounded-full" />
                             )}
                         </Link>
                     ))}

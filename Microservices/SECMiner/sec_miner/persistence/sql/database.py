@@ -2,7 +2,7 @@ from typing import List
 from sqlalchemy import text, create_engine
 from sqlalchemy.orm import sessionmaker
 from sec_miner.config import Config
-from sec_miner.persistence.sql.models import Company, CompanyFinancialMetric
+from sec_miner.persistence.sql.models import Company
 
 
 def find_missing_ciks(ciks: list[str], batch_size: int = 2500) -> list[str]:
@@ -59,13 +59,3 @@ def get_all_company_ciks():
             companies = session.query(Company).all()
             company_ciks = [c.CIK for c in companies]
             return company_ciks
-
-
-def store_company_financial_metric(metric: CompanyFinancialMetric):
-    engine = create_engine(Config.DATABASE_CONNECTION)
-    session = sessionmaker(bind=engine)
-
-    with session() as session:
-        with session.begin():
-            session.add(metric)
-            session.commit()

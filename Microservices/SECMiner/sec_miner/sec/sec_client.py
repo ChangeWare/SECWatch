@@ -2,8 +2,8 @@ from datetime import datetime
 from typing import List
 from sec_miner.config import Config
 from sec_miner.persistence.financial_metric import FinancialMetric
-from sec_miner.persistence.mongodb.models import MetricDataPoint, FinancialMetricDocument
-from sec_miner.persistence.sql.models import Address, CompanyFinancialMetric
+from sec_miner.persistence.mongodb.models import MetricDataPoint, FinancialMetricDocument, FinancialMetricMetadata
+from sec_miner.persistence.sql.models import Address
 from sec_miner.persistence.sql.models import Company
 from sec_miner.sec.results import CompanyMetricResult
 from sec_miner.utils.logger_factory import get_logger
@@ -77,7 +77,6 @@ def get_company_accounts_payable(cik: str) -> CompanyMetricResult:
     # If we get a 404, the company doesn't have any accounts payable data
     if response.status_code == 404:
         return CompanyMetricResult(
-            financial_metric=None,
             metric_document=None
         )
 
@@ -88,7 +87,10 @@ def get_company_accounts_payable(cik: str) -> CompanyMetricResult:
         logger.info(f"Processing accounts payable for CIK {cik}")
 
         data_points = []
+        currency_types = []
         for currency_type, entry_data in ap_data.items():
+            if currency_type not in currency_types:
+                currency_types.append(currency_type)
             for unit_data in entry_data:
                 data_points.append(
                     MetricDataPoint(
@@ -111,22 +113,28 @@ def get_company_accounts_payable(cik: str) -> CompanyMetricResult:
         metric_document = FinancialMetricDocument(
             cik=cik,
             metric=FinancialMetric.ACCOUNTS_PAYABLE,
-            data_points=data_points
-        )
-
-        accounts_payable_metric = CompanyFinancialMetric(
-            FirstReported=data_points[0].end_date,
-            LastReported=data_points[-1].end_date,
-            LastUpdated=datetime.utcnow(),
-            Metric=FinancialMetric.ACCOUNTS_PAYABLE,
-            LastValue=data_points[-1].value,
-            CompanyCIK=cik
+            data_points=data_points,
+            metadata=FinancialMetricMetadata(
+                first_reported=data_points[0].end_date,
+                last_reported=data_points[-1].end_date,
+                last_updated=datetime.utcnow(),
+                last_value=data_points[-1].value,
+                currency_types=currency_types,
+                total_data_points=len(data_points),
+                date_range={
+                    "start": data_points[0].end_date,
+                    "end": data_points[-1].end_date,
+                    "span": {
+                        "years": (data_points[-1].end_date - data_points[0].end_date).days / 365.25,
+                        "months": (data_points[-1].end_date - data_points[0].end_date).days / 30,
+                    }
+                }
+            )
         )
 
         logger.info("Processed accounts payable for CIK {cik}")
 
         return CompanyMetricResult(
-            financial_metric=accounts_payable_metric,
             metric_document=metric_document
         )
 

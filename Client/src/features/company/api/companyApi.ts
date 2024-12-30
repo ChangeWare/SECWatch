@@ -13,4 +13,8 @@ export const companyApi = {
         const response = await apiClient.get<CompanyDetailsResponse>('/companies/details/' + companyId);
         return response.data;
     },
+
+    getCompanyAccountsPayable: async (companyId: string): Promise<CompanyDetailsResponse> => {
+
+    }
 };

@@ -2,6 +2,15 @@ export interface CompanyDetailsResponse {
     company: CompanyDetails;
 }
 
+export interface CompanyFinancialMetricsResponse {
+    metricType: string;
+    lastValue: number;
+    companyCik: string;
+    lastUpdated: Date;
+    lastReported: Date;
+
+}
+
 export interface CompanyDetails {
     cik: string;
     name: string;
