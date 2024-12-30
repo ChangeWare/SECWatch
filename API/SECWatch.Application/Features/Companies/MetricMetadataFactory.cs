@@ -1,20 +1,20 @@
 using SECWatch.Application.Features.Companies.DTOs;
-using SECWatch.Domain.Features.SEC;
+using SECWatch.Domain.Features.Companies;
 
 namespace SECWatch.Application.Features.Companies;
 
 public interface IMetricMetadataFactory
 {
-    public MetricMetadata Create(FinancialMetric metric);
+    public MetricMetadata Create(FinancialMetricType metric);
 }
 
 public class MetricMetadataFactory : IMetricMetadataFactory
 {
-    public MetricMetadata Create(FinancialMetric metric)
+    public MetricMetadata Create(FinancialMetricType metric)
     {
         return metric switch
         {
-            FinancialMetric.AccountsPayable => new MetricMetadata
+            FinancialMetricType.AccountsPayable => new MetricMetadata
             {
                 Label = "Accounts Payable, Current",
                 Description =
@@ -23,7 +23,7 @@ public class MetricMetadataFactory : IMetricMetadataFactory
                 Category = "Balance Sheet",
                 Subcategory = "Current Liabilities"
             },
-            FinancialMetric.Revenue => new MetricMetadata
+            FinancialMetricType.Revenue => new MetricMetadata
             {
                 Label = "Revenue from Contract with Customer",
                 Description = "The amount of revenue recognized from goods or services sold, " +

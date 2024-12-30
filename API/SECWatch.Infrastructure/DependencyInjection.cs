@@ -7,9 +7,9 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SECWatch.Application.Features.Authentication.Utils;
 using SECWatch.Application.Features.Communication.Services;
-using SECWatch.Application.Features.Companies;
 using SECWatch.Domain.Common;
 using SECWatch.Domain.Features.Authentication.Services;
+using SECWatch.Domain.Features.Companies.Repositories;
 using SECWatch.Domain.Features.Users;
 using SECWatch.Infrastructure.Common;
 using SECWatch.Infrastructure.Features.Authentication;
@@ -75,15 +75,16 @@ public static class DependencyInjection
         services.AddScoped<IEmailService, SendGridEmailService>();
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-        // Add your DbContext
+        // Add DbContexts
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+        services.AddSingleton<IMongoDbContext, MongoDbContext>();
 
         // Register Repositories
         services.AddTransient<ISystemEventRepository, SystemEventRepository>();
         services.AddTransient<IUserRepository, UserRepository>();
-        services.AddTransient<ISecCompanyRedisRepository, SecCompanyRedisRepository>();
         services.AddTransient<ICompanyRepository, CompanyRepository>();
+        services.AddTransient<ICompanyFinancialMetricsRepository, CompanyFinancialMetricsRepository>();
 
         return services;
     }

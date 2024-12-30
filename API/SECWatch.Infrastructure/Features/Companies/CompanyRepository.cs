@@ -1,8 +1,8 @@
 using FluentResults;
-using SECWatch.Application.Features.Companies;
-using SECWatch.Application.Features.Companies.DTOs;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using SECWatch.Domain.Features.Companies.Queries;
+using SECWatch.Domain.Features.Companies.Repositories;
 using SECWatch.Domain.Features.SEC;
 using SECWatch.Infrastructure.Persistence;
 
@@ -12,13 +12,13 @@ public class CompanyRepository(
     ApplicationDbContext context,
     IMapper mapper) : ICompanyRepository
 {
-    public async Task<Result<IEnumerable<Company>>> SearchCompaniesAsync(CompanySearchRequest req)
+    public async Task<Result<IEnumerable<Company>>> SearchCompaniesAsync(CompanySearchQuery query)
     {
         try 
         {
             var companies = await context.Companies
-                .Where(c => c.Name.Contains(req.SearchTerm) || 
-                            c.Ticker.Contains(req.SearchTerm))
+                .Where(c => c.Name.Contains(query.SearchTerm) || 
+                            c.Ticker.Contains(query.SearchTerm))
                 .ToListAsync();
                 
             return Result.Ok(companies.AsEnumerable());
@@ -30,7 +30,7 @@ public class CompanyRepository(
         }
     }
 
-    public async Task<Result<Company?>> GetCompany(string cik)
+    public async Task<Result<Company?>> GetCompanyAsync(string cik)
     {
         try
         {

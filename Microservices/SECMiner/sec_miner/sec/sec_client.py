@@ -112,7 +112,7 @@ def get_company_accounts_payable(cik: str) -> CompanyMetricResult:
 
         metric_document = FinancialMetricDocument(
             cik=cik,
-            metric=FinancialMetric.ACCOUNTS_PAYABLE,
+            metric_type=FinancialMetric.ACCOUNTS_PAYABLE,
             data_points=data_points,
             metadata=FinancialMetricMetadata(
                 first_reported=data_points[0].end_date,
