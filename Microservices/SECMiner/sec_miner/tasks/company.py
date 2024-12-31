@@ -3,7 +3,7 @@ from typing import List, Dict
 from sec_miner.celery_app import celery_app
 from sec_miner.config import Config
 from sec_miner.persistence.mongodb.database import upsert_metric_doc
-from sec_miner.persistence.sql.database import find_missing_ciks, upsert_companies, store_company_financial_metric, \
+from sec_miner.persistence.sql.database import find_missing_ciks, upsert_companies, \
     get_all_company_ciks
 from sec_miner.utils.logger_factory import get_logger
 import sec_miner.sec.sec_client as sec_client
@@ -115,6 +115,5 @@ def process_companies_financial_metrics(company_ciks: List[str]):
         financial_metrics_results = sec_client.get_company_financial_metrics(cik)
 
         for result in financial_metrics_results:
-            if (result.metric_document is not None) and (result.financial_metric is not None):
+            if result.metric_document is not None:
                 upsert_metric_doc(result.metric_document)
-                store_company_financial_metric(result.financial_metric)

@@ -1,7 +1,7 @@
 using FluentResults;
 using SECWatch.Application.Features.Companies.DTOs;
 using SECWatch.Domain.Features.Companies;
-using SECWatch.Domain.Features.SEC;
+using SECWatch.Domain.Features.Companies.Models;
 
 namespace SECWatch.Application.Features.Companies;
 
@@ -11,5 +11,5 @@ public interface ICompanyService
     
     Task<Result<CompanyDetails>> GetCompanyDetailsAsync(string ticker);
     
-    Task<Result<CompanyFinancialMetricByPeriod>> GetCompanyFinancialMetricByPeriodAsync(string cik, FinancialMetricType metric, FinancialMetricPeriodType period);
+    Task<Result<CompanyFinancialMetricDto>> GetCompanyFinancialMetricAsync(string cik, FinancialMetricType metric);
 }

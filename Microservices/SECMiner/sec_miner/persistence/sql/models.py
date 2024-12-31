@@ -3,7 +3,6 @@ from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Enum, DECI
 from sqlalchemy.dialects.mssql import UNIQUEIDENTIFIER
 from sqlalchemy.orm import relationship, validates
 from sqlalchemy.ext.declarative import declarative_base
-from sec_miner.persistence.financial_metric import FinancialMetric
 
 Base = declarative_base()
 
@@ -18,7 +17,6 @@ class Company(Base):
     SIC = Column(String(4))
     LastUpdated = Column(DateTime)
 
-    CompanyFinancialMetrics = relationship("CompanyFinancialMetric", back_populates="Company")
     Addresses = relationship("Address", back_populates="Company")
 
 

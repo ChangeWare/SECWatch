@@ -1,7 +1,11 @@
-export default function LoadingScreen() {
+import LoadingIndicator from "@common/components/LoadingIndicator.tsx";
+
+function LoadingScreen() {
     return (
-        <div className="flex items-center justify-center h-screen bg-[#023047]">
-            <div className="text-white text-3xl font-bold">Loading...</div>
+        <div className="min-h-screen bg-background">
+            <LoadingIndicator/>
         </div>
     );
 }
+
+export default LoadingScreen;

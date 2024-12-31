@@ -33,12 +33,12 @@ export function HomeNav() {
               {isAuthenticated ? (
                   <>
                     <Button variant="primary" to={paths.dashboard.default}>Dashboard</Button>
-                    <Button variant="secondary" to={paths.auth.logout}>Logout</Button>
+                    <Button variant="info" to={paths.auth.logout}>Logout</Button>
                   </>
               ) : (
                   <>
                     <Button variant="primary" to={paths.auth.register}>Get Started</Button>
-                    <Button variant="secondary" to={paths.auth.login}>Login</Button>
+                    <Button variant="info" to={paths.auth.login}>Login</Button>
                   </>
               )}
             </div>

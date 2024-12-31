@@ -102,7 +102,7 @@ const StyleGuide = () => {
                         <Button variant="primary">
                             Primary Action
                         </Button>
-                        <Button variant="secondary">
+                        <Button variant="info">
                             Secondary Action
                         </Button>
                         <Button variant="success">

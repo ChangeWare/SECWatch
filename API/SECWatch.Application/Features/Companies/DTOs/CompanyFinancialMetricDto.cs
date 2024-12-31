@@ -1,8 +1,9 @@
 using SECWatch.Domain.Features.Companies;
+using SECWatch.Domain.Features.Companies.Models;
 
 namespace SECWatch.Application.Features.Companies.DTOs;
 
-public record CompanyFinancialMetricByPeriod
+public record CompanyFinancialMetricDto
 {
     public string Cik { get; init; }
     
@@ -15,6 +16,4 @@ public record CompanyFinancialMetricByPeriod
     public DateTime LastReported { get; init; }
     
     public IReadOnlyList<MetricDataPoint> DataPoints { get; init; }
-    
-    public FinancialMetricPeriodType PeriodType { get; init; }
 }

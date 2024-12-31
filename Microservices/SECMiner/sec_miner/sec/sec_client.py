@@ -100,10 +100,10 @@ def get_company_accounts_payable(cik: str) -> CompanyMetricResult:
                         fiscal_period=unit_data["fp"],
                         form_type=unit_data["form"],
                         filing_date=datetime.strptime(unit_data["filed"], "%Y-%m-%d"),
-                        frame=unit_data.get("frame"),
+                        frame=unit_data.get("frame") or None,
                         currency_type=currency_type,
                         metadata={
-                            "account": unit_data.get("accn")
+                            "accn": unit_data.get("accn")
                         }
                     )
                 )

@@ -2,6 +2,7 @@ using FluentResults;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using SECWatch.Domain.Features.Companies;
+using SECWatch.Domain.Features.Companies.Models;
 using SECWatch.Domain.Features.Companies.Repositories;
 using SECWatch.Infrastructure.Persistence;
 
@@ -30,7 +31,9 @@ public class CompanyFinancialMetricsRepository(
         }
     }
 
-    public async Task<Result<CompanyFinancialMetric>> GetCompanyFinancialMetricAsync(string cik, FinancialMetricType metricType, FinancialMetricPeriodType period)
+    public async Task<Result<CompanyFinancialMetric>> GetCompanyFinancialMetricAsync(
+        string cik, 
+        FinancialMetricType metricType)
     {
         try
         {
@@ -42,37 +45,19 @@ public class CompanyFinancialMetricsRepository(
             var metric = await mongoDbContext
                 .GetCollection<CompanyFinancialMetric>("financial_metrics")
                 .Find(filter).FirstOrDefaultAsync();
-            
+
             if (metric == null)
                 return Result.Fail<CompanyFinancialMetric>(
                     $"No financial metric found for CIK: {cik}, Metric: {metric}");
-
-            // Filter data points based on period type
-            metric.DataPoints = metric.DataPoints
-                .Where(dp => IsPeriodMatch(dp, period))
-                .ToList();
 
             return Result.Ok(metric);
         }
         catch (Exception ex)
         {
             logger.LogError(ex, 
-                "Error retrieving financial metric for CIK: {Cik}, Metric: {Metric}", 
+                "Error retrieving financial metric for CIK: {Cik}, Metric: {Metric}",
                 cik, metricType.ToString());
-            return Result.Fail(
-                "Failed to retrieve financial metric");
+            return Result.Fail("Failed to retrieve financial metric");
         }
-    }
-    
-    private bool IsPeriodMatch(MetricDataPoint dataPoint, FinancialMetricPeriodType period)
-    {
-        return period switch
-        {
-            FinancialMetricPeriodType.Yearly => 
-                dataPoint.FiscalPeriod?.ToUpper() == "FY",
-            FinancialMetricPeriodType.Quarterly => 
-                dataPoint.FiscalPeriod?.StartsWith("Q", StringComparison.OrdinalIgnoreCase) ?? false,
-            _ => true
-        };
     }
 }

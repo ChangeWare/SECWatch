@@ -1,5 +1,10 @@
 import { apiClient } from "@common/api/apiClient";
-import {CompanyDetailsResponse, CompanyFinancialMetricResponse} from "@features/company/types.ts";
+import {
+    CompanyDetailsResponse,
+    CompanyFinancialMetricResponse,
+    MetricType,
+    PeriodType
+} from "@features/company/types.ts";
 
 
 /**
@@ -15,7 +20,7 @@ export const companyApi = {
     },
 
     getCompanyAccountsPayableByFY: async (companyId: string): Promise<CompanyFinancialMetricResponse> => {
-        const response = await apiClient.get<CompanyFinancialMetricResponse>(`/financials/companies/${companyId}/accounts-payable/fiscal-year`);
+        const response = await apiClient.get<CompanyFinancialMetricResponse>(`/financials/companies/${companyId}/metrics/${MetricType.AccountsPayable}`);
         return response.data;
     }
 };

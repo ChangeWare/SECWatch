@@ -1,5 +1,5 @@
 using FluentResults;
-using SECWatch.Domain.Features.SEC;
+using SECWatch.Domain.Features.Companies.Models;
 
 namespace SECWatch.Domain.Features.Companies.Repositories;
 
@@ -7,5 +7,5 @@ public interface ICompanyFinancialMetricsRepository
 {
     Task<Result<IEnumerable<CompanyFinancialMetric>>> GetCompanyFinancialMetricsAsync(string cik);
     
-    Task<Result<CompanyFinancialMetric>> GetCompanyFinancialMetricAsync(string cik, FinancialMetricType metric, FinancialMetricPeriodType period);
+    Task<Result<CompanyFinancialMetric>> GetCompanyFinancialMetricAsync(string cik, FinancialMetricType metric);
 }

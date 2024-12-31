@@ -43,22 +43,19 @@ public class CompanyService(
         return Result.Ok(companyDetails);
     }
 
-    public async Task<Result<CompanyFinancialMetricByPeriod>> GetCompanyFinancialMetricByPeriodAsync(string cik, FinancialMetricType metricType, FinancialMetricPeriodType period)
+    public async Task<Result<CompanyFinancialMetricDto>> GetCompanyFinancialMetricAsync(string cik, FinancialMetricType metricType)
     {
-        var result = await companyFinancialMetricsRepository.GetCompanyFinancialMetricAsync(cik, metricType, period);
+        var result = await companyFinancialMetricsRepository.GetCompanyFinancialMetricAsync(cik, metricType);
         
         if (result.IsFailed)
         {
-            return result.ToResult<CompanyFinancialMetricByPeriod>();
+            return result.ToResult<CompanyFinancialMetricDto>();
         }
-
-        var context = new CompanyFinancialMetricMappingContext 
-        { 
-            Metric = result.Value,
-            PeriodType = period 
-        };
-        var companyFinancialMetric = mapper.Map<CompanyFinancialMetricByPeriod>(context);
         
-        return Result.Ok(companyFinancialMetric);
+        var metric = result.Value;
+        
+        var metroDto = mapper.Map<CompanyFinancialMetricDto>(metric);
+        
+        return Result.Ok(metroDto);
     }
 }

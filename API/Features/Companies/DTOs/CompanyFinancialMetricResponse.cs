@@ -4,5 +4,5 @@ namespace SECWatch.API.Features.Companies.DTOs;
 
 public record CompanyFinancialMetricResponse
 {
-    public required CompanyFinancialMetricByPeriod Metric { get; init;  }
+    public required CompanyFinancialMetricDto Metric { get; init;  }
 }

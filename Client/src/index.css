@@ -7,6 +7,40 @@ html, body, #root {
     background-color: #1a1f35; /* New navy background */
 }
 
+/* FlyingDotLoader.css */
+.loader-container {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin: auto;
+}
+
+.flying-dot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    background-color: #ff4500; /* Bright orange color */
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px rgba(255, 69, 0, 0.5);
+    transition: transform 0.1s ease-in-out;
+    animation: trail 2s linear infinite;
+}
+
+@keyframes trail {
+    0% {
+        opacity: 1;
+        box-shadow: 0 0 10px rgba(255, 69, 0, 0.5);
+    }
+    100% {
+        opacity: 0;
+        box-shadow: 0 0 10px rgba(255, 69, 0, 0);
+    }
+}
+
+
 @layer base {
     :root {
         /* Base Theme */
@@ -25,6 +59,7 @@ html, body, #root {
         --metrics-strong: 35 100% 49%;  /* #fb8500 - Deep orange */
         --metrics-growth: 41 100% 51%;  /* #ffb703 - Warm orange */
         --metrics-stable: 160 84% 39%;  /* #10b981 - Emerald */
+        --metrics-neutral: 0 0% 98%; /*  White */
         --metrics-decline: 350 89% 60%; /* #f43f5e - Coral */
 
         --primary-foreground: 0 0% 100%;

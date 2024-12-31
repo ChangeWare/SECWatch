@@ -1,4 +1,4 @@
-namespace SECWatch.Domain.Features.SEC;
+namespace SECWatch.Domain.Features.Companies.Models;
 
 public record Address
 {

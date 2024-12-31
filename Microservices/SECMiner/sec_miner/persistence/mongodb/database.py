@@ -28,7 +28,7 @@ def upsert_metric_doc(metric_doc: FinancialMetricDocument) -> None:
         db = get_db()
         collection = db.financial_metrics
         collection.update_one(
-            {"cik": metric_doc.cik, "metric": metric_doc.metric},
+            {"cik": metric_doc.cik, "metric_type": metric_doc.metric_type},
             {"$set": metric_doc.dict(by_alias=True)},
             upsert=True
         )

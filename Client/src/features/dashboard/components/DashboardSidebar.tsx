@@ -8,7 +8,7 @@ import {
     LineChart,
     Settings,
 } from "lucide-react";
-import {useLocation} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 import {dashboardPaths} from "@features/dashboard";
 
 interface DashboardSidebarProps {
@@ -66,23 +66,23 @@ function SideNavMenuItem(props: SideNavMenuItemProps) {
                             {props.item.items?.map((subItem, subIndex) => {
                                 const subItemIsActive = subItem.href && location.pathname.includes(subItem.href);
                                 return (
-                                    <a
+                                    <Link
+                                        to={subItem.href!}
                                         key={subIndex}
-                                        href={subItem.href}
                                         className={`block p-2 rounded-lg text-gray-400
                                          hover:text-white hover:bg-white/10 transition
                                          ${subItemIsActive ? 'bg-white/10 text-white' : ''}`}
                                     >
                                         {subItem.label}
-                                    </a>
+                                    </Link>
                                 );
                             })}
                         </div>
                     )}
                 </div>
             ) : (
-                <a href={props.item.href}
-                   className={`w-full flex items-center p-2 rounded-lg text-gray-300 
+                <Link to={props.item.href!}
+                      className={`w-full flex items-center p-2 rounded-lg text-gray-300 
                             hover:text-white hover:bg-white/10 transition 
                             ${isActive ? 'bg-white/10 text-white' : ''}`}
                 >
@@ -90,7 +90,7 @@ function SideNavMenuItem(props: SideNavMenuItemProps) {
                         {props.item.icon && <props.item.icon className="h-5 w-5 mr-3"/>}
                         {props.sidebarOpen && <span>{props.item.label}</span>}
                     </div>
-                </a>
+                </Link>
             )}
         </div>
     );

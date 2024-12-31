@@ -1,9 +1,9 @@
 using FluentResults;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using SECWatch.Domain.Features.Companies.Models;
 using SECWatch.Domain.Features.Companies.Queries;
 using SECWatch.Domain.Features.Companies.Repositories;
-using SECWatch.Domain.Features.SEC;
 using SECWatch.Infrastructure.Persistence;
 
 namespace SECWatch.Infrastructure.Features.Companies;
