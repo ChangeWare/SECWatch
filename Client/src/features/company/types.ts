@@ -17,9 +17,19 @@ export interface MetricDataPoint {
     currencyType: string;
 }
 
+export enum MetricType {
+    AccountsPayable = 0,
+}
+
+
+export enum PeriodType {
+    Yearly = 0,
+    Quarterly = 1,
+}
+
 export interface CompanyFinancialMetric {
     cik: string;
-    metricType: string;
+    metricType: number;
     lastValue: number;
     lastUpdated: Date;
     lastReported: Date;

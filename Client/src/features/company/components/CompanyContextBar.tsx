@@ -2,7 +2,7 @@ import {ChevronLeft} from "lucide-react";
 import {Link} from "react-router-dom";
 
 interface CompanyContextBarProps {
-    companyName: string;
+    companyName?: string;
 }
 
 export default function CompanyContextBar(props: CompanyContextBarProps) {

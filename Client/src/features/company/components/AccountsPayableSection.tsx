@@ -1,32 +1,37 @@
 import React, {useState, useEffect, useMemo} from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import {Card, CardContent} from "@common/components/Card.tsx";
-import ChartTooltip from "@common/components/ChartTooltip.tsx";
-import useCompany from "@features/company/hooks/useCompany.tsx";
-import {MetricDataPoint} from "@features/company/types.ts";
-import LoadingScreen from "@common/views/LoadingScreen.tsx";
+import {CompanyFinancialMetric, MetricDataPoint, MetricType} from "@features/company/types.ts";
+import LoadingScreen from "@common/components/LoadingIndicator.tsx";
+import MetricDataTableModal from "@features/company/components/MetricDataTableModal.tsx";
+import FinancialMetricsChart from "@features/company/components/FinancialMetricsChart.tsx";
+
+interface AccountsPayableContentProps {
+    accountsPayableMetric: CompanyFinancialMetric;
+}
 
 
-function AccountsPayableContent({data}: {data: MetricDataPoint[]}) {
+function AccountsPayableContent(props: AccountsPayableContentProps) {
+
+    const { dataPoints: data } = props.accountsPayableMetric;
 
     const change = useMemo(() => {
         const calculateChange = (data: MetricDataPoint[]) => {
             if (data.length < 2) return { value: 0, percentage: 0 };
-            const currentValue = data[data.length - 1].value;
-            const previousValue = data[data.length - 2].value;
+            const currentValue = data[0].value;
+            const previousValue = data[1].value;
             const change = currentValue - previousValue;
             const percentage = (change / previousValue) * 100;
             return { value: change, percentage };
         };
 
-        if (data == null) return { value: 0, percentage: 0 };
+        if (data?.length <= 0) return { value: 0, percentage: 0 };
 
-        return calculateChange(data);
+        return calculateChange(props.accountsPayableMetric.dataPoints);
 
-    }, [data]);
+    }, [props.accountsPayableMetric]);
 
-    const formatCurrency = (value: number) => {
+    const formatCurrency = (value: number): string => {
         if (Math.abs(value) >= 1_000_000_000) {
             return new Intl.NumberFormat('en-US', {
                 style: 'currency',
@@ -51,12 +56,15 @@ function AccountsPayableContent({data}: {data: MetricDataPoint[]}) {
         }).format(value);
     };
 
-    return (
+    return (data?.length ?? 0) > 0 ? (
         <>
             {/* Section Header */}
-            <div>
-                <h2 className="text-lg font-bold text-foreground">Accounts Payable</h2>
-                <p className="text-sm text-secondary">Historical accounts payable data and trends</p>
+            <div className="flex justify-between items-center">
+                <div>
+                    <h2 className="text-lg font-bold text-foreground">Accounts Payable</h2>
+                    <p className="text-sm text-secondary">Historical accounts payable data and trends</p>
+                </div>
+                <MetricDataTableModal metric={props.accountsPayableMetric} formatValue={formatCurrency}/>
             </div>
 
             {/* Key Metrics */}
@@ -65,7 +73,7 @@ function AccountsPayableContent({data}: {data: MetricDataPoint[]}) {
                     <CardContent className="pt-6">
                         <div className="text-sm text-primary-light">Current Amount</div>
                         <div className="text-2xl font-bold mt-2 text-white">
-                            {data.length > 0 ? formatCurrency(data[data.length - 1].value) : 'N/A'}
+                            {formatCurrency(props.accountsPayableMetric.lastValue)}
                         </div>
                         <div className="flex items-center mt-2">
                             {change.percentage > 0 ? (
@@ -73,102 +81,57 @@ function AccountsPayableContent({data}: {data: MetricDataPoint[]}) {
                             ) : (
                                 <TrendingDown className="text-destructive mr-1" size={16} />
                             )}
-                            <span className={`text-sm font-medium mr-2 ${
-                                change.percentage > 0 ? "text-primary-light" : "text-destructive"
+                            <span className={`text-sm font-medium mr-1 ${
+                                change.percentage > 0 ? "text-metrics-stable" : "text-metrics-decline"
                             }`}>
                   {change.percentage.toFixed(1)}%
-                </span>
-                            <span className="text-sm text-muted-foreground">
-                  vs previous quarter
-                </span>
+                </span><span className="text-sm text-secondary">vs previous year</span>
                         </div>
                     </CardContent>
                 </Card>
 
                 <Card className="bg-white/10">
                     <CardContent className="pt-6">
-                        <div className="text-sm text-primary-light">Quarter-over-Quarter Change</div>
+                        <div className="text-sm text-primary-light">Year-over-Year Change</div>
                         <div className="text-2xl font-bold mt-2 text-foreground">
                             {formatCurrency(Math.abs(change.value))}
                         </div>
                         <div className="text-sm text-muted-foreground mt-2">
-                            {change.value > 0 ? 'Increase' : 'Decrease'} from previous quarter
+                            {change.value > 0 ? 'Increase' : 'Decrease'} from previous year
                         </div>
                     </CardContent>
                 </Card>
             </div>
 
             {/* Chart */}
-            <Card className="bg-card/10">
-                <CardContent className="pt-6">
-                    <div className="h-64">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <LineChart
-                                data={data}
-                                margin={{ left: 15, right: 10, top: 5, bottom: 15 }}  // Smaller margins
-                            >
-                                <CartesianGrid
-                                    strokeDasharray="3 3"
-                                    className="stroke-border/30"
-                                />
-                                <XAxis
-                                    dataKey="date"
-                                    tick={{
-                                        fill: 'hsl(var(--foreground))',
-                                        dy: 10
-                                    }}
-                                    style={{ opacity: 0.7 }}
-                                    tickLine={{ stroke: 'hsl(var(--border))' }}
-                                    axisLine={{ stroke: 'hsl(var(--border))' }}
-                                />
-                                <YAxis
-                                    tickFormatter={formatCurrency}
-                                    tick={{
-                                        fill: 'hsl(var(--foreground))',
-                                        dx: -5,
-                                    }}
-                                    style={{ opacity: 0.7 }}
-                                    tickLine={{ stroke: 'hsl(var(--border))' }}
-                                    axisLine={{ stroke: 'hsl(var(--border))' }}
-                                />
-                                <Tooltip content={<ChartTooltip />} />
-                                <Line
-                                    type="monotone"
-                                    dataKey="value"
-                                    className="stroke-info"
-                                    strokeWidth={2}
-                                    dot={{
-                                        className: "fill-info stroke-info",
-                                        strokeWidth: 2
-                                    }}
-                                />
-                            </LineChart>
-                        </ResponsiveContainer>
-                    </div>
-                </CardContent>
-            </Card>
+            <FinancialMetricsChart
+                data={data}
+                metricType={MetricType.AccountsPayable}
+                valueFormatter={formatCurrency}
+            />
 
             <div className="text-sm text-muted-foreground">
-                Last updated: {data.length > 0 ? data[data.length - 1].filingDate.toDateString() : 'N/A'}
+                Last updated: {props.accountsPayableMetric.lastUpdated?.toLocaleDateString() ?? 'N/A'}
             </div>
         </>
-    );
+    ) : null;
 }
 
-const AccountsPayableSection = () => {
-    const { accountsPayableMetric } = useCompany();
+interface AccountsPayableSectionProps {
+    accountsPayableMetric?: CompanyFinancialMetric;
+}
+
+function AccountsPayableSection(props: AccountsPayableSectionProps) {
 
     return (
         <Card>
             <CardContent className="p-6 space-y-6">
-                {accountsPayableMetric != null ? (
-                    <AccountsPayableContent data={accountsPayableMetric.dataPoints} />
-                ) : (
-                    <LoadingScreen />
-                )}
+                <LoadingScreen isLoading={props.accountsPayableMetric == null}>
+                    <AccountsPayableContent accountsPayableMetric={props.accountsPayableMetric!} />
+                </LoadingScreen>
             </CardContent>
         </Card>
     );
-};
+}
 
 export default AccountsPayableSection;

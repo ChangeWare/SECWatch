@@ -26,8 +26,11 @@ class PyObjectId(ObjectId):
 class MetricDataPoint(BaseModel):
     end_date: datetime
     value: float
+
     fiscal_year: Optional[int] = None
+
     fiscal_period: Optional[str] = None
+
     form_type: str
     filing_date: datetime
     frame: Optional[str] = None
@@ -55,7 +58,6 @@ class FinancialMetricDocument(BaseModel):
     cik: str
     metric_type: FinancialMetric
     data_points: List[MetricDataPoint]
-    last_updated: datetime = Field(default_factory=datetime.utcnow)
     metadata: FinancialMetricMetadata
 
     class Config:

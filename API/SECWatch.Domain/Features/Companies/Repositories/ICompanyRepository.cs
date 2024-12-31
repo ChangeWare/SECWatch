@@ -1,6 +1,6 @@
 using FluentResults;
+using SECWatch.Domain.Features.Companies.Models;
 using SECWatch.Domain.Features.Companies.Queries;
-using SECWatch.Domain.Features.SEC;
 
 namespace SECWatch.Domain.Features.Companies.Repositories;
 

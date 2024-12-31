@@ -63,19 +63,6 @@ export default {
 	},
 	plugins: [
 		import('@tailwindcss/forms'),
-		plugin(({ addComponents }) => {
-			addComponents({
-				'.glass-card': {
-					'@apply bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl transition': {},
-					'&:hover': {
-						'@apply border-success/50 transform scale-105': {},
-					},
-				},
-				'.glass-container': {
-					'@apply bg-white/10 backdrop-blur-sm border border-white/10 rounded-2xl': {},
-				},
-			});
-		}),
 		import("tailwindcss-animate")
 	],
 }

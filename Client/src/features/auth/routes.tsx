@@ -2,13 +2,13 @@ import { Suspense } from "react";
 import { RouteObject } from "react-router-dom";
 import Login from "./views/Login";
 import Register from "./views/Register";
-import LoadingScreen from "@common/views/LoadingScreen";
 import ForgotPassword from "./views/ForgotPassword";
 import ResetPassword from "./views/ResetPassword";
 import VerifyEmail from "./views/VerifyEmail";
 import { authPaths } from "./paths";
 import RegistrationSuccessful from "@features/auth/views/RegistrationSuccessful.tsx";
 import Logout from "@features/auth/views/Logout.tsx";
+import LoadingScreen from "@common/views/LoadingScreen.tsx";
 
 export const authRoutes: RouteObject[] = [
     {

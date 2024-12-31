@@ -1,7 +1,7 @@
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using SECWatch.Domain.Common;
-using SECWatch.Domain.Features.SEC;
+using SECWatch.Domain.Features.Companies.Models;
 using SECWatch.Domain.Features.Users;
 
 namespace SECWatch.Infrastructure.Persistence;

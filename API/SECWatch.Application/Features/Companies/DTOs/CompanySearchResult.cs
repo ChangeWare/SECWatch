@@ -1,4 +1,4 @@
-using SECWatch.Domain.Features.SEC;
+using SECWatch.Domain.Features.Companies.Models;
 
 namespace SECWatch.Application.Features.Companies.DTOs;
 

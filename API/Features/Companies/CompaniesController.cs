@@ -3,7 +3,6 @@ using SECWatch.API.Features.Companies.DTOs;
 using SECWatch.Application.Features.Companies;
 using SECWatch.Application.Features.Companies.DTOs;
 using SECWatch.Domain.Features.Companies.Queries;
-using SECWatch.Domain.Features.SEC;
 
 namespace SECWatch.API.Features.Companies;
 

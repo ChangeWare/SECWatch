@@ -1,4 +1,4 @@
-namespace SECWatch.Domain.Features.Companies;
+namespace SECWatch.Domain.Features.Companies.Models;
 
 public class MetricDataPoint
 {
@@ -35,4 +35,6 @@ public class CompanyFinancialMetric
     public List<MetricDataPoint> DataPoints { get; set; }
 
     public FinancialMetricMetadata Metadata { get; set; }
+    
+    public bool OnlyContainsYearEndData() => DataPoints.All(x => x.FiscalPeriod == FinancialPeriod.FY);
 }

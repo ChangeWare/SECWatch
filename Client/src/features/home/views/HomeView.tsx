@@ -70,7 +70,7 @@ function HeroSection(props: HeroSectionProps) {
                         <Button className="px-8 py-3 text-lg flex items-center" to={paths.auth.register}>
                             {props.isAuthenticated ? "Go to Dashboard" : "Start Now" } <ArrowRight className="ml-2"/>
                         </Button>
-                        <Button variant="secondary" className="px-8 py-3 text-lg ml-4" to={homePaths.about}>
+                        <Button variant="info" className="px-8 py-3 text-lg ml-4" to={homePaths.about}>
                             Learn More
                         </Button>
                     </div>

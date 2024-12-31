@@ -1,14 +1,22 @@
-import React, {ChangeEvent, useEffect, useState} from "react";
+import React, {ChangeEvent, useEffect, useRef, useState} from "react";
 import {Search} from "lucide-react";
 import {useCompanySearch} from "@features/companySearch/hooks/useCompanySearch.tsx";
-import {CompanyResult} from "@features/companySearch/types.ts";
+import {CompanyResult, SearchResponse} from "@features/companySearch/types.ts";
 import {cn} from "@common/lib/utils.ts";
+import { useNavigate } from "react-router-dom";
 
-export default function CompanySearch() {
+interface CompanySearchBarProps {
+    onResultSelect: (result: CompanyResult) => void;
+    onQueryComplete: (response: SearchResponse) => void;
+}
+
+export default function CompanySearchBar(props: CompanySearchBarProps) {
 
     const [ debouncedQuery, setDebouncedQuery ] = useState("");
-    const { query, setQuery, response, isLoading } = useCompanySearch();
+    const { setQuery, response, isLoading } = useCompanySearch();
     const [isOpen, setIsOpen] = useState(false); // Controls dropdown visibility
+
+    const searchBarRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const handler = setTimeout(() => {
@@ -20,6 +28,13 @@ export default function CompanySearch() {
         };
     }, [debouncedQuery]);
 
+    useEffect(() => {
+        console.log(response);
+        if (response?.companies.length > 0) {
+            props.onQueryComplete(response);
+        }
+    }, [response]);
+
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setDebouncedQuery(value);
@@ -29,16 +44,38 @@ export default function CompanySearch() {
     const handleSelectResult = (result: CompanyResult) => {
         setDebouncedQuery(result.name);
         setIsOpen(false);
+
+        props.onResultSelect(result);
     };
 
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            setIsOpen(false);
+        }
+    };
+
+    const handleClickOutside = (event: MouseEvent) => {
+        if (searchBarRef.current && !searchBarRef.current.contains(event.target as Node)) {
+            setIsOpen(false);
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
     return (
-        <div className="relative">
+        <div className="relative" ref={searchBarRef}>
             {/* Search Input */}
             <div className="relative">
                 <input
                     type="text"
                     value={debouncedQuery}
                     onChange={handleInputChange}
+                    onKeyDown={handleKeyDown}
                     placeholder="Search companies..."
                     className="w-full px-4 py-2 bg-white/10 backdrop-blur-sm rounded-lg
                border border-white/10

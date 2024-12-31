@@ -1,6 +1,6 @@
 using SECWatch.Domain.Common;
 
-namespace SECWatch.Domain.Features.SEC;
+namespace SECWatch.Domain.Features.Companies.Models;
 
 public class Company : AggregateRoot
 {

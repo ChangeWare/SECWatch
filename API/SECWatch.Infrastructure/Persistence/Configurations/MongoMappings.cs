@@ -2,6 +2,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using SECWatch.Domain.Features.Companies;
+using SECWatch.Domain.Features.Companies.Models;
 
 namespace SECWatch.Infrastructure.Persistence.Configurations;
 
