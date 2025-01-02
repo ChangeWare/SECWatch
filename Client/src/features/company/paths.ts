@@ -3,11 +3,11 @@ export const companyPaths = {
     search: '/companies/search',
     dashboard: {
         default: '/companies/:companyId',
-        overview: '/companies/:companyId/overview',
-        filings: '/companies/:companyId/filings',
-        analytics: '/companies/:companyId/analytics',
-        alerts: '/companies/:companyId/alerts',
-        settings: '/companies/:companyId/settings',
+        overview: 'overview',         // Changed to relative
+        filings: 'filings',          // Changed to relative
+        analytics: 'analytics',       // Changed to relative
+        alerts: 'alerts',            // Changed to relative
+        settings: 'settings',        // Changed to relative
     }
 }
 

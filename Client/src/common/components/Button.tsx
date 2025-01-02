@@ -30,7 +30,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({
         foreground: "bg-foreground/5 hover:bg-foreground/10 border-foreground/10",
         info: "bg-info text-info-foreground hover:opacity-90",
         success: "bg-success text-success-foreground hover:opacity-90",
-        danger: "bg-error text-error-foreground hover:opacity-90"
+        danger: "bg-error text-error-foreground hover:opacity-90",
     };
 
     const sizes: Record<ButtonSize, string> = {

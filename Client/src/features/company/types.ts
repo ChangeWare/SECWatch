@@ -17,6 +17,25 @@ export interface MetricDataPoint {
     currencyType: string;
 }
 
+export interface ProcessedDataPoint {
+    date: Date;
+    fiscalYear: number;
+    fiscalPeriod: string;
+    fiscalLabel: string;
+    value: number;
+    hasDiscrepancy: boolean;
+    hasMultipleFilings: boolean;
+    currencyType: string;
+    details: {
+        underlyingData: MetricDataPoint[];
+        valueRange?: {
+            min: number;
+            max: number;
+            diff: number;
+        };
+    };
+}
+
 export enum MetricType {
     AccountsPayable = 0,
 }

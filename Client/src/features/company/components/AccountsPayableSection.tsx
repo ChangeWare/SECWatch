@@ -1,10 +1,11 @@
 import React, {useState, useEffect, useMemo} from 'react';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import {Card, CardContent} from "@common/components/Card.tsx";
-import {CompanyFinancialMetric, MetricDataPoint, MetricType} from "@features/company/types.ts";
+import {CompanyFinancialMetric, MetricDataPoint, MetricType, ProcessedDataPoint} from "@features/company/types.ts";
 import LoadingScreen from "@common/components/LoadingIndicator.tsx";
 import MetricDataTableModal from "@features/company/components/MetricDataTableModal.tsx";
 import FinancialMetricsChart from "@features/company/components/FinancialMetricsChart.tsx";
+import {formatCurrency, getChangePercentClassName, processData} from "@features/company/utils.tsx";
 
 interface AccountsPayableContentProps {
     accountsPayableMetric: CompanyFinancialMetric;
@@ -15,11 +16,21 @@ function AccountsPayableContent(props: AccountsPayableContentProps) {
 
     const { dataPoints: data } = props.accountsPayableMetric;
 
-    const change = useMemo(() => {
+    const processedData = useMemo<ProcessedDataPoint[]>(() => {
+        return processData(data)
+    }, [data]);
+
+    const currentPeriodYoYChange = useMemo(() => {
+
         const calculateChange = (data: MetricDataPoint[]) => {
             if (data.length < 2) return { value: 0, percentage: 0 };
-            const currentValue = data[0].value;
-            const previousValue = data[1].value;
+
+            const currentValue = data[data.length - 1].value;
+
+            const previousValue = data.find((point) =>
+                (point.fiscalYear === data[data.length - 1].fiscalYear - 1) &&
+                (point.fiscalPeriod === data[data.length - 1].fiscalPeriod))?.value ?? 0;
+
             const change = currentValue - previousValue;
             const percentage = (change / previousValue) * 100;
             return { value: change, percentage };
@@ -31,30 +42,9 @@ function AccountsPayableContent(props: AccountsPayableContentProps) {
 
     }, [props.accountsPayableMetric]);
 
-    const formatCurrency = (value: number): string => {
-        if (Math.abs(value) >= 1_000_000_000) {
-            return new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'USD',
-                minimumFractionDigits: 1,
-                maximumFractionDigits: 1,
-            }).format(value / 1_000_000_000) + 'B';
-        }
-        if (Math.abs(value) >= 1_000_000) {
-            return new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: 'USD',
-                minimumFractionDigits: 1,
-                maximumFractionDigits: 1,
-            }).format(value / 1_000_000) + 'M';
-        }
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-        }).format(value);
-    };
+    const handleDataPointSelected = (dataPoint: ProcessedDataPoint) => {
+        console.log(dataPoint);
+    }
 
     return (data?.length ?? 0) > 0 ? (
         <>
@@ -69,35 +59,35 @@ function AccountsPayableContent(props: AccountsPayableContentProps) {
 
             {/* Key Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card className="bg-white/10">
+                <Card variant="elevated">
                     <CardContent className="pt-6">
                         <div className="text-sm text-primary-light">Current Amount</div>
                         <div className="text-2xl font-bold mt-2 text-white">
                             {formatCurrency(props.accountsPayableMetric.lastValue)}
                         </div>
                         <div className="flex items-center mt-2">
-                            {change.percentage > 0 ? (
+                            {currentPeriodYoYChange.percentage > 0 ? (
                                 <TrendingUp className="text-accent mr-1" size={16} />
                             ) : (
                                 <TrendingDown className="text-destructive mr-1" size={16} />
                             )}
                             <span className={`text-sm font-medium mr-1 ${
-                                change.percentage > 0 ? "text-metrics-stable" : "text-metrics-decline"
+                                currentPeriodYoYChange.percentage > 0 ? "text-metrics-stable" : "text-metrics-decline"
                             }`}>
-                  {change.percentage.toFixed(1)}%
+                  {currentPeriodYoYChange.percentage.toFixed(1)}%
                 </span><span className="text-sm text-secondary">vs previous year</span>
                         </div>
                     </CardContent>
                 </Card>
 
-                <Card className="bg-white/10">
+                <Card variant="elevated">
                     <CardContent className="pt-6">
                         <div className="text-sm text-primary-light">Year-over-Year Change</div>
                         <div className="text-2xl font-bold mt-2 text-foreground">
-                            {formatCurrency(Math.abs(change.value))}
+                            {formatCurrency(Math.abs(currentPeriodYoYChange.value))}
                         </div>
                         <div className="text-sm text-muted-foreground mt-2">
-                            {change.value > 0 ? 'Increase' : 'Decrease'} from previous year
+                            <a className={getChangePercentClassName(currentPeriodYoYChange.percentage)}>{currentPeriodYoYChange.value > 0 ? 'Increase' : 'Decrease'}</a> from previous year
                         </div>
                     </CardContent>
                 </Card>
@@ -105,9 +95,10 @@ function AccountsPayableContent(props: AccountsPayableContentProps) {
 
             {/* Chart */}
             <FinancialMetricsChart
-                data={data}
+                data={processedData}
                 metricType={MetricType.AccountsPayable}
                 valueFormatter={formatCurrency}
+                handleDataPointSelected={handleDataPointSelected}
             />
 
             <div className="text-sm text-muted-foreground">
