@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
     Dialog,
     DialogContent,
@@ -6,68 +6,218 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@common/components/ui/dialog";
-import { TableIcon, AlertCircle, ChevronDown, ChevronRight } from 'lucide-react';
+import { TableIcon, ArrowUpDown, ChevronRight, ChevronDown } from 'lucide-react';
 import { CompanyFinancialMetric, MetricDataPoint } from "@features/company/types";
 import Button from "@common/components/Button.tsx";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@common/components/Table.tsx";
 import {
     getInvertedChangePercentClassName,
     getMetricTypeDisplayName
 } from "@features/company/utils.tsx";
+import {
+    flexRender,
+    getCoreRowModel,
+    getSortedRowModel,
+    getGroupedRowModel,
+    getExpandedRowModel,
+    useReactTable,
+    createColumnHelper,
+    SortingState,
+    GroupingState,
+    ExpandedState,
+} from '@tanstack/react-table';
 
 interface FinancialMetricDataTableModalProps {
     metric: CompanyFinancialMetric;
     formatValue: (value: number) => string;
+    initialFocusDate?: Date;
+    trigger?: React.ReactNode;
 }
 
-const FinancialMetricDataTableModal = (props: FinancialMetricDataTableModalProps) => {
-    const { metric, formatValue } = props;
-    const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
+const columnHelper = createColumnHelper<MetricDataPoint>();
 
-    // Group data points by fiscal year and period to identify duplicates
-    const groupedData = metric.dataPoints.reduce((acc, point) => {
-        const key = `${point.fiscalYear}-${point.fiscalPeriod}`;
-        if (!acc[key]) {
-            acc[key] = [];
-        }
-        acc[key].push(point);
-        return acc;
-    }, {} as Record<string, MetricDataPoint[]>);
+const FinancialMetricDataTableModal = ({ metric, formatValue, initialFocusDate, trigger }: FinancialMetricDataTableModalProps) => {
+    const [open, setOpen] = useState(false);
+    const [sorting, setSorting] = useState<SortingState>([]);
+    const [grouping] = useState<GroupingState>(['fiscalYear']);
+    const [expanded, setExpanded] = useState<ExpandedState>({});
 
-    const toggleRow = (key: string) => {
-        const newExpanded = new Set(expandedRows);
-        if (expandedRows.has(key)) {
-            newExpanded.delete(key);
-        } else {
-            newExpanded.add(key);
-        }
-        setExpandedRows(newExpanded);
-    };
+    // Map fiscal year to its FY period data
+    const yearEndDataMap = useMemo(() => {
+        const map = new Map<number, MetricDataPoint>();
+        metric.dataPoints.forEach(point => {
+            if (point.fiscalPeriod === 'FY') {
+                map.set(point.fiscalYear, point);
+            }
+        });
+        return map;
+    }, [metric.dataPoints]);
 
-    const findPreviousYearValue = (currentPoint: MetricDataPoint): number | undefined => {
-        const previousKey = `${currentPoint.fiscalYear - 1}-${currentPoint.fiscalPeriod}`;
-        const previousPeriodData = groupedData[previousKey];
-        if (!previousPeriodData) return undefined;
+    // Pre-calculate previous year values for performance
+    const previousYearValues = useMemo(() => {
+        return new Map(
+            metric.dataPoints.map(point => [
+                `${point.fiscalYear}-${point.fiscalPeriod}`,
+                metric.dataPoints.find(p =>
+                    p.fiscalYear === point.fiscalYear - 1 &&
+                    p.fiscalPeriod === point.fiscalPeriod
+                )?.value
+            ])
+        );
+    }, [metric.dataPoints]);
 
-        // Use the most recent filing from the previous period
-        const mostRecentPrevious = [...previousPeriodData].sort((a, b) =>
-            b.filingDate.getTime() - a.filingDate.getTime()
-        )[0];
+    const columns = [
+        columnHelper.accessor('fiscalYear', {
+            header: 'Fiscal Year',
+            cell: info => {
+                if (info.row.getIsGrouped()) {
+                    return (
+                        <div className="flex items-center gap-2">
+                            <button
+                                onClick={info.row.getToggleExpandedHandler()}
+                                className="flex items-center gap-1"
+                            >
+                                {info.row.getIsExpanded() ? (
+                                    <ChevronDown className="h-4 w-4" />
+                                ) : (
+                                    <ChevronRight className="h-4 w-4" />
+                                )}
+                                <span>FY {info.getValue()}</span>
+                            </button>
+                        </div>
+                    );
+                }
+                return info.getValue();
+            },
+        }),
+        columnHelper.accessor('fiscalPeriod', {
+            header: 'Period',
+            cell: info => {
+                if (info.row.getIsGrouped()) {
+                    return 'FY';
+                }
+                return info.getValue();
+            },
+        }),
+        columnHelper.accessor('endDate', {
+            header: 'End Date',
+            cell: info => {
+                if (info.row.getIsGrouped()) {
+                    const fyData = yearEndDataMap.get(info.row.original.fiscalYear);
+                    return fyData?.endDate.toLocaleDateString() ?? '-';
+                }
+                return info.getValue().toLocaleDateString();
+            },
+        }),
+        columnHelper.accessor('value', {
+            header: 'Amount',
+            cell: info => {
+                if (info.row.getIsGrouped()) {
+                    const fyData = yearEndDataMap.get(info.row.original.fiscalYear);
+                    return fyData ? formatValue(fyData.value) : '-';
+                }
+                return formatValue(info.getValue());
+            },
+        }),
+        columnHelper.accessor(
+            row => {
+                const prevValue = previousYearValues.get(`${row.fiscalYear}-${row.fiscalPeriod}`);
+                return prevValue ? row.value - prevValue : 0;
+            },
+            {
+                id: 'yoyChange',
+                header: 'YoY Change',
+                cell: info => {
+                    if (info.row.getIsGrouped()) {
+                        const fyData = yearEndDataMap.get(info.row.original.fiscalYear);
+                        if (!fyData) return '-';
+                        const prevValue = previousYearValues.get(`${fyData.fiscalYear}-FY`);
+                        const value = prevValue ? fyData.value - prevValue : 0;
+                        return (
+                            <div className={getInvertedChangePercentClassName(value)}>
+                                {(value === 0) ? 'NA' : formatValue(value)}
+                            </div>
+                        );
+                    }
+                    const value = info.getValue();
+                    return (
+                        <div className={getInvertedChangePercentClassName(value)}>
+                            {(value === 0) ? 'NA' : formatValue(value)}
+                        </div>
+                    );
+                },
+            }
+        ),
+        columnHelper.accessor(
+            row => {
+                const prevValue = previousYearValues.get(`${row.fiscalYear}-${row.fiscalPeriod}`);
+                return prevValue ? ((row.value - prevValue) / prevValue) * 100 : 0;
+            },
+            {
+                id: 'yoyChangePercent',
+                header: 'YoY Change %',
+                cell: info => {
+                    if (info.row.getIsGrouped()) {
+                        const fyData = yearEndDataMap.get(info.row.original.fiscalYear);
+                        if (!fyData) return '-';
+                        const prevValue = previousYearValues.get(`${fyData.fiscalYear}-FY`);
+                        const value = prevValue ? ((fyData.value - prevValue) / prevValue) * 100 : 0;
+                        return (
+                            <div className={getInvertedChangePercentClassName(value)}>
+                                {value.toFixed(2)}%
+                            </div>
+                        );
+                    }
+                    const value = info.getValue();
+                    return (
+                        <div className={getInvertedChangePercentClassName(value)}>
+                            {value.toFixed(2)}%
+                        </div>
+                    );
+                },
+            }
+        ),
+        columnHelper.accessor('formType', {
+            header: 'Source',
+            cell: info => {
+                if (info.row.getIsGrouped()) {
+                    const fyData = yearEndDataMap.get(info.row.original.fiscalYear);
+                    return fyData?.formType ?? '-';
+                }
+                return info.getValue();
+            },
+        }),
+    ];
 
-        return mostRecentPrevious?.value;
-    };
+    const table = useReactTable({
+        data: metric.dataPoints,
+        columns,
+        state: {
+            sorting,
+            grouping,
+            expanded,
+        },
+        onSortingChange: setSorting,
+        onExpandedChange: setExpanded,
+        getExpandedRowModel: getExpandedRowModel(),
+        getCoreRowModel: getCoreRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getGroupedRowModel: getGroupedRowModel(),
+        enableGrouping: true,
+        enableExpanding: true,
+    });
 
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button
-                    variant="foreground"
-                    size="sm"
-                    className="bg-white/5 hover:bg-white/10 border-white/10 hover:border-primary-light/50"
-                >
-                    <TableIcon className="h-4 w-4 mr-2" />
-                    View Data Table
-                </Button>
+                {trigger || (
+                    <Button
+                        variant="foreground"
+                        size="sm"
+                    >
+                        <TableIcon className="h-4 w-4 mr-2" />
+                        View Data
+                    </Button>
+                )}
             </DialogTrigger>
             <DialogContent className="max-w-5xl h-[80vh] bg-background border border-white/10">
                 <DialogHeader>
@@ -75,98 +225,48 @@ const FinancialMetricDataTableModal = (props: FinancialMetricDataTableModalProps
                         Historical Data - {getMetricTypeDisplayName(metric.metricType)}
                     </DialogTitle>
                 </DialogHeader>
-                <div className="mt-4 h-[calc(80vh-6rem)] overflow-y-auto">
-                    <Table className="relative">
-                        <TableHeader>
-                            <TableRow className="border-white/10">
-                                <TableHead className="text-primary-light sticky top-0 bg-background">Fiscal Year</TableHead>
-                                <TableHead className="text-primary-light sticky top-0 bg-background">Period</TableHead>
-                                <TableHead className="text-primary-light sticky top-0 bg-background">End Date</TableHead>
-                                <TableHead className="text-primary-light text-right sticky top-0 bg-background">Amount</TableHead>
-                                <TableHead className="text-primary-light text-right sticky top-0 bg-background">YoY Change</TableHead>
-                                <TableHead className="text-primary-light text-right sticky top-0 bg-background">YoY Change %</TableHead>
-                                <TableHead className="text-primary-light sticky top-0 bg-background">Filing Details</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {/* Sort and process entries before mapping */}
-                            {Object.entries(groupedData)
-                                .sort(([keyA], [keyB]) => {
-                                    const [yearA, periodA] = keyA.split('-');
-                                    const [yearB, periodB] = keyB.split('-');
-                                    // First sort by year descending
-                                    const yearDiff = parseInt(yearB) - parseInt(yearA);
-                                    if (yearDiff !== 0) return yearDiff;
-                                    // Then sort by period (Q1, Q2, Q3, FY)
-                                    const periodOrder = { 'Q1': 1, 'Q2': 2, 'Q3': 3, 'FY': 4 };
-                                    return (periodOrder[periodA as keyof typeof periodOrder] || 0) -
-                                        (periodOrder[periodB as keyof typeof periodOrder] || 0);
-                                })
-                                .map(([key, points]) => {
-                                    const sortedPoints = [...points].sort((a, b) =>
-                                        b.filingDate.getTime() - a.filingDate.getTime()
-                                    );
-                                    const mostRecent = sortedPoints[0];
-                                    const hasDuplicates = points.length > 1;
-                                    const hasValueDiscrepancy = points.some(p => p.value !== points[0].value);
-                                    const isExpanded = expandedRows.has(key);
-
-                                    const previousValue = findPreviousYearValue(mostRecent);
-                                    const change = previousValue ? mostRecent.value - previousValue : 0;
-                                    const changePercent = previousValue ? (change / previousValue) * 100 : 0;
-
-                                    return (
-                                        <TableRow
-                                            key={key}
-                                            className={`border-white/10 hover:bg-white/5 ${(hasDuplicates || hasValueDiscrepancy) ? 'bg-error/5' : ''}`}
-                                        >
-                                            <TableCell className="font-medium">{mostRecent.fiscalYear}</TableCell>
-                                            <TableCell>{mostRecent.fiscalPeriod}</TableCell>
-                                            <TableCell>{mostRecent.endDate.toLocaleDateString()}</TableCell>
-                                            <TableCell className="text-right">{formatValue(mostRecent.value)}</TableCell>
-                                            <TableCell className={`text-right ${getInvertedChangePercentClassName(changePercent)}`}>
-                                                {formatValue(change)}
-                                            </TableCell>
-                                            <TableCell className={`text-right ${getInvertedChangePercentClassName(changePercent)}`}>
-                                                {changePercent.toFixed(2)}%
-                                            </TableCell>
-                                            <TableCell>
-                                                {(hasDuplicates || hasValueDiscrepancy) ? (
-                                                    <div
-                                                        className="text-xs cursor-pointer"
-                                                        onClick={() => toggleRow(key)}
-                                                    >
-                                                        <div className="flex items-center text-error mb-1">
-                                                            {isExpanded ?
-                                                                <ChevronDown className="h-3 w-3 mr-1" /> :
-                                                                <ChevronRight className="h-3 w-3 mr-1" />
-                                                            }
-                                                            <AlertCircle className="h-3 w-3 mr-1" />
-                                                            Multiple filings found
-                                                        </div>
-                                                        {isExpanded && sortedPoints.map((point, idx) => (
-                                                            <div key={idx} className="ml-4 mb-1 text-tertiary">
-                                                                {point.formType}: {formatValue(point.value)}
-                                                                <br />
-                                                                <span className="text-xs">
-                                                                Filed: {point.filingDate.toLocaleDateString()}
-                                                            </span>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                ) : (
-                                                    <div className="text-xs text-tertiary">
-                                                        {mostRecent.formType}
-                                                        <br />
-                                                        Filed: {mostRecent.filingDate.toLocaleDateString()}
-                                                    </div>
-                                                )}
-                                            </TableCell>
-                                        </TableRow>
-                                    );
-                                })}
-                        </TableBody>
-                    </Table>
+                <div className="mt-4 h-[calc(80vh-6rem)] overflow-y-auto relative">
+                    <table className="w-full">
+                        <thead className="sticky top-0 bg-background z-10">
+                        {table.getHeaderGroups().map(headerGroup => (
+                            <tr key={headerGroup.id} className="border-b border-white/10">
+                                {headerGroup.headers.map(header => (
+                                    <th
+                                        key={header.id}
+                                        className="h-12 px-4 text-left align-middle font-medium text-primary-light bg-background"
+                                    >
+                                        {header.isPlaceholder
+                                            ? null
+                                            : flexRender(
+                                                header.column.columnDef.header,
+                                                header.getContext()
+                                            )}
+                                    </th>
+                                ))}
+                            </tr>
+                        ))}
+                        </thead>
+                        <tbody>
+                        {table.getRowModel().rows.map(row => (
+                            <tr
+                                key={row.id}
+                                className={`
+                                        border-b border-white/10 hover:bg-white/5
+                                        ${row.getIsGrouped() ? 'bg-surface-foreground/20' : ''}
+                                    `}
+                            >
+                                {row.getVisibleCells().map(cell => (
+                                    <td key={cell.id} className="p-4">
+                                        {flexRender(
+                                            cell.column.columnDef.cell,
+                                            cell.getContext()
+                                        )}
+                                    </td>
+                                ))}
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
                 </div>
             </DialogContent>
         </Dialog>

@@ -1,11 +1,12 @@
-import {ChevronLeft} from "lucide-react";
-import {Link} from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 interface CompanyContextBarProps {
     companyName?: string;
 }
 
 export default function CompanyContextBar(props: CompanyContextBarProps) {
+    const location = useLocation();
+
     const navItems = [
         { label: 'Overview', path: 'overview' },
         { label: 'Filings', path: 'filings' },
@@ -14,19 +15,19 @@ export default function CompanyContextBar(props: CompanyContextBarProps) {
         { label: 'Documents', path: 'documents' }
     ];
 
-
     const isActive = (path: string) => {
-        return location.pathname.endsWith(path) ||
-            location.pathname.endsWith(`${path}/`);
+        const currentPath = location.pathname.split('/').pop() || '';
+        const targetPath = path.replace('../', '');
+        return currentPath === targetPath;
     };
 
     return (
         <div className="top-16 z-30 border-b border-border bg-surface/50 backdrop-blur-sm">
             <div className="flex h-14 items-center justify-between px-4 sm:px-6">
                 <div className="flex items-center">
-                <span className="text-lg font-semibold text-foreground">
-                    {props.companyName}
-                </span>
+                    <span className="text-lg font-semibold text-foreground">
+                        {props.companyName}
+                    </span>
                 </div>
 
                 <nav className="flex space-x-12">
@@ -34,6 +35,7 @@ export default function CompanyContextBar(props: CompanyContextBarProps) {
                         <Link
                             key={item.label}
                             to={item.path}
+                            relative="path"
                             className={`relative py-1 text-sm font-medium transition-colors ${
                                 isActive(item.path)
                                     ? 'text-foreground'
