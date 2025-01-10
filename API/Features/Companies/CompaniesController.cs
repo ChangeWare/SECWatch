@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using SECWatch.API.Features.Authentication;
 using SECWatch.API.Features.Companies.DTOs;
 using SECWatch.Application.Features.Companies;
 using SECWatch.Application.Features.Companies.DTOs;
@@ -8,13 +9,13 @@ namespace SECWatch.API.Features.Companies;
 
 [ApiController]
 [Route("api/[controller]")]
-//TODO: [RequireAuth]
+[RequireAuth]
 public class CompaniesController(
     ICompanyService companyService,
     ILogger<CompaniesController> logger) : ControllerBase
 {
     
-    [HttpGet("details/{cik}")]
+    [HttpGet("{cik}/details")]
     [ProducesResponseType(typeof(CompanyDetails), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetDetails(string cik)
@@ -42,6 +43,38 @@ public class CompaniesController(
         catch (Exception ex)
         {
             logger.LogError(ex, "Error processing company details for CIK: {CIK}", cik);
+            return StatusCode(500, "An error occurred while processing your request");
+        }
+    }
+    
+    [HttpGet("{cik}/filings/history")]
+    [ProducesResponseType(typeof(CompanyFilingHistoryResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetFilingsHistory(string cik)
+    {
+        try
+        {
+            var result = await companyService.GetCompanyFilingHistoryAsync(cik);
+            if (result.IsFailed)
+            {
+                return BadRequest(result.Errors);
+            }
+            
+            if (result.Value == null)
+            {
+                return NotFound();
+            }
+            
+            var response = new CompanyFilingHistoryResponse()
+            {
+                FilingHistory = result.Value
+            };
+
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error processing company filings history for CIK: {CIK}", cik);
             return StatusCode(500, "An error occurred while processing your request");
         }
     }

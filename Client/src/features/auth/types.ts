@@ -10,18 +10,19 @@ export interface LoginFormData {
     rememberMe?: boolean;
 }
 
-export interface LoginResponse {
+export interface AuthenticationInfo {
     user: User;
     token: string;
     tokenExpires: string;
     message: string;
 }
 
+export interface LoginResponse {
+    authenticationInfo: AuthenticationInfo;
+}
+
 export interface RegisterResponse {
-    user: User;
-    token: string;
-    tokenExpires: string;
-    message: string;
+    authenticationInfo: AuthenticationInfo;
 }
 
 export interface RegistrationFormData {

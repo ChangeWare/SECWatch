@@ -15,6 +15,7 @@ export const logoutAndCleanup = (queryClient: QueryClient) => {
 
 export const setAuthToken = (authToken: string, tokenExpires: string) => {
     Cookies.set('authToken', authToken, { expires: new Date(tokenExpires) });
+    console.log(Cookies.get('authToken'));
 }
 
 export const getAuthToken = () => {

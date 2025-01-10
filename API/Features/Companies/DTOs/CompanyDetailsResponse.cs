@@ -4,5 +4,5 @@ namespace SECWatch.API.Features.Companies.DTOs;
 
 public record CompanyDetailsResponse
 {
-    public CompanyDetails? Company { get; set; }
+    public CompanyDetails? Company { get; init; }
 }

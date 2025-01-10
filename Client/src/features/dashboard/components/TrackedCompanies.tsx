@@ -18,7 +18,7 @@ function TrackedCompanies(){
                 <div className="space-y-4">
                     <p className="text-gray-400 text-sm text-right">Latest Filing</p>
                     {companies.map(company => (
-                        <Card interactive={true} variant="elevated" key={company.symbol}
+                        <Card variant="elevated" key={company.symbol}
                               className="justify-between p-2 hover:border-info/50">
                             <CardContent className="p-1">
                                 <div className="flex items-center justify-between">

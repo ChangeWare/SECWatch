@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from "react";
+import React, {ChangeEvent, useCallback, useEffect, useRef, useState} from "react";
 import { Search } from "lucide-react";
 import { useCompanySearch } from "@features/companySearch/hooks/useCompanySearch.tsx";
 import { CompanyResult, SearchResponse } from "@features/companySearch/types.ts";
@@ -13,28 +13,17 @@ interface CompanySearchBarProps {
 
 export default function CompanySearchBar(props: CompanySearchBarProps) {
     const [debouncedQuery, setDebouncedQuery] = useState("");
-    const { query, setQuery, response, isLoading } = useCompanySearch();
+    const { setQuery, response, isLoading } = useCompanySearch();
     const [isOpen, setIsOpen] = useState(false);
     const searchBarRef = useRef<HTMLDivElement>(null);
 
-    // Handle debounced query changes
     useEffect(() => {
         const handler = setTimeout(() => {
-            if (debouncedQuery.length > 0) {
-                props.onSearchStart?.();
-                setQuery(debouncedQuery);
-            }
+            setQuery(debouncedQuery);
         }, 300);
 
         return () => clearTimeout(handler);
-    }, [debouncedQuery]);
-
-    // Handle response changes
-    useEffect(() => {
-        if (response) {
-            props.onQueryComplete(response);
-        }
-    }, [response]);
+    }, [debouncedQuery, setQuery]);
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -42,20 +31,20 @@ export default function CompanySearchBar(props: CompanySearchBarProps) {
         setIsOpen(true);
 
         if (value.length === 0) {
-            props.onQueryComplete({ companies: [] });
+            setQuery("");
         }
     };
+
+    // The parent can just use the response directly from a prop
+    useEffect(() => {
+        props.onQueryComplete(response);
+    }, [response]);
+
 
     const handleSelectResult = (result: CompanyResult) => {
         setDebouncedQuery(result.name);
         setIsOpen(false);
         props.onResultSelect(result);
-    };
-
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === "Enter" && response?.companies.length > 0) {
-            handleSelectResult(response.companies[0]);
-        }
     };
 
     // Handle clicks outside
@@ -78,7 +67,6 @@ export default function CompanySearchBar(props: CompanySearchBarProps) {
                     type="text"
                     value={debouncedQuery}
                     onChange={handleInputChange}
-                    onKeyDown={handleKeyDown}
                     placeholder="Search companies by name or ticker..."
                     className="w-full px-4 py-3 bg-surface/50 backdrop-blur-sm rounded-lg
                         border border-border

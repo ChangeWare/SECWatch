@@ -3,7 +3,8 @@ from typing import List, Optional
 from datetime import datetime
 from pymongo.synchronous.database import Database
 from sec_miner.config import Config
-from sec_miner.persistence.mongodb.models import FinancialMetricDocument, FinancialMetric, MetricDataPoint
+from sec_miner.persistence.mongodb.models import FinancialMetricDocument, FinancialMetric, MetricDataPoint, \
+    CompanyFilingHistoryDocument
 from sec_miner.utils.logger_factory import get_logger
 
 logger = get_logger(__name__)
@@ -20,6 +21,22 @@ def get_db():
         setup_indexes(db)
 
     return db
+
+
+def upsert_filing_history_doc(filing_history_doc: CompanyFilingHistoryDocument) -> None:
+    """Update or insert a company's filing history document"""
+    try:
+        db = get_db()
+        collection = db.filing_history
+        collection.update_one(
+            {"cik": filing_history_doc.cik},
+            {"$set": filing_history_doc.dict(by_alias=True)},
+            upsert=True
+        )
+        logger.log(15, f"Upserted filing history for CIK {filing_history_doc.cik}")
+    except Exception as e:
+        logger.error(f"Error upserting filing history for CIK {filing_history_doc.cik}: {str(e)}")
+        raise
 
 
 def upsert_metric_doc(metric_doc: FinancialMetricDocument) -> None:

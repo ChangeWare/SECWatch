@@ -2,10 +2,11 @@ from datetime import datetime
 from typing import List
 from sec_miner.config import Config
 from sec_miner.persistence.financial_metric import FinancialMetric
-from sec_miner.persistence.mongodb.models import MetricDataPoint, FinancialMetricDocument, FinancialMetricMetadata
+from sec_miner.persistence.mongodb.models import MetricDataPoint, FinancialMetricDocument, FinancialMetricMetadata, \
+    SECFiling, CompanyFilingHistoryDocument, FilingHistoryMetadata
 from sec_miner.persistence.sql.models import Address
 from sec_miner.persistence.sql.models import Company
-from sec_miner.sec.results import CompanyMetricResult
+from sec_miner.sec.results import CompanyMetricResult, CompanyFilingsResult
 from sec_miner.utils.logger_factory import get_logger
 from sec_miner.utils.sec_rate_limit import sec_rate_limit
 import requests
@@ -136,6 +137,87 @@ def get_company_accounts_payable(cik: str) -> CompanyMetricResult:
 
         return CompanyMetricResult(
             metric_document=metric_document
+        )
+
+    except KeyError as e:
+        logger.error(f"Error processing SEC data: {e}")
+        raise
+    except Exception as e:
+        logger.error(f"Error processing SEC data: {str(e)}")
+        raise
+
+
+def get_company_filings(cik: str):
+    """Get filings for a company"""
+
+    # CIK needs to be 10 digits for SEC API
+    cik = cik.zfill(10)
+
+    url = Config.SEC_CIK_SUBMISSIONS_URL.format(cik=cik)
+    response = requests.get(
+        url,
+        headers={'User-Agent': Config.SEC_USER_AGENT}
+    )
+
+    data = response.json()
+
+    try:
+        filings_data = data["filings"]["recent"]
+        logger.info(f"Processing filings for CIK {cik}")
+
+        filings = []
+        form_types = []
+
+        # Get number of filings
+        num_filings = len(filings_data["accessionNumber"])
+
+        for i in range(num_filings):
+            filings.append(
+                SECFiling(
+                    accession_number=filings_data["accessionNumber"][i],
+                    filing_date=datetime.strptime(filings_data["filingDate"][i], "%Y-%m-%d"),
+                    report_date=datetime.strptime(filings_data["reportDate"][i], "%Y-%m-%d")
+                    if filings_data["reportDate"][i] else None,
+                    act=filings_data["act"][i] if filings_data["act"][i] else None,
+                    form=filings_data["form"][i],
+                    file_number=filings_data["fileNumber"][i] if filings_data["fileNumber"][i] else None,
+                    film_number=filings_data["filmNumber"][i],
+                    items=filings_data["items"][i] if filings_data["items"][i] else None,
+                    size=int(filings_data["size"][i]),
+                    is_xbrl=bool(filings_data["isXBRL"][i]),
+                    is_inline_xbrl=bool(filings_data["isInlineXBRL"][i]),
+                    primary_document=filings_data["primaryDocument"][i],
+                    primary_doc_description=filings_data["primaryDocDescription"][i]
+                    if filings_data["primaryDocDescription"][i] else None
+                )
+            )
+
+            filings.sort(key=lambda x: x.filing_date)
+
+        filing_history = CompanyFilingHistoryDocument(
+            cik=cik,
+            filings=filings,
+            metadata=FilingHistoryMetadata(
+                first_filed=filings[0].filing_date,
+                last_filed=filings[-1].filing_date,
+                last_fetched=datetime.utcnow(),
+                total_filings=len(filings),
+                form_types=form_types,
+                date_range={
+                    "start": filings[0].filing_date,
+                    "end": filings[-1].filing_date,
+                    "span": {
+                        "years": (filings[-1].filing_date - filings[0].filing_date).days / 365.25,
+                        "months": (filings[-1].filing_date - filings[0].filing_date).days / 30,
+                    }
+                }
+            )
+        )
+
+        logger.info(f"Processed {len(filings)} filings for CIK {cik}")
+
+        return CompanyFilingsResult(
+            filing_history=filing_history
         )
 
     except KeyError as e:

@@ -11,18 +11,17 @@ export default function CompanyContextBar(props: CompanyContextBarProps) {
         { label: 'Overview', path: 'overview' },
         { label: 'Filings', path: 'filings' },
         { label: 'Analysis', path: 'analysis' },
-        { label: 'Alerts', path: 'alerts' },
-        { label: 'Documents', path: 'documents' }
+        { label: 'Alerts', path: 'alerts' }
     ];
 
     const isActive = (path: string) => {
-        const currentPath = location.pathname.split('/').pop() || '';
-        const targetPath = path.replace('../', '');
-        return currentPath === targetPath;
+        const pathSegments = location.pathname.split('/');
+        const targetPathBase = path.replace('../', '');
+        return pathSegments.includes(targetPathBase);
     };
 
     return (
-        <div className="top-16 z-30 border-b border-border bg-surface/50 backdrop-blur-sm">
+        <div className="w-full top-16 z-30 border-b border-border bg-surface/50 backdrop-blur-sm">
             <div className="flex h-14 items-center justify-between px-4 sm:px-6">
                 <div className="flex items-center">
                     <span className="text-lg font-semibold text-foreground">

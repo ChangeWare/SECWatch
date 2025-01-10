@@ -22,7 +22,7 @@ function FeaturesSection() {
         {
             icon: <BarChart2 className="w-8 h-8 text-info" />,
             title: "Analytics Dashboard",
-            description: "Visualize filing trends and extract meaningful insights."
+            description: "Visualize filings trends and extract meaningful insights."
         },
         {
             icon: <BarChart2 className="w-8 h-8 text-info" />,

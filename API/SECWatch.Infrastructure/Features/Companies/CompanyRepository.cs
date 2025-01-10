@@ -1,6 +1,7 @@
 using FluentResults;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 using SECWatch.Domain.Features.Companies.Models;
 using SECWatch.Domain.Features.Companies.Queries;
 using SECWatch.Domain.Features.Companies.Repositories;
@@ -10,9 +11,10 @@ namespace SECWatch.Infrastructure.Features.Companies;
 
 public class CompanyRepository(
     ApplicationDbContext context,
+    IMongoDbContext mongoDbContext,
     IMapper mapper) : ICompanyRepository
 {
-    public async Task<Result<IEnumerable<Company>>> SearchCompaniesAsync(CompanySearchQuery query)
+    public async Task<Result<IReadOnlyList<Company>>> SearchCompaniesAsync(CompanySearchQuery query)
     {
         try 
         {
@@ -21,7 +23,7 @@ public class CompanyRepository(
                             c.Ticker.Contains(query.SearchTerm))
                 .ToListAsync();
                 
-            return Result.Ok(companies.AsEnumerable());
+            return Result.Ok<IReadOnlyList<Company>>(companies.AsReadOnly());
         }
         catch (Exception ex)
         {
@@ -35,7 +37,7 @@ public class CompanyRepository(
         try
         {
             var company = await context.Companies
-                .FirstOrDefaultAsync(c => c.CIK == cik);
+                .FirstOrDefaultAsync(c => c.Cik == cik);
         
             return Result.Ok(company);
         }
@@ -44,5 +46,24 @@ public class CompanyRepository(
             return Result.Fail(new Error("Unexpected error during company retrieval")
                 .CausedBy(ex));
         }
+    }
+
+    public async Task<Result<CompanyFilingHistory>> GetCompanyFilingsHistoryAsync(string cik)
+    {
+        try
+        {
+            var filings = await mongoDbContext
+                .GetCollection<CompanyFilingHistory>("filing_history")
+                .Find(x => x.Cik == cik)
+                .FirstOrDefaultAsync();
+            
+            return Result.Ok(filings);
+        }
+        catch (Exception ex)
+        {
+            return Result.Fail(new Error("Unexpected error during company filings history retrieval")
+                .CausedBy(ex));
+        }
+        
     }
 }

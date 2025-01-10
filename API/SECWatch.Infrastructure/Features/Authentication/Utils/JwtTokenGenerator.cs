@@ -14,6 +14,9 @@ public class JwtTokenConfiguration
     public int EmailVerificationTokenExpiryHours { get; init; }
     public int PasswordResetTokenExpiryHours { get; init; } 
     
+    public string Issuer { get; init; } = string.Empty;
+    public string Audience { get; init; } = string.Empty;
+    
     public int UserTokenExpiryHours { get; init; } 
 }
 
@@ -84,8 +87,11 @@ public class JwtTokenGenerator(JwtTokenConfiguration config) : ITokenGenerator
             Claims = new Dictionary<string, object>
             {
                 { "purpose", "user_token" },
-                { JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString() }
+                { JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString() },
+                { ClaimTypes.NameIdentifier, userId.ToString() }
             },
+            Issuer = config.Issuer,      // From config
+            Audience = config.Audience,   // From config
             Expires = expiry,
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(key),
@@ -107,12 +113,13 @@ public class JwtTokenGenerator(JwtTokenConfiguration config) : ITokenGenerator
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity([new Claim(ClaimTypes.NameIdentifier, userId.ToString())]),
             Claims = new Dictionary<string, object>
             {
                 { "purpose", "refresh_token" },
                 { JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString() }
             },
+            Issuer = config.Issuer,      // From config
+            Audience = config.Audience,   // From config
             Expires = expiry,
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(key),

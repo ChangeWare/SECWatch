@@ -12,7 +12,7 @@ public class CompanyFinancialMetricsRepository(
     IMongoDbContext mongoDbContext,
     ILogger<CompanyFinancialMetricsRepository> logger) : ICompanyFinancialMetricsRepository
 {
-    public async Task<Result<IEnumerable<CompanyFinancialMetric>>> GetCompanyFinancialMetricsAsync(string cik)
+    public async Task<Result<IReadOnlyList<CompanyFinancialMetric>>> GetCompanyFinancialMetricsAsync(string cik)
     {
         try
         {
@@ -21,13 +21,12 @@ public class CompanyFinancialMetricsRepository(
                 .GetCollection<CompanyFinancialMetric>("financial_metrics")
                 .Find(filter).ToListAsync();
             
-            return Result.Ok<IEnumerable<CompanyFinancialMetric>>(metrics);
+            return Result.Ok<IReadOnlyList<CompanyFinancialMetric>>(metrics.AsReadOnly());
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Error retrieving financial metrics for CIK: {Cik}", cik);
-            return Result.Fail<IEnumerable<CompanyFinancialMetric>>(
-                "Failed to retrieve financial metrics");
+            return Result.Fail("Failed to retrieve financial metrics");
         }
     }
 

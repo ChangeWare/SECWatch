@@ -35,5 +35,24 @@ public static class MongoMappings
                 cm.AutoMap();
             });
         }
+
+        if (!BsonClassMap.IsClassMapRegistered(typeof(CompanyFilingHistory)))
+        {
+            BsonClassMap.RegisterClassMap<CompanyFilingHistory>(cm =>
+            {
+                cm.AutoMap();
+                cm.MapIdProperty(f => f.Id).SetSerializer(new StringSerializer(BsonType.ObjectId));
+            });
+        }
+        
+        if (!BsonClassMap.IsClassMapRegistered(typeof(CompanyFiling)))
+        {
+            BsonClassMap.RegisterClassMap<CompanyFiling>(cm =>
+            {
+                cm.AutoMap();
+                cm.MapMember(c => c.IsXBRL).SetElementName("is_xbrl");
+                cm.MapMember(c => c.IsInlineXBRL).SetElementName("is_inline_xbrl");
+            });
+        }
     }
 }

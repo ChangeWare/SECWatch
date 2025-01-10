@@ -10,7 +10,7 @@ public class CompanyConfiguration : IEntityTypeConfiguration<Company>
     {
         builder.HasKey(c => c.Id);
 
-        builder.HasAlternateKey(c => c.CIK);
+        builder.HasAlternateKey(c => c.Cik);
 
         builder.HasMany<Address>(c => c.Addresses)
             .WithOne(a => a.Company)

@@ -1,22 +1,35 @@
 import React, {useState, useEffect, useMemo} from 'react';
-import { TrendingUp, TrendingDown } from 'lucide-react';
+import {TrendingUp, TrendingDown, TableIcon} from 'lucide-react';
 import {Card, CardContent} from "@common/components/Card.tsx";
-import {CompanyFinancialMetric, MetricDataPoint, MetricType, ProcessedDataPoint} from "@features/company/types.ts";
+import {
+    CompanyFinancialMetric,
+    CurrencyGroupedData,
+    MetricDataPoint,
+    MetricType,
+    ProcessedDataPoint
+} from "@features/company/types.ts";
 import LoadingScreen from "@common/components/LoadingIndicator.tsx";
-import MetricDataTableModal from "@features/company/components/MetricDataTableModal.tsx";
-import FinancialMetricsChart from "@features/company/components/FinancialMetricsChart.tsx";
+import MetricDataTableModal from "@features/company/components/financials/FinancialMetricDataTableModal.tsx";
+import FinancialMetricsChart from "@features/company/components/financials/FinancialMetricsChart.tsx";
 import {formatCurrency, getChangePercentClassName, processData} from "@features/company/utils.tsx";
+import Button from "@common/components/Button.tsx";
+import {DialogTrigger} from "@common/components/ui/dialog.tsx";
 
 interface AccountsPayableContentProps {
     accountsPayableMetric: CompanyFinancialMetric;
+    selectedCurrencyType: string;
 }
 
 
 function AccountsPayableContent(props: AccountsPayableContentProps) {
 
     const { dataPoints: data } = props.accountsPayableMetric;
+    const [ focusedDataPointDate, setFocusedDataPointDate] = useState<Date | undefined>();
 
-    const processedData = useMemo<ProcessedDataPoint[]>(() => {
+    const [dataTableModalOpen, setDataTableModalOpen] = useState<boolean>(false);
+
+
+    const processedData = useMemo<CurrencyGroupedData>(() => {
         return processData(data)
     }, [data]);
 
@@ -43,7 +56,8 @@ function AccountsPayableContent(props: AccountsPayableContentProps) {
     }, [props.accountsPayableMetric]);
 
     const handleDataPointSelected = (dataPoint: ProcessedDataPoint) => {
-        console.log(dataPoint);
+        setFocusedDataPointDate(dataPoint.date);
+        setDataTableModalOpen(true);
     }
 
     return (data?.length ?? 0) > 0 ? (
@@ -54,7 +68,24 @@ function AccountsPayableContent(props: AccountsPayableContentProps) {
                     <h2 className="text-lg font-bold text-foreground">Accounts Payable</h2>
                     <p className="text-sm text-secondary">Historical accounts payable data and trends</p>
                 </div>
-                <MetricDataTableModal metric={props.accountsPayableMetric} formatValue={formatCurrency}/>
+                <div>
+                    <Button
+                        variant="foreground"
+                        size="sm"
+                        onClick={() => setDataTableModalOpen(true)}
+                    >
+                        <TableIcon className="h-4 w-4 mr-2" />
+                        View Data
+                    </Button>
+                    <MetricDataTableModal
+                        metric={props.accountsPayableMetric}
+                        formatValue={formatCurrency}
+                        initialFocusDate={focusedDataPointDate}
+                        isOpen={dataTableModalOpen}
+                        onClose={() => setDataTableModalOpen(false)}
+                    />
+                </div>
+
             </div>
 
             {/* Key Metrics */}
@@ -95,7 +126,7 @@ function AccountsPayableContent(props: AccountsPayableContentProps) {
 
             {/* Chart */}
             <FinancialMetricsChart
-                data={processedData}
+                data={processedData[props.selectedCurrencyType]}
                 metricType={MetricType.AccountsPayable}
                 valueFormatter={formatCurrency}
                 handleDataPointSelected={handleDataPointSelected}
@@ -110,6 +141,7 @@ function AccountsPayableContent(props: AccountsPayableContentProps) {
 
 interface AccountsPayableSectionProps {
     accountsPayableMetric?: CompanyFinancialMetric;
+    selectedCurrencyType: string;
 }
 
 function AccountsPayableSection(props: AccountsPayableSectionProps) {
@@ -118,7 +150,7 @@ function AccountsPayableSection(props: AccountsPayableSectionProps) {
         <Card>
             <CardContent className="p-6 space-y-6">
                 <LoadingScreen isLoading={props.accountsPayableMetric == null}>
-                    <AccountsPayableContent accountsPayableMetric={props.accountsPayableMetric!} />
+                    <AccountsPayableContent selectedCurrencyType={props.selectedCurrencyType} accountsPayableMetric={props.accountsPayableMetric!} />
                 </LoadingScreen>
             </CardContent>
         </Card>

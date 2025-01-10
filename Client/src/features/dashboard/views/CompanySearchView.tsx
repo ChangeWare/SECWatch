@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useCallback, useState} from 'react';
 import { useNavigate } from "react-router-dom";
 import CompanySearchBar from "@features/companySearch";
 import { CompanyResult, SearchResponse } from "@features/companySearch/types.ts";
@@ -11,10 +11,10 @@ export default function CompanySearchView() {
     const [searchResults, setSearchResults] = useState<CompanyResult[]>([]);
     const [isSearching, setIsSearching] = useState(false);
 
-    const onQueryComplete = (response: SearchResponse) => {
+    const onQueryComplete = useCallback((response: SearchResponse) => {
         setSearchResults(response.companies);
         setIsSearching(false);
-    };
+    }, []);
 
     const onResultSelected = (company: CompanyResult) => {
         navigate(`/companies/${company.cik}`);

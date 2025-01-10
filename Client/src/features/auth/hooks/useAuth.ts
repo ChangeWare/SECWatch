@@ -54,10 +54,10 @@ export const useAuth = () => {
         mutationFn: authApi.login,
         onSuccess: (resp) => {
             // Update auth state
-            setAuthToken(resp.token, resp.tokenExpires);
+            setAuthToken(resp.authenticationInfo.token, resp.authenticationInfo.tokenExpires);
             setIsAuthenticated(true);
-            queryClient.setQueryData(['currentUser'], resp.user);
-            toast.success(`Welcome back ${resp.user?.email}`);
+            queryClient.setQueryData(['currentUser'], resp.authenticationInfo.user);
+            toast.success(`Welcome back ${resp.authenticationInfo.user?.firstName}`);
         },
         onError: (error: Error) => {
           toast.error(`Bad login response: ${error.message}`);

@@ -54,7 +54,7 @@ namespace SECWatch.Infrastructure.Persistence.Migrations
                     b.ToTable("SystemEvents");
                 });
 
-            modelBuilder.Entity("SECWatch.Domain.Features.SEC.Address", b =>
+            modelBuilder.Entity("SECWatch.Domain.Features.Companies.Models.Address", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -94,13 +94,13 @@ namespace SECWatch.Infrastructure.Persistence.Migrations
                     b.ToTable("Addresses", (string)null);
                 });
 
-            modelBuilder.Entity("SECWatch.Domain.Features.SEC.Company", b =>
+            modelBuilder.Entity("SECWatch.Domain.Features.Companies.Models.Company", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("CIK")
+                    b.Property<string>("Cik")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
@@ -121,9 +121,65 @@ namespace SECWatch.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("CIK");
+                    b.HasAlternateKey("Cik");
 
                     b.ToTable("Companies");
+                });
+
+            modelBuilder.Entity("SECWatch.Domain.Features.Notes.Models.Note", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(10000)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("SelectionData")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Notes");
+                });
+
+            modelBuilder.Entity("SECWatch.Domain.Features.Notes.Models.NoteSubject", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AccessionNumber")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Cik")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("NoteSubject");
                 });
 
             modelBuilder.Entity("SECWatch.Domain.Features.Users.User", b =>
@@ -182,9 +238,9 @@ namespace SECWatch.Infrastructure.Persistence.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("SECWatch.Domain.Features.SEC.Address", b =>
+            modelBuilder.Entity("SECWatch.Domain.Features.Companies.Models.Address", b =>
                 {
-                    b.HasOne("SECWatch.Domain.Features.SEC.Company", "Company")
+                    b.HasOne("SECWatch.Domain.Features.Companies.Models.Company", "Company")
                         .WithMany("Addresses")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -193,9 +249,24 @@ namespace SECWatch.Infrastructure.Persistence.Migrations
                     b.Navigation("Company");
                 });
 
-            modelBuilder.Entity("SECWatch.Domain.Features.SEC.Company", b =>
+            modelBuilder.Entity("SECWatch.Domain.Features.Notes.Models.NoteSubject", b =>
+                {
+                    b.HasOne("SECWatch.Domain.Features.Notes.Models.Note", null)
+                        .WithOne("Subject")
+                        .HasForeignKey("SECWatch.Domain.Features.Notes.Models.NoteSubject", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SECWatch.Domain.Features.Companies.Models.Company", b =>
                 {
                     b.Navigation("Addresses");
+                });
+
+            modelBuilder.Entity("SECWatch.Domain.Features.Notes.Models.Note", b =>
+                {
+                    b.Navigation("Subject")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
