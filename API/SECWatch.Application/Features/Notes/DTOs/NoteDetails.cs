@@ -7,4 +7,6 @@ public record NoteDetails
     public required string Content { get; init; }
     
     public required string Color { get; init; }
+    
+    public required DateTime CreatedAt { get; init; }
 }

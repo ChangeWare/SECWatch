@@ -91,6 +91,8 @@ public static class DependencyInjection
         services.AddSingleton<ITokenGenerator, JwtTokenGenerator>();
         services.AddSingleton<IPasswordHasher, BcryptPasswordHasher>();
         services.AddScoped<IEmailService, SendGridEmailService>();
+        
+        
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
         // Add DbContexts
@@ -99,6 +101,7 @@ public static class DependencyInjection
         services.AddSingleton<IMongoDbContext, MongoDbContext>();
 
         // Register Repositories
+        services.AddSingleton<ISelectionDataResolver, SelectionDataResolver>();
         services.AddTransient<ISystemEventRepository, SystemEventRepository>();
         services.AddTransient<IUserRepository, UserRepository>();
         services.AddTransient<ICompanyRepository, CompanyRepository>();

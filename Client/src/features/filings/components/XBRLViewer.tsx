@@ -374,8 +374,10 @@ const IXBRLViewer: React.FC<IXBRLViewerProps> = ({
 
             // Handle iframe resizing
             const resizeObserver = new ResizeObserver(() => {
-                iframe.style.height = doc.documentElement.scrollHeight + 'px';
-                renderHighlights();
+                requestAnimationFrame(() => {
+                    iframe.style.height = doc.documentElement.scrollHeight + 'px';
+                    renderHighlights();
+                });
             });
 
             resizeObserver.observe(doc.body);
