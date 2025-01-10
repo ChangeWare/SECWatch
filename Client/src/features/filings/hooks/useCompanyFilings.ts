@@ -1,6 +1,6 @@
 import {useQuery} from "@tanstack/react-query";
-import {CompanyFilingHistoryResponse} from "@features/company/types.ts";
 import {filingsApi} from "@features/filings/api/filingsApi.ts";
+import { CompanyFilingHistoryResponse} from "@features/filings/types.ts";
 
 const useCompanyFilings = (companyId?: string) => {
     const { data: companyFilingsHistory, isLoading: filingHistoryLoading, error: filingHistoryError } = useQuery<CompanyFilingHistoryResponse>({

@@ -1,5 +1,5 @@
-import {CompanyFilingHistoryResponse} from "@features/company/types.ts";
 import {apiClient} from "@common/api/apiClient.ts";
+import {CompanyFilingHistoryResponse} from "@features/filings/types.ts";
 
 export const filingsApi = {
     getCompanyFilingsHistory: async (companyId: string): Promise<CompanyFilingHistoryResponse> => {

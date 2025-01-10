@@ -9,7 +9,12 @@ const useFilingNotes = (accessionNumber?: string) => {
         queryKey: ['filingNotes', accessionNumber],
         queryFn: () => notesApi.getFilingNotes(accessionNumber!),
         enabled: !!accessionNumber,
-        select: (data) => data?.notes
+        select: (data) => {
+            return data.notes.map(note => ({
+                ...note,
+                createdAt: new Date(note.createdAt),
+            }));
+        }
     });
 
     const createNoteMutation = useMutation({
@@ -17,10 +22,9 @@ const useFilingNotes = (accessionNumber?: string) => {
         onSuccess: (resp) => {
             toast.success('Note created successfully');
 
-            // Refresh notes query with new data
-            // Avoids making an additional request to get the latest notes
-            queryClient.setQueryData(['filingNotes', accessionNumber],
-                { notes: [...notes ?? [], resp.note] });
+            queryClient.invalidateQueries({
+                queryKey: ['filingNotes', accessionNumber]
+            });
         },
         onError: (error: Error) => {
             toast.error('Failed to create note');
@@ -32,11 +36,9 @@ const useFilingNotes = (accessionNumber?: string) => {
         onSuccess: (resp) => {
             toast.success('Note updated successfully');
 
-            // Refresh notes query with updated data
-            queryClient.setQueryData(['filingNotes', accessionNumber],
-                { notes: notes?.map(note =>
-                    note.id === resp.note.id ? resp.note : note
-                ) });
+            queryClient.invalidateQueries({
+                queryKey: ['filingNotes', accessionNumber]
+            });
         },
         onError: (error: Error) => {
             toast.error('Failed to update note');
@@ -48,9 +50,9 @@ const useFilingNotes = (accessionNumber?: string) => {
         onSuccess: (noteId: string) => {
             toast.success('Note deleted successfully');
 
-            // Refresh notes query with updated data
-            queryClient.setQueryData(['filingNotes', accessionNumber],
-                { notes: notes?.filter(note => note.id !== noteId) });
+            queryClient.invalidateQueries({
+                queryKey: ['filingNotes', accessionNumber]
+            });
         },
         onError: (error: Error) => {
             toast.error('Failed to delete note');
