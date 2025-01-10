@@ -12,4 +12,6 @@ public interface ICompanyService
     Task<Result<CompanyDetails>> GetCompanyDetailsAsync(string ticker);
     
     Task<Result<CompanyFinancialMetricDto>> GetCompanyFinancialMetricAsync(string cik, FinancialMetricType metric);
+    
+    Task<Result<CompanyFilingHistoryDto>> GetCompanyFilingHistoryAsync(string cik);
 }

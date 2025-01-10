@@ -7,37 +7,51 @@ interface LoadingIndicatorProps {
     children: React.ReactNode;
     portalTarget?: HTMLElement;
     className?: string;
+    ContainerComponent?: React.ComponentType<{
+        children: React.ReactNode;
+        loader: React.ReactNode;
+        isLoading: boolean;
+    }>;
 }
 
-const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({
-                                                               minimumDuration = 3000,
-                                                               isLoading,
-                                                               children,
-                                                               portalTarget,
-                                                               className = ''
-                                                           }) => {
+function LoadingIndicator(props: LoadingIndicatorProps) {
+
+    const {
+        minimumDuration = 3000,
+        isLoading,
+        children,
+        portalTarget,
+        className = '',
+        ContainerComponent
+    } = props;
+
     const [shouldShow, setShouldShow] = useState(isLoading);
-    const dotRef = useRef<HTMLDivElement>(null);
+    const electronRefs = useRef<(HTMLDivElement | null)[]>([null, null, null]);
     const containerRef = useRef<HTMLDivElement>(null);
     const timeoutRef = useRef<NodeJS.Timeout>();
     const frameRef = useRef<number>();
     const startTimeRef = useRef<number>();
+    const initialTimeRef = useRef<number>();
 
-    // Animation state
-    const positionRef = useRef({ x: 0, y: 0 });
-    const velocityRef = useRef({ x: 0, y: 0 });
-    const lastFrameRef = useRef(performance.now());
+    // Atomic parameters
+    const ORBIT_RADIUS = 90;
+    const ORBIT_SPEED = 0.001;
+    const ELLIPSE_RATIO = 0.3;
 
-    const timeRef = useRef(0);
-    const radiusRef = useRef({ x: 50, y: 30 }); // Base radius of loops
-    const frequencyRef = useRef({ x: 1, y: 1.3 }); // Different frequencies create figure-8s
-    const phaseRef = useRef({ x: 0, y: Math.PI / 4 }); // Phase offset for more natural motion
-
-    const SPEED = 3;
+    // Define three distinct orbital planes
+    const ORBITS = [
+        // Horizontal orbit
+        { angle: 0 },
+        // Tilted orbits to create atomic symbol
+        { angle: 120 },
+        { angle: 240 }
+    ];
 
     useEffect(() => {
         if (isLoading) {
             startTimeRef.current = Date.now();
+            initialTimeRef.current = performance.now();
+            setShouldShow(true);
         } else if (startTimeRef.current) {
             const elapsedTime = Date.now() - startTimeRef.current;
             const remainingTime = Math.max(0, minimumDuration - elapsedTime);
@@ -54,70 +68,37 @@ const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({
         };
     }, [isLoading, minimumDuration]);
 
+    const animate = React.useCallback((timestamp: number) => {
+        if (!containerRef.current || !initialTimeRef.current) return;
 
-    const animate = React.useCallback((time: number) => {
-        if (!dotRef.current || !containerRef.current) return;
+        const elapsedTime = timestamp - initialTimeRef.current;
 
-        const deltaTime = (time - lastFrameRef.current) / 16;
-        lastFrameRef.current = time;
+        electronRefs.current.forEach((electronRef, index) => {
+            if (!electronRef) return;
 
-        // Use SPEED to control how fast time increments
-        timeRef.current += deltaTime * SPEED * 0.02;
+            const t = elapsedTime * ORBIT_SPEED;
+            const orbitAngle = (ORBITS[index].angle * Math.PI) / 180;
 
-        // Rest of animation logic stays the same...
-        const bounds = containerRef.current.getBoundingClientRect();
-        const centerX = 0;
-        const centerY = 0;
+            // Calculate base circular motion
+            const baseX = Math.cos(t) * ORBIT_RADIUS;
+            const baseY = Math.sin(t) * ORBIT_RADIUS * ELLIPSE_RATIO;
 
-        // Scale the radius variations by speed as well
-        radiusRef.current.x += (Math.random() - 0.5) * 0.5 * SPEED;
-        radiusRef.current.y += (Math.random() - 0.5) * 0.5 * SPEED;
-        radiusRef.current.x = Math.max(30, Math.min(70, radiusRef.current.x));
-        radiusRef.current.y = Math.max(20, Math.min(50, radiusRef.current.y));
+            // Rotate around Y axis to create the atomic symbol pattern
+            const x = baseX * Math.cos(orbitAngle) - baseY * Math.sin(orbitAngle);
+            const y = baseY * Math.cos(orbitAngle) + baseX * Math.sin(orbitAngle);
 
-        frequencyRef.current.x += (Math.random() - 0.5) * 0.001;
-        frequencyRef.current.y += (Math.random() - 0.5) * 0.001;
-
-        // Calculate base circular motion
-        const baseX = Math.cos(timeRef.current * frequencyRef.current.x + phaseRef.current.x) * radiusRef.current.x;
-        const baseY = Math.sin(timeRef.current * frequencyRef.current.y + phaseRef.current.y) * radiusRef.current.y;
-
-        // Add some randomness to the position
-        const randomX = (Math.random() - 0.5) * 2;
-        const randomY = (Math.random() - 0.5) * 2;
-
-        // Combine circular motion with slight randomness
-        positionRef.current.x = centerX + baseX + randomX;
-        positionRef.current.y = centerY + baseY + randomY;
-
-        // Gradually shift the phase for changing loop patterns
-        phaseRef.current.x += Math.random() * 0.001;
-        phaseRef.current.y += Math.random() * 0.001;
-
-        // Add subtle acceleration in the direction of motion
-        velocityRef.current.x = (positionRef.current.x - centerX) * 0.01;
-        velocityRef.current.y = (positionRef.current.y - centerY) * 0.01;
-
-        // Boundary checks (keep the same)
-        if (Math.abs(positionRef.current.x) > bounds.width / 2) {
-            positionRef.current.x = Math.sign(positionRef.current.x) * bounds.width / 2;
-            phaseRef.current.x += Math.PI / 2; // Change pattern on boundary hit
-        }
-        if (Math.abs(positionRef.current.y) > bounds.height / 2) {
-            positionRef.current.y = Math.sign(positionRef.current.y) * bounds.height / 2;
-            phaseRef.current.y += Math.PI / 2; // Change pattern on boundary hit
-        }
-
-        // Apply transform with hardware acceleration
-        dotRef.current.style.transform = `translate3d(${positionRef.current.x}px, ${positionRef.current.y}px, 0)`;
+            electronRef.style.transform = `translate(-50%, -50%) translate3d(${x}px, ${y}px, 0)`;
+        });
 
         frameRef.current = requestAnimationFrame(animate);
     }, []);
 
     useEffect(() => {
         if (shouldShow) {
+            initialTimeRef.current = performance.now();
             frameRef.current = requestAnimationFrame(animate);
         }
+
         return () => {
             if (frameRef.current) {
                 cancelAnimationFrame(frameRef.current);
@@ -135,24 +116,38 @@ const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({
             className={`relative w-full h-full min-h-64 overflow-hidden ${className}`}
             style={{ perspective: '1000px' }}
         >
+            {/* Nucleus */}
             <div
-                ref={dotRef}
-                className="absolute left-1/2 top-1/2 w-3 h-3 rounded-full bg-info opacity-80 shadow-lg"
+                className="absolute left-1/2 top-1/2 w-5 h-5 -ml-2.5 -mt-2.5 rounded-full"
                 style={{
-                    filter: 'blur(1px)',
-                    willChange: 'transform'
+                    background: 'radial-gradient(circle, rgba(14,165,233,0.7) 0%, rgba(14,165,233,0.3) 70%, rgba(14,165,233,0) 100%)',
+                    filter: 'blur(1px)'
                 }}
             />
+
+            {/* Electrons */}
+            {[0, 1, 2].map((i) => (
+                <div
+                    key={`electron-${i}`}
+                    ref={el => electronRefs.current[i] = el}
+                    className="absolute left-1/2 top-1/2 w-2 h-2 rounded-full bg-info"
+                    style={{
+                        filter: 'blur(0.5px)',
+                        willChange: 'transform',
+                        boxShadow: '0 0 8px rgba(14,165,233,0.5)'
+                    }}
+                />
+            ))}
         </div>
     );
 
-    if (shouldShow) {
-        // Only render the loader while loading, don't render children at all
-        return portalTarget ? createPortal(loader, portalTarget) : loader;
-    }
+    const content = portalTarget ? createPortal(loader, portalTarget) : loader;
 
-    // Only render children when loading is complete AND minimum duration has elapsed
-    return children;
-};
+    return ContainerComponent ? (
+        <ContainerComponent loader={content} isLoading={isLoading}>
+            {children}
+        </ContainerComponent>
+    ) : content;
+}
 
 export default LoadingIndicator;

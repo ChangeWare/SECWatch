@@ -1,13 +1,13 @@
-import React, { useState, useMemo } from 'react';
+import React, {useState, useMemo, useEffect, useRef} from 'react';
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from "@common/components/ui/dialog";
+} from "@common/components/ui/dialog.tsx";
 import { TableIcon, ArrowUpDown, ChevronRight, ChevronDown } from 'lucide-react';
-import { CompanyFinancialMetric, MetricDataPoint } from "@features/company/types";
+import { CompanyFinancialMetric, MetricDataPoint } from "@features/company/types.ts";
 import Button from "@common/components/Button.tsx";
 import {
     getInvertedChangePercentClassName,
@@ -30,16 +30,46 @@ interface FinancialMetricDataTableModalProps {
     metric: CompanyFinancialMetric;
     formatValue: (value: number) => string;
     initialFocusDate?: Date;
-    trigger?: React.ReactNode;
+    isOpen: boolean;
+    onClose: () => void;
 }
 
 const columnHelper = createColumnHelper<MetricDataPoint>();
 
-const FinancialMetricDataTableModal = ({ metric, formatValue, initialFocusDate, trigger }: FinancialMetricDataTableModalProps) => {
-    const [open, setOpen] = useState(false);
+const FinancialMetricDataTableModal = ({ metric, formatValue, initialFocusDate, isOpen, onClose}: FinancialMetricDataTableModalProps) => {
     const [sorting, setSorting] = useState<SortingState>([]);
     const [grouping] = useState<GroupingState>(['fiscalYear']);
     const [expanded, setExpanded] = useState<ExpandedState>({});
+
+    const tableRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (initialFocusDate && metric.dataPoints) {
+            // Find the fiscal year for the focus date
+            const focusPoint = metric.dataPoints.find(point => {
+                const pointDate = new Date(point.endDate);
+                return pointDate.getTime() === initialFocusDate.getTime();
+            });
+
+            if (focusPoint) {
+                // Expand the fiscal year group
+                setExpanded({
+                    [`${focusPoint.fiscalYear}`]: true
+                });
+
+                // Schedule scroll after render
+                setTimeout(() => {
+                    const rowElement = document.querySelector(
+                        `[data-row-id="${focusPoint.fiscalYear}-${focusPoint.fiscalPeriod}"]`
+                    );
+                    if (rowElement && tableRef.current) {
+                        rowElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }, 100);
+            }
+        }
+    }, [initialFocusDate, metric.dataPoints]);
+
 
     // Map fiscal year to its FY period data
     const yearEndDataMap = useMemo(() => {
@@ -163,14 +193,14 @@ const FinancialMetricDataTableModal = ({ metric, formatValue, initialFocusDate, 
                         const value = prevValue ? ((fyData.value - prevValue) / prevValue) * 100 : 0;
                         return (
                             <div className={getInvertedChangePercentClassName(value)}>
-                                {value.toFixed(2)}%
+                                {(value === 0) ? 'NA' : value.toFixed(2) + "%"}
                             </div>
                         );
                     }
                     const value = info.getValue();
                     return (
                         <div className={getInvertedChangePercentClassName(value)}>
-                            {value.toFixed(2)}%
+                            {(value === 0) ? 'NA' : value.toFixed(2) + "%"}
                         </div>
                     );
                 },
@@ -202,30 +232,20 @@ const FinancialMetricDataTableModal = ({ metric, formatValue, initialFocusDate, 
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getGroupedRowModel: getGroupedRowModel(),
+        autoResetPageIndex: false,
         enableGrouping: true,
         enableExpanding: true,
     });
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                {trigger || (
-                    <Button
-                        variant="foreground"
-                        size="sm"
-                    >
-                        <TableIcon className="h-4 w-4 mr-2" />
-                        View Data
-                    </Button>
-                )}
-            </DialogTrigger>
+        <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
             <DialogContent className="max-w-5xl h-[80vh] bg-background border border-white/10">
                 <DialogHeader>
                     <DialogTitle className="text-lg font-bold text-foreground">
                         Historical Data - {getMetricTypeDisplayName(metric.metricType)}
                     </DialogTitle>
                 </DialogHeader>
-                <div className="mt-4 h-[calc(80vh-6rem)] overflow-y-auto relative">
+                <div ref={tableRef} className="mt-4 h-[calc(80vh-6rem)] overflow-y-auto relative">
                     <table className="w-full">
                         <thead className="sticky top-0 bg-background z-10">
                         {table.getHeaderGroups().map(headerGroup => (
@@ -254,6 +274,7 @@ const FinancialMetricDataTableModal = ({ metric, formatValue, initialFocusDate, 
                                         border-b border-white/10 hover:bg-white/5
                                         ${row.getIsGrouped() ? 'bg-surface-foreground/20' : ''}
                                     `}
+                                data-row-id={`${row.original?.fiscalYear}-${row.original?.fiscalPeriod}`}
                             >
                                 {row.getVisibleCells().map(cell => (
                                     <td key={cell.id} className="p-4">

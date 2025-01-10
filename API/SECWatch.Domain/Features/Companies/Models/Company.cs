@@ -4,7 +4,7 @@ namespace SECWatch.Domain.Features.Companies.Models;
 
 public class Company : AggregateRoot
 {
-    public string CIK { get; private set; }
+    public string Cik { get; private set; }
     
     public string Ticker { get; private set; }
     

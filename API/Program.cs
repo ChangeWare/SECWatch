@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using SECWatch.Application;
 using SECWatch.Application.Common;
 using SECWatch.Application.Features.Authentication.Services;
 using SECWatch.Application.Features.Companies;
@@ -31,7 +32,6 @@ builder.Services.Configure<RouteOptions>(options =>
 
 builder.Services.AddControllers();
 
-
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -39,15 +39,8 @@ builder.Services.AddSwaggerGen();
 // Add infrastructure (repositories, infrastructure services, etc.)
 builder.Services.AddInfrastructure(builder.Configuration);
 
-builder.Services.AddSingleton<IMetricMetadataFactory, MetricMetadataFactory>();
-
-// Setup application & domain services
-builder.Services.AddTransient<ISystemEventService, SystemEventService>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IUserDomainService, UserDomainService>();
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddTransient<HttpClient>();
-builder.Services.AddScoped<ICompanyService, CompanyService>();
+// Add application & domain services
+builder.Services.AddApplicationServices(builder.Configuration);
 
 var app = builder.Build();
 
@@ -62,6 +55,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

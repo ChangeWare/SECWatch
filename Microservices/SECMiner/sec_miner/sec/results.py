@@ -1,4 +1,11 @@
-from sec_miner.persistence.mongodb.models import FinancialMetricDocument
+from sec_miner.persistence.mongodb.models import FinancialMetricDocument, CompanyFilingHistoryDocument
+
+
+class CompanyFilingsResult:
+    filing_history: CompanyFilingHistoryDocument
+
+    def __init__(self, filing_history: CompanyFilingHistoryDocument):
+        self.filing_history = filing_history
 
 
 class CompanyMetricResult:

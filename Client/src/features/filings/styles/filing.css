@@ -1,0 +1,273 @@
+@charset "utf-8";
+/* CSS Document */
+
+/* Reset Reloaded - http://meyerweb.com/eric/thoughts/2007/05/01/reset-reloaded/ */
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td
+{
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-weight: inherit;
+    font-style: inherit;
+    font-size: 100%;
+    font-family: inherit;
+    vertical-align: baseline;
+}
+/* remember to define focus styles! */
+:focus {
+    outline: 0;
+}
+
+body {
+    line-height: 1;
+    color: black;
+    background: white;
+}
+
+.fakeBox {
+    border-top: 1px solid #999;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    border-left: 2px solid #999;
+    /*padding: 2px;*/
+    padding: 1px;
+    min-width: 300px;
+    min-height: 20px;
+    _width: 800px;
+    font-size: 0.9em;
+    color: blue;
+}
+
+.fakeBox2 {
+    border-top: 2px solid #999;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    border-left: 2px solid #999;
+    padding: 2px;
+    min-width: 200px;
+    width: 200px;
+    height: 15px;
+    word-wrap: break-word;
+    font-size: 0.9em;
+    color: blue;
+}
+
+.fakeBox3 {
+    border-top: 2px solid #999;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    border-left: 2px solid #999;
+    padding: 2px;
+    width: 800px;
+    height: auto;
+    min-width: 200px;
+    min-height: 30px;
+    word-wrap: break-word;
+    font-size: 0.9em;
+    color: blue;
+}
+
+.fakeBox4 {
+    border-top: 2px solid #999;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    border-left: 2px solid #999;
+    padding: 2px;
+    width: 300px;
+    height: auto;
+    min-width: 200px;
+    min-height: 30px;
+    word-wrap: break-word;
+    font-size: 0.9em;
+    color: blue;
+}
+
+.fakeBox5 {
+    border-top: #000000 1pt solid;
+    border-right: #000000 1pt solid;
+    border-bottom: #000000 1pt solid;
+    border-left: #000000 1pt solid;
+}
+
+.fakeBox6 {
+    border-top: #000000 1pt solid;
+    border-right: #000000 1pt solid;
+    border-bottom: #000000 1pt solid;
+    border-left: #000000 1pt solid;
+    PADDING-RIGHT: 1px;
+    PADDING-LEFT: 1px;
+    PADDING-BOTTOM: 1px;
+    VERTICAL-ALIGN: top;
+    PADDING-TOP: 1px;
+}
+.h1a {
+
+    color: blue;
+    font-size: 0.90em;
+    FONT-WEIGHT: normal;
+    WIDTH: 100%;
+
+}
+
+ul {
+    list-style: disc;
+}
+
+ul,ol {
+    padding: 0 0 0 40px
+}
+
+blockquote {
+    padding: 0 20px
+}
+/* tables still need 'cellspacing="0"' in the markup */
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+caption,th,td {
+    text-align: left;
+    font-weight: normal;
+}
+
+blockquote:before,blockquote:after,q:before,q:after {
+    content: "";
+}
+
+blockquote,q {
+    quotes: "" "";
+}
+/* END Reset Reloaded */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 10px
+}
+
+h1,h2,h3 {
+    background-color: #999;
+    color: #000;
+    font-weight: bold
+}
+
+h4,h5,h6 {
+    font-weight: bold
+}
+
+h1 {
+    font-size: 1.6em;
+    padding: 8px;
+    margin: 6px 0
+}
+
+h2 {
+    font-size: 1.4em;
+    padding: 6px;
+    margin: 4px 0
+}
+
+h3 {
+    font-size: 1.2em;
+    padding: 4px;
+    margin: 2px 0
+}
+
+h4 {
+    font-size: 1.0em;
+    padding: 2px;
+    margin: 2px 0
+}
+
+h5 {
+    font-size: 1.0em;
+    padding: 2px;
+    margin: 2px 0
+}
+
+h6 {
+    font-size: 1.0em;
+    padding: 2px;
+    margin: 2px 0
+}
+
+table {
+    width: 100%;
+} /* was table-layout:fixed */
+td {
+    padding: 8px;
+    vertical-align: top
+}
+
+td.label {
+    width: 300px;
+    min-width: 300px;
+    background-color: #e0e0ff
+}
+
+label {
+    width: 300px;
+    min-width: 300px;
+    background-color: #e0e0ff
+}
+
+.subLabel {
+    width: 180px;
+    float: left;
+    clear: both
+}
+
+p {
+    margin: 8px
+}
+
+em {
+    font-style: italic;
+}
+
+input,textarea {
+    word-wrap: break-word;
+    color: #008;
+}
+
+#header {
+    font-size: 0.9em;
+    border: 1px solid #404040;
+    border-spacing: 2px;
+}
+
+#header h2 {
+    font-size: 0.8em;
+    color: inherit;
+    background-color: transparent
+}
+
+#header .side {
+    background-color: #666;
+    color: #fff;
+    font-weight: bold;
+    font-size: .8em;
+    width: 25%;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+#header .title {
+    background-color: #000;
+    color: #fff;
+    font-weight: bold;
+    width: 25%;
+    text-align: center;
+    vertical-align: middle
+}
+
+#header .center {
+    text-align: center;
+    vertical-align: middle;
+    font-weight: bold
+}
+
+/*.contentwrapper {width:900px} disabled to fill whole page horizontally */
+.right {
+    text-align: right
+}

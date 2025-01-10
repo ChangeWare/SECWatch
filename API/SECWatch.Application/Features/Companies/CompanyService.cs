@@ -58,4 +58,18 @@ public class CompanyService(
         
         return Result.Ok(metroDto);
     }
+
+    public async Task<Result<CompanyFilingHistoryDto>> GetCompanyFilingHistoryAsync(string cik)
+    {
+        var result = await companyRepository.GetCompanyFilingsHistoryAsync(cik);
+        
+        if (result.IsFailed)
+        {
+            return result.ToResult<CompanyFilingHistoryDto>();
+        }
+        
+        var filingHistory = mapper.Map<CompanyFilingHistoryDto>(result.Value);
+        
+        return Result.Ok(filingHistory);
+    }
 }

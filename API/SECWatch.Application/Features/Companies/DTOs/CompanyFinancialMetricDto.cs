@@ -15,5 +15,7 @@ public record CompanyFinancialMetricDto
     
     public DateTime LastReported { get; init; }
     
-    public IReadOnlyList<MetricDataPoint> DataPoints { get; init; }
+    public required IReadOnlyList<MetricDataPoint> DataPoints { get; init; }
+    
+    public required IReadOnlyList<string> CurrencyTypes { get; init; }
 }

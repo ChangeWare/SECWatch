@@ -1,8 +1,10 @@
+using AutoMapper;
 using FluentResults;
 using Microsoft.Extensions.Logging;
 using SECWatch.Application.Common.Utils;
 using SECWatch.Application.Features.Authentication.DTOs;
 using SECWatch.Application.Features.Authentication.Utils;
+using SECWatch.Application.Features.Users.DTOs;
 using SECWatch.Domain.Features.Authentication.Services;
 using SECWatch.Domain.Features.Users;
 
@@ -12,12 +14,13 @@ public class AuthService(
     IUserRepository userRepository,
     IPasswordHasher passwordHasher,
     ITokenGenerator jwtTokenGenerator,
-    ILogger<AuthService> logger)
+    ILogger<AuthService> logger,
+    IMapper mapper)
     : IAuthService
 {
     private readonly ILogger<AuthService> _logger = logger;
 
-    public async Task<Result<AuthenticationResponse>> LoginAsync(LoginRequest request)
+    public async Task<Result<AuthenticationInfo>> LoginAsync(LoginRequest request)
     {
         var user = await userRepository.GetByEmailAsync(request.Email);
         if (user == null)
@@ -36,19 +39,23 @@ public class AuthService(
         var refreshToken = jwtTokenGenerator.GenerateRefreshToken(user.Id);
         
         user.UpdateLastLogin();
+        
+        var userDto = mapper.Map<UserDto>(user);
 
-        var response = new AuthenticationResponse
+        var response = new AuthenticationInfo
         {
             UserId = user.Id.ToString(),
-            Token = token,
-            RefreshToken = refreshToken,
-            TokenExpiration = DateTime.UtcNow.AddHours(1)
+            User = userDto,
+            Token = token.Token,
+            RefreshToken = refreshToken.Token,
+            TokenExpiration = token.Expiry,
+            RefreshTokenExpiration = refreshToken.Expiry
         };
 
         return Result.Ok(response);
     }
 
-    public Result<AuthenticationResponse> RefreshToken(RefreshTokenRequest req)
+    public async Task<Result<AuthenticationInfo>> RefreshTokenAsync(RefreshTokenRequest req)
     {
         var principal = jwtTokenGenerator.ValidateToken(req.RefreshToken);
         if (principal == null)
@@ -66,12 +73,18 @@ public class AuthService(
         var newToken = jwtTokenGenerator.GenerateUserToken(userId);
         var newRefreshToken = jwtTokenGenerator.GenerateRefreshToken(userId);
         
-        var response = new AuthenticationResponse
+        var user = await userRepository.GetByIdAsync(userId);
+        
+        var userDto = mapper.Map<UserDto>(user);
+        
+        var response = new AuthenticationInfo
         {
             UserId = userId.ToString(),
-            Token = newToken,
-            RefreshToken = newRefreshToken,
-            TokenExpiration = DateTime.UtcNow.AddHours(1)
+            User = userDto,
+            Token = newToken.Token,
+            RefreshToken = newRefreshToken.Token,
+            TokenExpiration = newToken.Expiry,
+            RefreshTokenExpiration = newRefreshToken.Expiry
         };
 
         return Result.Ok(response);

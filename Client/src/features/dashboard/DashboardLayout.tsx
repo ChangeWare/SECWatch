@@ -8,7 +8,7 @@ const DashboardLayout = ({ children } : PropsWithChildren) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
     return (
-        <div className="min-h-screen bg-background">
+        <div className="min-h-screen bg-background min-w-fit">
             <DashboardNav sidebarOpen={isSidebarOpen} onSidebarToggle={() => setIsSidebarOpen(!isSidebarOpen)} />
             <div className="flex">
                 <DashboardSidebar sidebarOpen={isSidebarOpen} />

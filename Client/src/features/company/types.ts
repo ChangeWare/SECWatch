@@ -17,6 +17,10 @@ export interface MetricDataPoint {
     currencyType: string;
 }
 
+export interface CurrencyGroupedData {
+    [currency: string]: ProcessedDataPoint[];
+}
+
 export interface ProcessedDataPoint {
     date: Date;
     fiscalYear: number;
@@ -53,6 +57,7 @@ export interface CompanyFinancialMetric {
     lastUpdated: Date;
     lastReported: Date;
 
+    currencyTypes: string[];
     dataPoints: MetricDataPoint[];
 }
 
@@ -73,3 +78,4 @@ export interface CompanyAddress {
     country: string;
     county: string;
 }
+

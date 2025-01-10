@@ -8,13 +8,15 @@ export default function CompanyDashboardLayout() {
     const { company } = useCompany(companyId);
 
     return (
-        <>
+        <div className="flex flex-col w-full">
             <CompanyContextBar
                 companyName={company?.name}
             />
-            <div className="p-6">
-                <Outlet />
+            <div className="w-full max-w-[100vw] overflow-x-hidden pt-4">
+                <div className="container mx-auto">
+                    <Outlet/>
+                </div>
             </div>
-        </>
+        </div>
     );
 }

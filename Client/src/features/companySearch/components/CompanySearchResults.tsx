@@ -1,7 +1,8 @@
 import { Card, CardContent } from "@/common/components/Card";
 import {CompanyResult} from "@features/companySearch/types.ts";
-import {useState} from "react";
+import {useRef, useState} from "react";
 import Pagination from "@common/components/Pagination.tsx";
+import { useEffect } from "react";
 
 interface CompanySearchResultsProps {
     searchResults: CompanyResult[];
@@ -11,6 +12,7 @@ interface CompanySearchResultsProps {
 
 function CompanySearchResults(props: CompanySearchResultsProps) {
     const { searchResults, onResultSelected, itemsPerPage = 5 } = props;
+    const prevSearchResultsRef = useRef(searchResults);
 
     const [currentPage, setCurrentPage] = useState(1);
 
@@ -18,6 +20,18 @@ function CompanySearchResults(props: CompanySearchResultsProps) {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const currentResults = searchResults.slice(startIndex, endIndex);
+
+    useEffect(() => {
+        const prevResults = prevSearchResultsRef.current;
+        const resultsChanged =
+            prevResults.length !== searchResults.length ||
+            prevResults.some((prev, i) => prev.cik !== searchResults[i].cik);
+
+        if (resultsChanged) {
+            setCurrentPage(1);
+            prevSearchResultsRef.current = searchResults;
+        }
+    }, [searchResults]);
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
@@ -86,8 +100,11 @@ function CompanySearchResults(props: CompanySearchResultsProps) {
                     ))}
                 </div>
 
-                <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
-
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                />
             </div>
         )
     )

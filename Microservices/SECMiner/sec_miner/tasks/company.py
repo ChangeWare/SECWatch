@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List, Dict
 from sec_miner.celery_app import celery_app
 from sec_miner.config import Config
-from sec_miner.persistence.mongodb.database import upsert_metric_doc
+from sec_miner.persistence.mongodb.database import upsert_metric_doc, upsert_filing_history_doc
 from sec_miner.persistence.sql.database import find_missing_ciks, upsert_companies, \
     get_all_company_ciks
 from sec_miner.utils.logger_factory import get_logger
@@ -95,7 +95,8 @@ def process_companies(company_ciks: List[str]):
     # Reset the last processed index
     redis_client.set('sec:last_companies_processed_index', 0)
 
-    process_companies_financial_metrics.delay(new_companies)
+    process_companies_financial_metrics.delay(processed_companies)
+    process_companies_filings.delay(processed_companies)
 
 
 @celery_app.task(
@@ -117,3 +118,22 @@ def process_companies_financial_metrics(company_ciks: List[str]):
         for result in financial_metrics_results:
             if result.metric_document is not None:
                 upsert_metric_doc(result.metric_document)
+
+
+@celery_app.task(
+    max_retries=3,
+    autoretry_for=(pyodbc.OperationalError,),
+    retry_kwargs={'countdown': 60},
+    name='tasks.company.process_companies_filings'
+)
+def process_companies_filings(company_ciks: List[str]):
+    """Processes and stores financial metrics for new companies"""
+
+    # If company_ciks is empty, process all companies in the database
+    if not company_ciks:
+        company_ciks = get_all_company_ciks()
+
+    for cik in company_ciks:
+        company_filings_result = sec_client.get_company_filings(cik)
+        upsert_filing_history_doc(company_filings_result.filing_history)
+

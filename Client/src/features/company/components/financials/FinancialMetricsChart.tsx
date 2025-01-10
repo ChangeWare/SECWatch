@@ -1,9 +1,9 @@
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
-import { Card, CardHeader, CardTitle, CardContent } from '@common/components/Card';
-import {MetricType, ProcessedDataPoint} from '../types';
+import { Card, CardHeader, CardTitle, CardContent } from '@common/components/Card.tsx';
+import {MetricType, ProcessedDataPoint} from '../../types.ts';
 import {getMetricTypeDisplayName, processData} from "@features/company/utils.tsx";
-import FinancialMetricsChartTooltip from "@features/company/components/FinancialMetricsChartTooltip.tsx";
+import FinancialMetricsChartTooltip from "@features/company/components/financials/FinancialMetricsChartTooltip.tsx";
 
 interface FinancialMetricsChartProps {
     data: ProcessedDataPoint[];

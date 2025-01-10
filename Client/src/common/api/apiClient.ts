@@ -56,7 +56,9 @@ const processPendingRequests = (error?: any) => {
 apiClient.interceptors.request.use(
   async (config) => {
     const token = getAuthToken();
+      console.log(token);
     if (token) {
+
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;

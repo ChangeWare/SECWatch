@@ -132,11 +132,28 @@ const TableCell = React.forwardRef<
 });
 TableCell.displayName = "TableCell";
 
+const TableRowLoadingIndicator: React.FC<{
+    children: React.ReactNode;
+    loader: React.ReactNode;
+    isLoading: boolean;
+}> = ({ children, loader, isLoading }) => {
+    return (
+        isLoading ? (
+            <TableRow>
+                <TableCell colSpan={1000}>
+                    {loader}
+                </TableCell>
+            </TableRow>
+        ) : children
+    )
+};
+
 export {
     Table,
     TableHeader,
     TableBody,
     TableRow,
     TableHead,
-    TableCell
+    TableCell,
+    TableRowLoadingIndicator
 };

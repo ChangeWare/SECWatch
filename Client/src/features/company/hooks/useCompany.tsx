@@ -1,4 +1,8 @@
-import {CompanyDetailsResponse, CompanyFinancialMetricResponse, MetricDataPoint} from "@features/company/types.ts";
+import {
+    CompanyDetailsResponse,
+    CompanyFinancialMetricResponse,
+    MetricDataPoint
+} from "@features/company/types.ts";
 import {useQuery} from "@tanstack/react-query";
 import {companyApi} from "@features/company/api/companyApi.ts";
 
@@ -39,7 +43,7 @@ export const useCompany = (companyId?: string) => {
         companyDetailsError,
 
         accountsPayableMetric: accountsPayableData?.metric,
-        accountsPayableLoading: accountsPayableIsLoading
+        accountsPayableLoading: accountsPayableIsLoading,
     }
 }
 

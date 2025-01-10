@@ -4,8 +4,9 @@ export const companyPaths = {
     dashboard: {
         default: '/companies/:companyId',
         overview: 'overview',         // Changed to relative
-        filings: 'filings',          // Changed to relative
-        analytics: 'analytics',       // Changed to relative
+        filings: 'filings', // Changed to relative
+        filing: 'filings/:accessionNumber',
+        analysis: 'analysis',       // Changed to relative
         alerts: 'alerts',            // Changed to relative
         settings: 'settings',        // Changed to relative
     }

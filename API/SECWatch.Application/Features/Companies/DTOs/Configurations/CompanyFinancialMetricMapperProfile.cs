@@ -16,6 +16,9 @@ public class CompanyFinancialMetricMapperProfile : Profile
                     opt.MapFrom(src => src.Metadata.LastReported))
             .ForMember(dest => dest.LastValue,
                 opt =>
-                    opt.MapFrom(src => src.Metadata.LastValue));
+                    opt.MapFrom(src => src.Metadata.LastValue))
+            .ForMember(dest => dest.CurrencyTypes,
+                opt =>
+                    opt.MapFrom(src => src.Metadata.CurrencyTypes));
     }
 }

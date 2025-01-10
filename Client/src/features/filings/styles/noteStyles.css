@@ -1,0 +1,97 @@
+.note-highlight {
+    position: absolute;
+    pointer-events: none;
+    transition: background-color 0.2s;
+    mix-blend-mode: multiply;
+    background-color: rgba(255, 227, 118, 0.5);
+}
+
+.note-highlight-clickable {
+    position: absolute;
+    cursor: pointer;
+    background: transparent;
+    z-index: 2;
+}
+
+::selection {
+    background: rgba(255, 227, 118, 0.3);
+}
+
+/* Table styles */
+/* Base table styles */
+table[data-hoverable="true"] {
+    position: relative;
+}
+
+/* Note indicator container */
+.table-note-container {
+    position: absolute;
+    z-index: 3;
+}
+
+/* Note indicator styling */
+.table-note-indicator {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* Inside table positioning adjustments */
+.table-note-indicator.inside-table {
+    background: rgba(26, 31, 53, 0.8) !important; /* Dark background for better contrast */
+}
+
+.table-note-indicator.inside-table svg {
+    color: rgba(255, 225, 118, 0.9) !important; /* Light icon for dark background */
+}
+
+.table-note-indicator.inside-table:hover {
+    background: rgba(26, 31, 53, 0.9) !important;
+}
+
+/* Existing notes are always visible */
+.table-note-indicator.has-note {
+    background: rgba(255, 225, 118, 0.9);
+    opacity: 1;
+}
+
+/* Potential new notes only show on hover */
+.table-note-indicator.no-note {
+    background: rgba(255, 225, 118, 0.5);
+    opacity: 0;
+}
+
+/* Show indicator on hover for tables without notes */
+table[data-hoverable="true"]:hover .table-note-indicator.no-note {
+    opacity: 1;
+}
+
+/* Hover effects */
+.table-note-indicator:hover {
+    transform: scale(1.05);
+}
+
+.table-note-indicator.has-note:hover {
+    background: rgba(255, 225, 118, 1);
+}
+
+.table-note-indicator.no-note:hover {
+    background: rgba(255, 225, 118, 0.7);
+}
+
+/* Table hover effect */
+table[data-hoverable="true"]:hover {
+    outline: 2px solid rgba(255, 225, 118, 0.3);
+    background-color: rgba(255, 225, 118, 0.05);
+}
+
+/* Make sure note indicators have dark icons */
+.table-note-indicator svg {
+    color: #1a1f35;
+}
