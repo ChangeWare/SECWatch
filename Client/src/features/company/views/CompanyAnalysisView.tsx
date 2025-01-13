@@ -1,6 +1,6 @@
 import {Card, CardContent, CardHeader} from "@common/components/Card.tsx";
 
-export function CompanyAnalysis() {
+export function CompanyAnalysisView() {
     return (
         <Card>
             <CardHeader>
@@ -13,4 +13,4 @@ export function CompanyAnalysis() {
     );
 }
 
-export default CompanyAnalysis;
+export default CompanyAnalysisView;

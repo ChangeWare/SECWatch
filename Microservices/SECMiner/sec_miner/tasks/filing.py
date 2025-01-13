@@ -1,7 +1,11 @@
+import pyodbc
 from sec_miner.celery_app import celery_app
 from sec_miner.config import Config
-from sec_miner.utils.sec_rate_limit import sec_rate_limit
-import requests
+from sec_miner.persistence.mongodb.database import MongoDbContext
+from sec_miner.persistence.sql.database import DbContext
+from sec_miner.sec.processors.company_processor import CompanyProcessor
+from sec_miner.sec.processors.filing_processor import FilingProcessor
+from sec_miner.sec.sec_client import SECClient
 import redis
 from sec_miner.utils.logger_factory import get_logger
 
@@ -9,34 +13,18 @@ logger = get_logger(__name__)
 
 
 @celery_app.task(
-    bind=True,
     max_retries=3,
-    rate_limit='10/s',
-    name='tasks.filing.fetch_filing'
+    autoretry_for=(pyodbc.OperationalError,),
+    retry_kwargs={'countdown': 60},
+    name='tasks.filings.process_new_filings'
 )
-@sec_rate_limit
-def fetch_filing(self, cik: str, accession_number: str):
-    """Fetch a specific filing from SEC"""
-    try:
-        redis_client = redis.from_url(Config.REDIS_URL)
+def process_new_filings():
+    """Processes and stores new companies in SQL database"""
+    redis_client = redis.from_url(Config.REDIS_URL)
+    mongodb_context = MongoDbContext()
+    db_context = DbContext()
+    sec_client = SECClient(db_context, redis_client)
+    company_processor = CompanyProcessor(redis_client, sec_client, db_context)
+    filing_processor = FilingProcessor(redis_client, sec_client, company_processor, mongodb_context)
 
-        url = f"{Config.SEC_API_BASE_URL}/{cik}/{accession_number}.txt"
-        response = requests.get(
-            url,
-            headers={'User-Agent': Config.SEC_USER_AGENT}
-        )
-        response.raise_for_status()
-
-        # Store in Redis with 24-hour expiration
-        redis_client.setex(
-            f"filing:{accession_number}",
-            86400,
-            response.content
-        )
-
-        logger.info(f"Successfully fetched filing {accession_number}")
-        return {"status": "success", "accession_number": accession_number}
-
-    except requests.exceptions.RequestException as e:
-        logger.error(f"Error fetching filing {accession_number}: {e}")
-        raise self.retry(exc=e, countdown=60)
+    filing_processor.process_new_filings()

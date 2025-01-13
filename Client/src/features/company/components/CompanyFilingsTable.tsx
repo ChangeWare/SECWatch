@@ -1,6 +1,6 @@
-import {CompanyFiling} from "@features/company/types.ts";
 import {useNavigate} from "react-router-dom";
 import FilingsTable from "@features/filings/components/FilingsTable.tsx";
+import {CompanyFiling} from "@features/filings/types.ts";
 
 
 interface CompanyFilingsTableProps {

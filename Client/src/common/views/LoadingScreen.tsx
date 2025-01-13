@@ -3,7 +3,9 @@ import LoadingIndicator from "@common/components/LoadingIndicator.tsx";
 function LoadingScreen() {
     return (
         <div className="min-h-screen bg-background">
-            <LoadingIndicator/>
+            <LoadingIndicator isLoading={true}>
+                <></>
+            </LoadingIndicator>
         </div>
     );
 }
