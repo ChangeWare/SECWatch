@@ -36,7 +36,7 @@ def process_companies():
     retry_kwargs={'countdown': 60},
     name='tasks.company.process_companies_financial_metrics'
 )
-def process_companies_financial_metrics(company_indexes: List[str]):
+def process_companies_financial_metrics(ciks: List[str], all_companies: bool = False):
     """Processes and stores financial metrics for specified companies"""
 
     mongodb_context = MongoDbContext()
@@ -44,7 +44,11 @@ def process_companies_financial_metrics(company_indexes: List[str]):
     redis_client = redis.from_url(Config.REDIS_URL)
     sec_client = SECClient(db_context, redis_client)
 
-    for cik in company_indexes:
+    if all_companies:
+        # Load all companies
+        ciks = sec_client.get_existing_company_ciks()
+
+    for cik in ciks:
         financial_metrics_results = sec_client.get_company_financial_metrics(cik)
         for result in financial_metrics_results:
             if result.metric_document is not None:
@@ -57,7 +61,7 @@ def process_companies_financial_metrics(company_indexes: List[str]):
     retry_kwargs={'countdown': 60},
     name='tasks.company.process_companies_filings'
 )
-def process_companies_filings(company_ciks: List[str]):
+def process_companies_filings(ciks: List[str], all_companies: bool = False):
     """Processes all filings for specified companies"""
 
     db_context = DbContext()
@@ -65,6 +69,16 @@ def process_companies_filings(company_ciks: List[str]):
     redis_client = redis.from_url(Config.REDIS_URL)
     sec_client = SECClient(db_context, redis_client)
 
-    for cik in company_ciks:
+    if all_companies:
+        # Load all companies
+        ciks = sec_client.get_existing_company_ciks()
+
+    for cik in ciks:
         filing_history = sec_client.get_company_filings(cik)
+
         mongodb_context.upsert_filing_history_doc(filing_history)
+
+        # Get the latest filing date
+        latest_filing_date = filing_history.filings[0].filing_date if filing_history.filings else None
+        if latest_filing_date:
+            db_context.update_company_last_known_filing_date(cik, latest_filing_date)

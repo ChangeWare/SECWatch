@@ -1,5 +1,5 @@
 from pymongo import MongoClient
-from typing import List, Optional
+from typing import List, Optional, Dict
 from datetime import datetime
 from pymongo.synchronous.database import Database
 from sec_miner.config import Config
@@ -24,6 +24,10 @@ class MongoDbContext:
         if 'filing_history' not in self.db.list_collection_names():
             self.db.create_collection('filing_history')
             self.db.filing_history.create_index([("cik", 1)], unique=True)
+
+        if 'failed_filings' not in self.db.list_collection_names():
+            self.db.create_collection('failed_filings')
+            self.db.failed_filings.create_index([("cik", 1)])
 
     def upsert_filing_history_doc(self, filing_history_doc: CompanyFilingHistoryDocument):
         """Update or insert a company's filing history document"""
@@ -209,4 +213,26 @@ class MongoDbContext:
             return self.db.filing_history.find_one({"cik": cik}) is not None
         except Exception as e:
             logger.error(f"Error retrieving last filing date for CIK {cik}: {str(e)}")
+            raise
+
+    def check_companies_have_filing_history(self, ciks: List[str]) -> Dict[str, bool]:
+        """Check if a list of companies have filing history in the database
+            :param ciks: List of CIKs to check
+            :return: Dictionary of CIKs and whether they have filing history
+        """
+        try:
+            cursor = self.db.filing_history.find({"cik": {"$in": ciks}})
+            return {doc["cik"]: True for doc in cursor}
+        except Exception as e:
+            logger.error(f"Error checking filing history for CIKs {ciks}: {str(e)}")
+            raise
+
+    def record_failed_filing(self, filing: Dict):
+        """Record a filing which failed to process"""
+        try:
+            collection = self.db.failed_filings
+            collection.insert_one(filing)
+            logger.log(15, f"Recorded failed filing for CIK {filing.get('cik')}")
+        except Exception as e:
+            logger.error(f"Error recording failed filing for CIK {filing.get('cik')}: {str(e)}")
             raise

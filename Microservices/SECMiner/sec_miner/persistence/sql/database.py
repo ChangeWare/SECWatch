@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List
 from sqlalchemy import text, create_engine
 from sqlalchemy.orm import sessionmaker
@@ -18,43 +19,50 @@ class DbContext:
 
         missing_ciks = []
         with self.session() as session:
-            with session.begin():
-                for i in range(0, len(ciks), batch_size):
-                    batch = ciks[i:i + batch_size]
-                    cik_list = ','.join(batch)
+            for i in range(0, len(ciks), batch_size):
+                batch = ciks[i:i + batch_size]
+                cik_list = ','.join(batch)
 
-                    query = text("""
-                        SELECT t.value AS cik
-                        FROM STRING_SPLIT(CONVERT(nvarchar(max), :ciks), ',') t
-                        WHERE NOT EXISTS (
-                            SELECT 1 
-                            FROM dbo.Companies 
-                            WHERE cik = t.value
-                        )
-                    """)
+                query = text("""
+                    SELECT t.value AS cik
+                    FROM STRING_SPLIT(CONVERT(nvarchar(max), :ciks), ',') t
+                    WHERE NOT EXISTS (
+                        SELECT 1 
+                        FROM dbo.Companies 
+                        WHERE cik = t.value
+                    )
+                """)
 
-                    result = session.execute(query, {'ciks': cik_list})
-                    batch_missing = [row.cik for row in result.fetchall()]
-                    missing_ciks.extend(batch_missing)
+                result = session.execute(query, {'ciks': cik_list})
+                batch_missing = [row.cik for row in result.fetchall()]
+                missing_ciks.extend(batch_missing)
 
         return missing_ciks
 
     def get_all_companies(self) -> List[Company]:
         with self.session() as session:
-            with session.begin():
-                companies = session.query(Company).all()
-                return companies
+            companies = session.query(Company).all()
+            return companies
+
+    def get_companies_by_ciks(self, ciks: List[str]) -> List[Company]:
+        with self.session() as session:
+            companies = session.query(Company).filter(Company.CIK.in_(ciks)).all()
+            return companies
 
     def get_all_company_ciks(self):
         with self.session() as session:
-            with session.begin():
-                companies = session.query(Company).all()
-                company_ciks = [c.CIK for c in companies]
-                return company_ciks
+            companies = session.query(Company).all()
+            company_ciks = [c.CIK for c in companies]
+            return company_ciks
 
     def upsert_companies(self, companies: List[Company]):
         with self.session() as session:
-            with session.begin():
-                for company in companies:
-                    session.merge(company)
-                session.commit()
+            for company in companies:
+                session.merge(company)
+            session.commit()
+
+    def update_company_last_known_filing_date(self, cik: str, date: datetime):
+        with self.session() as session:
+            company = session.query(Company).filter(Company.CIK == cik).first()
+            company.last_known_filing_date = date
+            session.commit()
