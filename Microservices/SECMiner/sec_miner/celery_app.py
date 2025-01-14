@@ -8,7 +8,8 @@ def create_celery_app():
         include=[
             'sec_miner.tasks.company',
             'sec_miner.tasks.maintenance',
-            'sec_miner.tasks.filing'
+            'sec_miner.tasks.filing',
+            'sec_miner.tasks.monitoring'
         ]
     )
     app.config_from_object(Config)

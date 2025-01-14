@@ -92,9 +92,11 @@ class CompanyProcessor:
         """
 
         ticker_companies = self.sec_client.get_company_ticker_list()
-        existing_companies = self.sec_client.get_existing_companies()
         companies_to_update: List[UpdateCompanyInfo] = []
         new_companies: List[NewCompanyInfo] = []
+
+        ciks_in_ticker_list = set([company['cik_str'].zfill(10) for company in ticker_companies])
+        existing_companies = self.sec_client.get_companies_by_ciks(ciks_in_ticker_list)
 
         for company in ticker_companies:
             cik = company['cik_str'].zfill(10)
@@ -129,30 +131,35 @@ class CompanyProcessor:
         self.queue_new_companies(new_companies)
         self.queue_companies_needing_updates(companies_to_update)
 
-    def discover_companies_from_filings(self, filings: List[Dict]):
+    def discover_companies_from_filings(self, filings_by_cik: Dict[str, List[Dict]]):
         """
         Discovers new companies in specified filings
+
+        :param filings_by_cik: Dictionary of CIKs and their filings, grouped by CIK and sorted by date
         """
 
-        existing_companies = self.sec_client.get_existing_companies()
         ticker_mapping = self.sec_client.get_ticker_mapping()
         companies_to_update: List[UpdateCompanyInfo] = []
         new_companies: List[NewCompanyInfo] = []
 
-        for filing in filings:
-            cik = filing['cik'].zfill(10)
-            filing_date = filing['date_filed']
+        ciks_in_filings = filings_by_cik.keys()
+        existing_companies = self.sec_client.get_companies_by_ciks(ciks_in_filings)
 
+        for cik, filings in filings_by_cik.items():
             existing = existing_companies.get(cik)
+
+            # Look only at most recent filing.
+            recent_filing = filings[0]
+            filing_date = datetime.strptime(recent_filing['date_filed'], '%Y-%m-%d')
 
             if existing:
                 if filing_date > existing.last_known_filing_date:
                     companies_to_update.append(
                         UpdateCompanyInfo(
                             cik=cik,
-                            name=filing['company_name'],
+                            name=recent_filing['company_name'],
                             latest_filing_date=filing_date,
-                            latest_filing_type=filing['form_type'],
+                            latest_filing_type=recent_filing['form_type'],
                             source='master_index',
                             ticker=ticker_mapping.get(cik)
                         )
@@ -162,20 +169,21 @@ class CompanyProcessor:
                     companies_to_update.append(
                         UpdateCompanyInfo(
                             cik=cik,
-                            name=filing['company_name'],
+                            name=recent_filing['company_name'],
                             latest_filing_date=filing_date,
-                            latest_filing_type=filing['form_type'],
+                            latest_filing_type=recent_filing['form_type'],
                             source='master_index',
                             ticker=ticker_mapping.get(cik)
                         )
                     )
             else:
+                # If the company is not in our database, mark it as new
                 new_companies.append(
                     NewCompanyInfo(
                         cik=cik,
-                        name=filing['company_name'],
+                        name=recent_filing['company_name'],
                         latest_filing_date=filing_date,
-                        latest_filing_type=filing['form_type'],
+                        latest_filing_type=recent_filing['form_type'],
                         source='master_index',
                         ticker=ticker_mapping.get(cik)
                     )

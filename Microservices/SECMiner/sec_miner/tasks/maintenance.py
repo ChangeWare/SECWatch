@@ -1,10 +1,29 @@
+import pyodbc
+import redis
 from sec_miner.celery_app import celery_app
 from sec_miner.config import Config
+from sec_miner.sec.processors.index_processor import IndexProcessor
+from sec_miner.sec.utils import get_current_year, get_current_quarter
 from sec_miner.utils.logger_factory import get_logger
-import redis
-
 
 logger = get_logger(__name__)
+
+
+@celery_app.task(
+    max_retries=3,
+    autoretry_for=(pyodbc.OperationalError,),
+    retry_kwargs={'countdown': 60},
+    name='tasks.index.process_index_updates'
+)
+def process_index():
+    """Processes and stores new companies in SQL database"""
+    redis_client = redis.from_url(Config.REDIS_URL)
+    index_processor = IndexProcessor(redis_client)
+
+    cur_year = get_current_year()
+    cur_quarter = get_current_quarter()
+    index_processor.process_index_updates(cur_year, cur_quarter)
+
 
 
 @celery_app.task(
@@ -14,16 +33,8 @@ logger = get_logger(__name__)
 def cleanup_stale_data():
     """Remove stale data from Redis"""
     try:
-        redis_client = redis.from_url(Config.REDIS_URL)
-
-        count = 0
-        for key in redis_client.scan_iter("filing:*"):
-            if not redis_client.get(f"access:{key}"):
-                redis_client.delete(key)
-                count += 1
-
-        logger.info(f"Cleaned up {count} stale entries")
-        return {"status": "success", "cleaned_count": count}
+        pass
+        # TODO: Implement cleanup logic
 
     except Exception as e:
         logger.error(f"Error during cleanup: {e}")

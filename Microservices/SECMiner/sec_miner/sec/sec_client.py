@@ -1,8 +1,7 @@
 from datetime import datetime, timedelta
-from typing import List, Dict
+from typing import List, Dict, Set
 import httpx
 from redis import Redis
-
 from sec_miner.config import Config
 from sec_miner.persistence.financial_metric import FinancialMetric
 from sec_miner.persistence.mongodb.models import MetricDataPoint, FinancialMetricDocument, FinancialMetricMetadata, \
@@ -11,10 +10,12 @@ from sec_miner.persistence.sql.database import DbContext
 from sec_miner.persistence.sql.models import Company, Address
 from sec_miner.sec.processors.index_processor import IndexProcessor
 from sec_miner.sec.results import CompanyMetricResult
+from sec_miner.sec.utils import normalize_cik
 from sec_miner.utils.logger_factory import get_logger
 from sec_miner.utils.sec_rate_limit import sec_rate_limit
 
 logger = get_logger(__name__)
+
 
 class SECClient:
     def __init__(self, db_context: DbContext, redis_client: Redis):
@@ -139,7 +140,7 @@ class SECClient:
 
     def get_company_filing(self, cik: str, accession_number: str) -> SECFiling:
         # Ensure CIK is 10 digits for SEC API
-        cik = cik.zfill(10)
+        cik = normalize_cik(cik)
 
         with httpx.Client() as client:
             response = client.get(
@@ -264,7 +265,9 @@ class SECClient:
         cik = cik.zfill(10)
 
         """Get financial metrics for companies"""
-        return [self.get_company_accounts_payable(cik)]
+        return [
+            self.get_company_accounts_payable(cik)
+        ]
 
     @sec_rate_limit
     def get_company_details(self, cik: str) -> Company:
@@ -301,9 +304,13 @@ class SECClient:
 
             return company
 
-    def get_existing_companies(self) -> Dict[str, Company]:
-        """Get existing companies from database"""
+    def get_companies_by_ciks(self, ciks: Set[str]) -> Dict[str, Company]:
+        """Get companies by CIKs. Returns a dictionary with CIK as key"""
         return {
-            company.CIK: company
-            for company in self.db_context.get_all_companies()
+            company.cik: company
+            for company in self.db_context.get_companies_by_ciks(ciks)
         }
+
+    def get_existing_company_ciks(self) -> List[str]:
+        """Get existing company CIKs from database"""
+        return self.db_context.get_all_company_ciks()

@@ -14,6 +14,8 @@ public class Company : AggregateRoot
     
     public DateTime LastUpdated { get; private set; }
     
+    public DateTime? LastKnownFilingDate { get; private set; }
+    
     private List<Address> _addresses = [];
     
     public IReadOnlyCollection<Address> Addresses => _addresses.AsReadOnly();

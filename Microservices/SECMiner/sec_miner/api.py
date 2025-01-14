@@ -1,13 +1,13 @@
-# api.py
 from typing import Optional, List
-
-from fastapi import FastAPI, HTTPException, BackgroundTasks, Request
+from fastapi import FastAPI, HTTPException, Request
 from celery.result import AsyncResult
 from datetime import datetime
 import redis
 from celery_app import celery_app
-from tasks.company import update_company_list, process_companies, process_companies_financial_metrics, \
+from tasks.company import process_companies, process_companies_financial_metrics, \
     process_companies_filings
+from tasks.maintenance import process_index
+from tasks.monitoring import check_new_filings, check_company_updates
 from config import Config
 import uvicorn
 from sec_miner.utils.logger_factory import get_logger
@@ -32,6 +32,16 @@ async def health_check():
         raise HTTPException(status_code=503, detail=str(e))
 
 
+@app.get("/monitoring/trigger-monitoring-refresh")
+async def trigger_monitoring_refresh():
+    """Trigger monitoring refresh"""
+    try:
+        check_new_filings.delay()
+        check_company_updates.delay()
+    except Exception as e:
+        logger.error(f"Error triggering monitoring refresh: {str(e)}")
+
+
 @app.get("/metrics")
 async def get_metrics():
     """Expose metrics for monitoring"""
@@ -47,11 +57,11 @@ async def get_metrics():
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/tasks/update-companies")
+@app.post("/tasks/process-companies")
 async def trigger_update_companies():
     """Manually trigger company list update"""
     try:
-        task = update_company_list.delay()
+        task = process_companies.delay()
         return {
             "task_id": task.id,
             "status": "started",
@@ -61,17 +71,11 @@ async def trigger_update_companies():
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/tasks/trigger_company_processing")
-async def trigger_company_processing(
-    request: Request
-):
-    """Manually trigger company list update"""
+@app.post("/tasks/process-index")
+async def trigger_update_companies():
+    """Manually trigger SEC index update"""
     try:
-        body = await request.json()
-        ciks: Optional[List[str]] = body.get("ciks") or None
-
-        task = process_companies.delay(ciks)
-
+        task = process_index.delay()
         return {
             "task_id": task.id,
             "status": "started",
@@ -83,18 +87,13 @@ async def trigger_company_processing(
 
 @app.post("/tasks/trigger_company_financials_processing")
 async def trigger_company_financials_processing(
-    request: Request
+        request: Request
 ):
     """Manually trigger company list update"""
     try:
-        try:
-            body = await request.json()
-        except:
-            body = {}
-
+        body = await request.json()
         ciks: Optional[List[str]] = body.get("ciks") or None
-
-        task = process_companies_financial_metrics.delay(ciks)
+        task = process_companies_financial_metrics.delay(ciks, ciks is not None)
 
         return {
             "task_id": task.id,
@@ -107,17 +106,12 @@ async def trigger_company_financials_processing(
 
 @app.post("/tasks/trigger_company_filings_processing")
 async def trigger_company_filings_processing(
-    request: Request
+        request: Request
 ):
     """Manually trigger company list update"""
     try:
-        try:
-            body = await request.json()
-        except:
-            body = {}
-
+        body = await request.json()
         ciks: Optional[List[str]] = body.get("ciks") or None
-
         task = process_companies_filings.delay(ciks)
 
         return {
@@ -148,6 +142,7 @@ async def get_last_update():
         "last_update": last_update.decode() if last_update else None,
         "company_count": len(redis_client.keys("company:*"))
     }
+
 
 if __name__ == "__main__":
     logger.info("Starting SEC Miner API in debug mode...")
