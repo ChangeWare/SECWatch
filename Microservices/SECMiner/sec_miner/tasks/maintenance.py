@@ -1,7 +1,7 @@
 import pyodbc
 import redis
 from sec_miner.celery_app import celery_app
-from sec_miner.config import Config
+from sec_miner.config.loader import config
 from sec_miner.sec.processors.index_processor import IndexProcessor
 from sec_miner.sec.utils import get_current_year, get_current_quarter
 from sec_miner.utils.logger_factory import get_logger
@@ -17,13 +17,12 @@ logger = get_logger(__name__)
 )
 def process_index():
     """Processes and stores new companies in SQL database"""
-    redis_client = redis.from_url(Config.REDIS_URL)
+    redis_client = redis.from_url(config.REDIS_URL)
     index_processor = IndexProcessor(redis_client)
 
     cur_year = get_current_year()
     cur_quarter = get_current_quarter()
     index_processor.process_index_updates(cur_year, cur_quarter)
-
 
 
 @celery_app.task(

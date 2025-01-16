@@ -15,4 +15,8 @@ public class CompanyDetails
     public Address? BusinessAddress { get; set; }
     
     public DateTime LastUpdated { get; set; }
+    
+    public DateTime? LastKnownFilingDate { get; set; }
+    
+    public bool IsTracked { get; set; }
 }

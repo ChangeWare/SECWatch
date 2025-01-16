@@ -8,12 +8,12 @@ from tasks.company import process_companies, process_companies_financial_metrics
     process_companies_filings
 from tasks.maintenance import process_index
 from tasks.monitoring import check_new_filings, check_company_updates
-from config import Config
 import uvicorn
 from sec_miner.utils.logger_factory import get_logger
+from config.loader import config
 
 app = FastAPI(title="SEC Miner API")
-redis_client = redis.from_url(Config.REDIS_URL)
+redis_client = redis.from_url(config.REDIS_URL)
 logger = get_logger(__name__)
 
 

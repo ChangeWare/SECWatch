@@ -1,6 +1,7 @@
 export const companyPaths = {
     default: '/companies',
     search: '/companies/search',
+    tracked: '/companies/tracked',
     dashboard: {
         default: '/companies/:companyId',
         overview: 'overview',         // Changed to relative

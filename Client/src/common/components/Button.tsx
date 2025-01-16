@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@common/lib/utils";
 
-export type ButtonVariant = 'primary' | 'info' | 'success' | 'danger' | 'foreground';
+export type ButtonVariant = 'primary' | 'info' | 'success' | 'danger' | 'foreground' | 'enabled';
 export type ButtonSize = 'sm' | 'md' | 'lg' | 'icon';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -31,6 +31,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({
         info: "bg-info text-info-foreground hover:opacity-90",
         success: "bg-success text-success-foreground hover:opacity-90",
         danger: "bg-error text-error-foreground hover:opacity-90",
+        enabled: "bg-success text-success-foreground hover:bg-error hover:text-error-foreground"
     };
 
     const sizes: Record<ButtonSize, string> = {

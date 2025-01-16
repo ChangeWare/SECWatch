@@ -1,8 +1,11 @@
-from datetime import datetime, timedelta
-from typing import List, Dict, Set
+import json
+
 import httpx
+from datetime import datetime, timedelta
+from typing import List, Dict
+from ratelimit import sleep_and_retry, limits
 from redis import Redis
-from sec_miner.config import Config
+from sec_miner.config.loader import config
 from sec_miner.persistence.financial_metric import FinancialMetric
 from sec_miner.persistence.mongodb.models import MetricDataPoint, FinancialMetricDocument, FinancialMetricMetadata, \
     SECFiling, CompanyFilingHistoryDocument, FilingHistoryMetadata
@@ -12,45 +15,48 @@ from sec_miner.sec.processors.index_processor import IndexProcessor
 from sec_miner.sec.results import CompanyMetricResult
 from sec_miner.sec.utils import normalize_cik
 from sec_miner.utils.logger_factory import get_logger
-from sec_miner.utils.sec_rate_limit import sec_rate_limit
 
 logger = get_logger(__name__)
 
 
 class SECClient:
     def __init__(self, db_context: DbContext, redis_client: Redis):
-        self.headers = {'User-Agent': Config.SEC_USER_AGENT}
+        self.headers = {'User-Agent': config.SEC_USER_AGENT}
         self.db_context = db_context
         self.redis_client = redis_client
         self.index_processor = IndexProcessor(redis_client)
 
-    @sec_rate_limit
     def get_company_ticker_list(self):
         """Get company tickers from company_tickers.json"""
 
         # First check redis to see if we've already fetched this within the last 12 hours
-        company_tickers_cache = self.redis_client.get('sec:company_tickers_cache')
+        company_tickers_cache_data = self.redis_client.get('sec:company_tickers_cache')
+        company_tickers_cache = json.loads(company_tickers_cache_data) if company_tickers_cache_data else None
+
         if company_tickers_cache and company_tickers_cache.last_updated > datetime.utcnow() - timedelta(hours=12):
             return company_tickers_cache.data
 
         with httpx.Client() as client:
-            response = client.get(Config.SEC_TICKERS_URL, headers=self.headers)
+            response = client.get(config.SEC_TICKERS_URL, headers=self.headers)
             data = response.json()
             companies = [data[key] for key in data]
 
-            # Cache the data in Redis
-            self.redis_client.set('sec:company_tickers_cache', {
+            cache_entry = {
                 'data': companies,
                 'last_updated': datetime.utcnow()
-            })
+            }
+
+            # Cache the data in Redis
+            self.redis_client.set('sec:company_tickers_cache', json.dumps(cache_entry, default=str))
 
             return companies
 
-    @sec_rate_limit
     def get_ticker_mapping(self) -> Dict[str, str]:
         """Get CIK to ticker mapping from SEC company tickers list """
 
         company_tickers = self.get_company_ticker_list()
+
+        print(company_tickers)
 
         # Create CIK to ticker mapping
         return {
@@ -63,7 +69,7 @@ class SECClient:
 
         with httpx.Client() as client:
             response = client.get(
-                Config.SEC_CIK_ACCOUNTS_PAYABLE_URL.format(cik=cik),
+                config.SEC_CIK_ACCOUNTS_PAYABLE_URL.format(cik=cik),
                 headers=self.headers
             )
 
@@ -144,7 +150,7 @@ class SECClient:
 
         with httpx.Client() as client:
             response = client.get(
-                url=Config.SEC_CIK_SUBMISSIONS_URL.format(cik=cik),
+                url=config.SEC_CIK_SUBMISSIONS_URL.format(cik=cik),
                 headers=self.headers
             )
 
@@ -190,7 +196,7 @@ class SECClient:
 
         with httpx.Client() as client:
             response = client.get(
-                url=Config.SEC_CIK_SUBMISSIONS_URL.format(cik=cik),
+                url=config.SEC_CIK_SUBMISSIONS_URL.format(cik=cik),
                 headers=self.headers
             )
 
@@ -269,15 +275,14 @@ class SECClient:
             self.get_company_accounts_payable(cik)
         ]
 
-    @sec_rate_limit
+    @sleep_and_retry
+    @limits(calls=config.RATE_CALLS_PER_SECOND, period=config.RATE_LIMIT_SECONDS)
     def get_company_details(self, cik: str) -> Company:
         """Get details for a specific company"""
-
-        # Ensure CIK is 10 digits for SEC API
-        cik = cik.zfill(10)
+        cik = normalize_cik(cik)
 
         with httpx.Client() as client:
-            response = client.get(Config.SEC_CIK_SUBMISSIONS_URL.format(cik=cik), headers=self.headers)
+            response = client.get(config.SEC_CIK_SUBMISSIONS_URL.format(cik=cik), headers=self.headers)
             company_data = response.json()
 
             addresses = []
@@ -303,14 +308,3 @@ class SECClient:
             )
 
             return company
-
-    def get_companies_by_ciks(self, ciks: Set[str]) -> Dict[str, Company]:
-        """Get companies by CIKs. Returns a dictionary with CIK as key"""
-        return {
-            company.cik: company
-            for company in self.db_context.get_companies_by_ciks(ciks)
-        }
-
-    def get_existing_company_ciks(self) -> List[str]:
-        """Get existing company CIKs from database"""
-        return self.db_context.get_all_company_ciks()

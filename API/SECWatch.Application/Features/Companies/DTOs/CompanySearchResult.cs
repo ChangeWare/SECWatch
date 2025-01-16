@@ -1,5 +1,3 @@
-using SECWatch.Domain.Features.Companies.Models;
-
 namespace SECWatch.Application.Features.Companies.DTOs;
 
 public class CompanySearchResult

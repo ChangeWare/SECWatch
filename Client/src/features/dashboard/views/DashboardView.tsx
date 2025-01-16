@@ -1,8 +1,8 @@
 import AlertStream from "../components/AlertStream/AlertStream.tsx";
 import {AlertItem} from "@features/dashboard/components/AlertStream/AlertFeed.tsx";
 import React from "react";
-import PinnedCharts from "@features/dashboard/components/PinnedCharts.tsx";
-import TrackedCompanies from "@features/dashboard/components/TrackedCompanies.tsx";
+import PinnedChartsWidget from "@features/dashboard/components/widgets/PinnedChartsWidget.tsx";
+import RecentFilingsWidget from "@features/dashboard/components/widgets/RecentFilingsWidget.tsx";
 
 // Main Dashboard Component
 function DashboardView() {
@@ -51,8 +51,8 @@ function DashboardView() {
             <div className="max-w-7xl mx-auto space-y-6">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div className="lg:col-span-2 space-y-6">
-                        <TrackedCompanies />
-                        <PinnedCharts />
+                        <RecentFilingsWidget />
+                        <PinnedChartsWidget />
                     </div>
 
                     <div className="lg:col-span-1">

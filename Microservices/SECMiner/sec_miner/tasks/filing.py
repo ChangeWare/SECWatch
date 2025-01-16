@@ -1,6 +1,6 @@
 import pyodbc
 from sec_miner.celery_app import celery_app
-from sec_miner.config import Config
+from sec_miner.config.loader import config
 from sec_miner.persistence.mongodb.database import MongoDbContext
 from sec_miner.persistence.sql.database import DbContext
 from sec_miner.sec.processors.company_processor import CompanyProcessor
@@ -15,10 +15,10 @@ logger = get_logger(__name__)
 @celery_app.task(name='tasks.filings.check_new_filings')
 def check_new_filings():
     """Checks for new filings in the queue and triggers processing if needed"""
-    redis_client = redis.from_url(Config.REDIS_URL)
+    redis_client = redis.from_url(config.REDIS_URL)
 
     # Check if there are any filings in the queue
-    queue_length = redis_client.llen(Config.FILING_QUEUE)
+    queue_length = redis_client.llen(config.FILING_QUEUE)
 
     if queue_length > 0:
         # If there are filings to process, trigger the processing task
@@ -34,7 +34,7 @@ def check_new_filings():
 )
 def process_new_filings():
     """Processes and stores new companies in SQL database"""
-    redis_client = redis.from_url(Config.REDIS_URL)
+    redis_client = redis.from_url(config.REDIS_URL)
     mongodb_context = MongoDbContext()
     db_context = DbContext()
     sec_client = SECClient(db_context, redis_client)

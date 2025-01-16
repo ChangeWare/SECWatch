@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SECWatch.Domain.Features.Users;
+using SECWatch.Domain.Features.Users.Models;
 using SECWatch.Infrastructure.Persistence;
 
 namespace SECWatch.Infrastructure.Features.Users;

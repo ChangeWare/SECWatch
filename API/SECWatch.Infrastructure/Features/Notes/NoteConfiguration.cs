@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SECWatch.Domain.Features.Notes.Models;
 
-namespace SECWatch.Infrastructure.Persistence.Configurations;
+namespace SECWatch.Infrastructure.Features.Notes;
 
 public class NoteConfiguration : IEntityTypeConfiguration<Note>
 {

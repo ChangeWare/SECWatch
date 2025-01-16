@@ -1,4 +1,4 @@
-namespace SECWatch.Domain.Features.Authentication.Services;
+namespace SECWatch.Application.Features.Authentication.Utils;
 
 public interface IPasswordHasher
 {

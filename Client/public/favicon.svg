@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+    <!-- Magnifying glass -->
+    <circle cx="28" cy="28" r="14" fill="none" stroke="#8ecae6" stroke-width="4"/>
+    <line x1="38" y1="38" x2="50" y2="50" stroke="#8ecae6" stroke-width="4" stroke-linecap="round"/>
+
+    <!-- Eye -->
+    <path d="M23 28 Q28 23 33 28 Q28 33 23 28" fill="#fb8500"/>
+</svg>

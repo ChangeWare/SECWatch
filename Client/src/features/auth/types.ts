@@ -1,3 +1,4 @@
+import { User } from "@features/user/types.ts";
 
 export interface LoginCredentials {
     email: string;
@@ -33,15 +34,6 @@ export interface RegistrationFormData {
     confirmPassword: string;
     companyName?: string;
     agreeToTerms: boolean;
-}
-
-export interface User {
-    id: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    role: 'user' | 'admin';
-    lastLoginAt: string;
 }
 
 export interface PasswordResetRequest {

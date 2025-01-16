@@ -17,6 +17,22 @@ interface IXBRLViewerProps {
     onNoteDelete: (id: string) => void;
 }
 
+export const IXBRLLoadingIndicator: React.FC<{
+    children: React.ReactNode;
+    loader: React.ReactNode;
+    isLoading: boolean;
+}> = ({ children, loader, isLoading }) => {
+    return (
+        isLoading ? (
+            <Card>
+                <CardContent>
+                    {loader}
+                </CardContent>
+            </Card>
+        ) : children
+    )
+};
+
 const IXBRLViewer: React.FC<IXBRLViewerProps> = ({
                                                      filingContents,
                                                      notes = [],

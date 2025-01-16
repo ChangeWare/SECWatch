@@ -2,7 +2,6 @@ import { apiClient } from "@common/api/apiClient";
 import {
   LoginResponse,
   LoginCredentials,
-  User,
   PasswordResetRequest,
   PasswordUpdateData,
   RegisterResponse,
@@ -19,14 +18,6 @@ export const authApi = {
   login: async (credentials: LoginCredentials): Promise<LoginResponse> => {
     const response = await apiClient.post<LoginResponse>('/auth/login', credentials);
     // Store token in secure HTTP-only cookie via backend
-    return response.data;
-  },
-
-  /**
-   * Get the current authenticated user
-   */
-  getCurrentUser: async (): Promise<User> => {
-    const response = await apiClient.get<User>('/auth/me');
     return response.data;
   },
 

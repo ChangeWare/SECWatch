@@ -1,18 +1,18 @@
 from redis import Redis
-from sec_miner.config import Config
+from sec_miner.config.loader import config
 from sec_miner.celery_app import celery_app
 from sec_miner.utils.logger_factory import get_logger
 from sec_miner.tasks.filing import process_new_filings
 from sec_miner.tasks.company import process_companies
 
 logger = get_logger(__name__)
-_redis_client = Redis.from_url(Config.REDIS_URL)
+_redis_client = Redis.from_url(config.REDIS_URL)
 
 
 @celery_app.task(name='tasks.monitoring.check_new_filings')
 def check_new_filings():
     """Checks for new filings in the queue and triggers processing if needed"""
-    queue_length = _redis_client.llen(Config.FILING_QUEUE)
+    queue_length = _redis_client.llen(config.FILING_QUEUE)
 
     if queue_length > 0:
         process_new_filings.delay()

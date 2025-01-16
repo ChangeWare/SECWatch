@@ -16,7 +16,7 @@ export const getBaseUrl = () => {
   let url;
   switch(process.env.NODE_ENV) {
       case 'production':
-          url = 'https://cardcheck-api.azurewebsites.net/api/';
+          url = 'https://secwatch-api.azurewebsites.net/api/';
           break;
       case 'development':
       default:
@@ -56,7 +56,6 @@ const processPendingRequests = (error?: any) => {
 apiClient.interceptors.request.use(
   async (config) => {
     const token = getAuthToken();
-      console.log(token);
     if (token) {
 
       config.headers.Authorization = `Bearer ${token}`;

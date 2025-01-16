@@ -1,7 +1,6 @@
 using AutoMapper;
 using FluentResults;
 using SECWatch.Application.Features.Companies.DTOs;
-using SECWatch.Application.Features.Companies.DTOs.Configurations;
 using SECWatch.Domain.Features.Companies;
 using SECWatch.Domain.Features.Companies.Repositories;
 
@@ -10,49 +9,39 @@ namespace SECWatch.Application.Features.Companies;
 public class CompanyService(
     ICompanyRepository companyRepository,
     ICompanyFinancialMetricsRepository companyFinancialMetricsRepository,
+    ITrackedCompanyRepository trackedCompanyRepository,
     IMapper mapper
     ) : ICompanyService
 {
     public async Task<Result<IEnumerable<CompanySearchResult>>> SearchCompaniesAsync(CompanySearchRequest req)
     {
-        var result = await companyRepository.SearchCompaniesAsync(req.Query);
+        var companies = await companyRepository.SearchCompaniesAsync(req.Query);
         
-        if (result.IsFailed)
-        {
-            return result.ToResult<IEnumerable<CompanySearchResult>>();
-        }
-        
-        var companiesSearchResponse = mapper.Map<IEnumerable<CompanySearchResult>>(result.Value);
+        var companiesSearchResponse = mapper.Map<IEnumerable<CompanySearchResult>>(companies);
 
         return Result.Ok(companiesSearchResponse);
     }
 
-    public async Task<Result<CompanyDetails>> GetCompanyDetailsAsync(string cik)
+    public async Task<Result<CompanyDetails>> GetCompanyDetailsAsync(Guid userId, string cik)
     {
         // Ensure CIK is padded to 10 characters
         cik = cik.PadLeft(10, '0');
         
-        var result = await companyRepository.GetCompanyAsync(cik);
+        var company = await companyRepository.GetCompanyAsync(cik);
         
-        if (result.IsFailed)
-        {
-            return result.ToResult<CompanyDetails>();
-        }
         
-        var companyDetails = mapper.Map<CompanyDetails>(result.Value);
+        var companyDetails = mapper.Map<CompanyDetails>(company);
+        
+        // Check whether the user is tracking this company
+        var trackedCompany = await trackedCompanyRepository.GetTrackedCompanyByCikForUser(cik, userId);
+        companyDetails.IsTracked = trackedCompany != null;
+        
         return Result.Ok(companyDetails);
     }
 
     public async Task<Result<CompanyFinancialMetricDto>> GetCompanyFinancialMetricAsync(string cik, FinancialMetricType metricType)
     {
-        var result = await companyFinancialMetricsRepository.GetCompanyFinancialMetricAsync(cik, metricType);
-        
-        if (result.IsFailed)
-        {
-            return result.ToResult<CompanyFinancialMetricDto>();
-        }
-        
-        var metric = result.Value;
+        var metric = await companyFinancialMetricsRepository.GetCompanyFinancialMetricAsync(cik, metricType);
         
         var metroDto = mapper.Map<CompanyFinancialMetricDto>(metric);
         
@@ -61,15 +50,10 @@ public class CompanyService(
 
     public async Task<Result<CompanyFilingHistoryDto>> GetCompanyFilingHistoryAsync(string cik)
     {
-        var result = await companyRepository.GetCompanyFilingsHistoryAsync(cik);
+        var filingHistory = await companyRepository.GetCompanyFilingsHistoryAsync(cik);
         
-        if (result.IsFailed)
-        {
-            return result.ToResult<CompanyFilingHistoryDto>();
-        }
+        var filingHistoryDto = mapper.Map<CompanyFilingHistoryDto>(filingHistory);
         
-        var filingHistory = mapper.Map<CompanyFilingHistoryDto>(result.Value);
-        
-        return Result.Ok(filingHistory);
+        return Result.Ok(filingHistoryDto);
     }
 }

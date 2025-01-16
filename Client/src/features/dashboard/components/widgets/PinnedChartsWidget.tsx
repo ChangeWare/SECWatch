@@ -2,6 +2,8 @@ import React, {useState} from "react";
 import {Card, CardContent, CardHeader, CardTitle} from "@common/components/Card.tsx";
 import {Pin, X} from "lucide-react";
 import {CartesianGrid, Line, LineChart, ResponsiveContainer, XAxis, YAxis} from "recharts";
+import {formatCurrency} from "@features/company/utils.tsx";
+import WidgetContainer from "@features/dashboard/components/widgets/WidgetContainer.tsx";
 
 interface DataPoint
 {
@@ -9,7 +11,7 @@ interface DataPoint
     value: number;
 }
 
-export function PinnedCharts() {
+export function PinnedChartsWidget() {
     const charts = [
         { id: 1, title: 'Revenue Growth YoY', company: 'AAPL' },
         { id: 2, title: 'Debt to Equity Ratio', company: 'MSFT' }
@@ -24,12 +26,8 @@ export function PinnedCharts() {
     ]);
 
     return (
-        <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle className="text-xl text-white">Pinned Charts</CardTitle>
-                <Pin className="h-5 w-5 text-gray-400" />
-            </CardHeader>
-            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <WidgetContainer title="Pinned Charts">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {charts.map(chart => (
                     <Card variant="elevated" key={chart.id} className="p-4">
                         <div className="flex justify-between items-start mb-2">
@@ -47,14 +45,12 @@ export function PinnedCharts() {
                                 />
                                 <XAxis
                                     dataKey="date"
-                                    tick={{ fill: 'hsl(var(--muted-foreground))' }}
-                                    tickLine={{ stroke: 'hsl(var(--border))' }}
-                                    axisLine={{ stroke: 'hsl(var(--border))' }}
+                                    stroke="hsl(var(--foreground))"
+                                    tickMargin={10}
                                 />
                                 <YAxis
-                                    tick={{ fill: 'hsl(var(--muted-foreground))' }}
-                                    tickLine={{ stroke: 'hsl(var(--border))' }}
-                                    axisLine={{ stroke: 'hsl(var(--border))' }}
+                                    stroke="hsl(var(--foreground))"
+                                    tickFormatter={formatCurrency}
                                 />
                                 <Line
                                     type="monotone"
@@ -70,9 +66,10 @@ export function PinnedCharts() {
                         </ResponsiveContainer>
                     </Card>
                 ))}
-            </CardContent>
-        </Card>
+            </div>
+
+        </WidgetContainer>
     );
 }
 
-export default PinnedCharts;
+export default PinnedChartsWidget;

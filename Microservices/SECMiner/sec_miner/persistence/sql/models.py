@@ -1,8 +1,8 @@
 import uuid
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Enum, DECIMAL, Boolean
+from sqlalchemy import Column, String, ForeignKey, DateTime
 from sqlalchemy.dialects.mssql import UNIQUEIDENTIFIER
-from sqlalchemy.orm import relationship, validates
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
 
 Base = declarative_base()
 

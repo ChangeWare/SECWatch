@@ -1,4 +1,3 @@
-using FluentResults;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using SECWatch.Domain.Features.Companies;
@@ -12,51 +11,30 @@ public class CompanyFinancialMetricsRepository(
     IMongoDbContext mongoDbContext,
     ILogger<CompanyFinancialMetricsRepository> logger) : ICompanyFinancialMetricsRepository
 {
-    public async Task<Result<IReadOnlyList<CompanyFinancialMetric>>> GetCompanyFinancialMetricsAsync(string cik)
+    public async Task<IReadOnlyList<CompanyFinancialMetric>> GetCompanyFinancialMetricsAsync(string cik)
     {
-        try
-        {
-            var filter = Builders<CompanyFinancialMetric>.Filter.Eq(x => x.Cik, cik);
-            var metrics = await mongoDbContext
-                .GetCollection<CompanyFinancialMetric>("financial_metrics")
-                .Find(filter).ToListAsync();
-            
-            return Result.Ok<IReadOnlyList<CompanyFinancialMetric>>(metrics.AsReadOnly());
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error retrieving financial metrics for CIK: {Cik}", cik);
-            return Result.Fail("Failed to retrieve financial metrics");
-        }
+        var filter = Builders<CompanyFinancialMetric>.Filter.Eq(x => x.Cik, cik);
+        var metrics = await mongoDbContext
+            .GetCollection<CompanyFinancialMetric>("financial_metrics")
+            .Find(filter).ToListAsync();
+
+        return metrics.AsReadOnly();
     }
 
-    public async Task<Result<CompanyFinancialMetric>> GetCompanyFinancialMetricAsync(
+    public async Task<CompanyFinancialMetric> GetCompanyFinancialMetricAsync(
         string cik, 
         FinancialMetricType metricType)
     {
-        try
-        {
-            var filter = Builders<CompanyFinancialMetric>.Filter.And(
-                Builders<CompanyFinancialMetric>.Filter.Eq(x => x.Cik, cik),
-                Builders<CompanyFinancialMetric>.Filter.Eq(x => x.MetricType, metricType)
-            );
+        var filter = Builders<CompanyFinancialMetric>.Filter.And(
+            Builders<CompanyFinancialMetric>.Filter.Eq(x => x.Cik, cik),
+            Builders<CompanyFinancialMetric>.Filter.Eq(x => x.MetricType, metricType)
+        );
 
-            var metric = await mongoDbContext
-                .GetCollection<CompanyFinancialMetric>("financial_metrics")
-                .Find(filter).FirstOrDefaultAsync();
+        var metric = await mongoDbContext
+            .GetCollection<CompanyFinancialMetric>("financial_metrics")
+            .Find(filter).FirstOrDefaultAsync();
 
-            if (metric == null)
-                return Result.Fail<CompanyFinancialMetric>(
-                    $"No financial metric found for CIK: {cik}, Metric: {metric}");
 
-            return Result.Ok(metric);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, 
-                "Error retrieving financial metric for CIK: {Cik}, Metric: {Metric}",
-                cik, metricType.ToString());
-            return Result.Fail("Failed to retrieve financial metric");
-        }
+        return metric;
     }
 }

@@ -1,4 +1,4 @@
-using SECWatch.Application.Features.Communication.Services;
+using SECWatch.Application.Features.Communication.Email.Services;
 using SECWatch.Domain.Features.Authentication;
 
 namespace SECWatch.Infrastructure.Features.Communication.Email;

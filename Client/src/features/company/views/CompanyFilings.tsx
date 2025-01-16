@@ -24,7 +24,7 @@ export function CompanyFilings() {
 
     return (
         <div className="space-y-8">
-            <Card variant="default" className="pt-4">
+            <Card variant="elevated" className="pt-4">
                 <CardContent>
                     <CompanyFilingsContent
                         filingHistory={filingHistory}

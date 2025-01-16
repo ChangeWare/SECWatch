@@ -1,8 +1,7 @@
 from pymongo import MongoClient
 from typing import List, Optional, Dict
 from datetime import datetime
-from pymongo.synchronous.database import Database
-from sec_miner.config import Config
+from sec_miner.config.loader import config
 from sec_miner.persistence.mongodb.models import FinancialMetricDocument, FinancialMetric, MetricDataPoint, \
     CompanyFilingHistoryDocument, SECFiling
 from sec_miner.utils.logger_factory import get_logger
@@ -12,8 +11,8 @@ logger = get_logger(__name__)
 
 class MongoDbContext:
     def __init__(self):
-        self.client = MongoClient(Config.MONGODB_CONNECTION)
-        self.db = self.client.get_database(Config.MONGODB_DBNAME)
+        self.client = MongoClient(config.MONGODB_CONNECTION)
+        self.db = self.client.get_database(config.MONGODB_DBNAME)
 
         # Ensure the 'financial_metrics' collection is created and indexes are set up
         if 'financial_metrics' not in self.db.list_collection_names():
@@ -215,14 +214,25 @@ class MongoDbContext:
             logger.error(f"Error retrieving last filing date for CIK {cik}: {str(e)}")
             raise
 
-    def check_companies_have_filing_history(self, ciks: List[str]) -> Dict[str, bool]:
+    def check_companies_have_filing_history(self, ciks: List[str], batch_size: int = 100) -> Dict[str, bool]:
         """Check if a list of companies have filing history in the database
-            :param ciks: List of CIKs to check
-            :return: Dictionary of CIKs and whether they have filing history
+        :param ciks: List of CIKs to check
+        :param batch_size: Number of CIKs to query at once
+        :return: Dictionary of CIKs and whether they have filing history
         """
         try:
-            cursor = self.db.filing_history.find({"cik": {"$in": ciks}})
-            return {doc["cik"]: True for doc in cursor}
+            has_history = {}
+
+            # Process CIKs in batches
+            for i in range(0, len(ciks), batch_size):
+                batch = ciks[i:i + batch_size]
+                cursor = self.db.filing_history.find({"cik": {"$in": batch}})
+
+                # Only include CIKs that have filing history
+                has_history.update({doc["cik"]: True for doc in cursor})
+
+            return has_history
+
         except Exception as e:
             logger.error(f"Error checking filing history for CIKs {ciks}: {str(e)}")
             raise

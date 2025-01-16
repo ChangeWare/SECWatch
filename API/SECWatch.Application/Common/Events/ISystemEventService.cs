@@ -1,4 +1,4 @@
-namespace SECWatch.Application.Common;
+namespace SECWatch.Application.Common.Events;
 
 public interface ISystemEventService
 {

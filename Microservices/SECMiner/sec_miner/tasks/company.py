@@ -1,6 +1,6 @@
 from typing import List
 from sec_miner.celery_app import celery_app
-from sec_miner.config import Config
+from sec_miner.config.loader import config
 from sec_miner.persistence.mongodb.database import MongoDbContext
 from sec_miner.persistence.sql.database import DbContext
 from sec_miner.sec.processors.company_processor import CompanyProcessor
@@ -20,7 +20,7 @@ logger = get_logger(__name__)
 )
 def process_companies():
     """Processes and stores new companies in SQL database"""
-    redis_client = redis.from_url(Config.REDIS_URL)
+    redis_client = redis.from_url(config.REDIS_URL)
     db_context = DbContext()
     sec_client = SECClient(db_context, redis_client)
     company_processor = CompanyProcessor(redis_client, sec_client, db_context)
@@ -41,12 +41,12 @@ def process_companies_financial_metrics(ciks: List[str], all_companies: bool = F
 
     mongodb_context = MongoDbContext()
     db_context = DbContext()
-    redis_client = redis.from_url(Config.REDIS_URL)
+    redis_client = redis.from_url(config.REDIS_URL)
     sec_client = SECClient(db_context, redis_client)
 
     if all_companies:
         # Load all companies
-        ciks = sec_client.get_existing_company_ciks()
+        ciks = db_context.get_all_company_ciks()
 
     for cik in ciks:
         financial_metrics_results = sec_client.get_company_financial_metrics(cik)
@@ -66,12 +66,12 @@ def process_companies_filings(ciks: List[str], all_companies: bool = False):
 
     db_context = DbContext()
     mongodb_context = MongoDbContext()
-    redis_client = redis.from_url(Config.REDIS_URL)
+    redis_client = redis.from_url(config.REDIS_URL)
     sec_client = SECClient(db_context, redis_client)
 
     if all_companies:
-        # Load all companies
-        ciks = sec_client.get_existing_company_ciks()
+        # Load all companies ciks
+        ciks = db_context.get_all_company_ciks()
 
     for cik in ciks:
         filing_history = sec_client.get_company_filings(cik)
