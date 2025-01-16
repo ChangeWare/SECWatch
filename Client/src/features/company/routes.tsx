@@ -6,6 +6,7 @@ import {CompanyFilings} from "@features/company/views/CompanyFilings.tsx";
 import CompanyAnalysisView from "@features/company/views/CompanyAnalysisView.tsx";
 import {CompanyFilingView} from "@features/company/views/CompanyFilingView.tsx";
 import CompanyAlertsView from "@features/company/views/CompanyAlertsView.tsx";
+import TrackedCompaniesView from "@features/company/views/TrackedCompaniesView.tsx";
 
 export const companyRoutes: RouteObject[] = [
     {

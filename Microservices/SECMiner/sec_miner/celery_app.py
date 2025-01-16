@@ -1,5 +1,5 @@
 from celery import Celery
-from sec_miner.config import Config
+from config.loader import config
 
 
 def create_celery_app():
@@ -12,7 +12,7 @@ def create_celery_app():
             'sec_miner.tasks.monitoring'
         ]
     )
-    app.config_from_object(Config)
+    app.config_from_object(config)
     return app
 
 

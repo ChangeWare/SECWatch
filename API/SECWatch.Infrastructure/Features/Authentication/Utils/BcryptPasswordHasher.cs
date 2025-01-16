@@ -1,4 +1,4 @@
-using SECWatch.Domain.Features.Authentication.Services;
+using SECWatch.Application.Features.Authentication.Utils;
 
 namespace SECWatch.Infrastructure.Features.Authentication.Utils;
 

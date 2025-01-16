@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SECWatch.API.Features.Authentication;
 using SECWatch.API.Features.Companies.DTOs;
+using SECWatch.Application.Common.Utils;
 using SECWatch.Application.Features.Companies;
 using SECWatch.Application.Features.Companies.DTOs;
 using SECWatch.Domain.Features.Companies.Queries;
@@ -12,6 +13,7 @@ namespace SECWatch.API.Features.Companies;
 [RequireAuth]
 public class CompaniesController(
     ICompanyService companyService,
+    ICompanyTrackingService companyTrackingService,
     ILogger<CompaniesController> logger) : ControllerBase
 {
     
@@ -20,31 +22,85 @@ public class CompaniesController(
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetDetails(string cik)
     {
-        try
-        {
-            var result = await companyService.GetCompanyDetailsAsync(cik);
-            if (result.IsFailed)
-            {
-                return BadRequest(result.Errors);
-            }
-            
-            if (result.Value == null)
-            {
-                return NotFound();
-            }
-            
-            var response = new CompanyDetailsResponse()
-            {
-                Company = result.Value
-            };
+        var userId = User.GetUserId();
 
-            return Ok(response);
-        }
-        catch (Exception ex)
+        var result = await companyService.GetCompanyDetailsAsync(userId, cik);
+        if (result.IsFailed)
         {
-            logger.LogError(ex, "Error processing company details for CIK: {CIK}", cik);
-            return StatusCode(500, "An error occurred while processing your request");
+            return BadRequest(result.Errors);
         }
+        
+        if (result.Value == null)
+        {
+            return NotFound();
+        }
+        
+        var response = new CompanyDetailsResponse()
+        {
+            Company = result.Value
+        };
+
+        return Ok(response);
+
+    }
+    
+    [HttpPost("{cik}/track")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> TrackCompany(string cik)
+    {
+        var userId = User.GetUserId();
+        var result = await companyTrackingService.TrackCompanyAsync(cik, userId);
+        if (result.IsFailed)
+        {
+            return BadRequest(result.Errors);
+        }
+        
+        var response = new CompanyDetailsResponse()
+        {
+            Company = result.Value
+        };
+
+        return Ok(response);
+    }
+    
+    [HttpPost("{cik}/untrack")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UntrackCompany(string cik)
+    {
+        var userId = User.GetUserId();
+        var result = await companyTrackingService.UntrackCompanyAsync(cik, userId);
+        if (result.IsFailed)
+        {
+            return BadRequest(result.Errors);
+        }
+        
+        var response = new CompanyDetailsResponse()
+        {
+            Company = result.Value
+        };
+
+        return Ok(response);
+    }
+    
+    [HttpGet("tracked")]
+    [ProducesResponseType(typeof(TrackedCompaniesResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetTrackedCompanies()
+    {
+        var userId = User.GetUserId();
+        var result = await companyTrackingService.GetTrackedCompaniesAsync(userId);
+        if (result.IsFailed)
+        {
+            return BadRequest(result.Errors);
+        }
+
+        var response = new TrackedCompaniesResponse()
+        {
+            TrackedCompanies = result.Value
+        };
+
+        return Ok(response);
     }
     
     [HttpGet("{cik}/filings/history")]

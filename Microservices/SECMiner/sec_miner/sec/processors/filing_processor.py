@@ -2,7 +2,7 @@ import json
 from redis import Redis
 from typing import List, Dict, Any, Set
 from datetime import datetime, timedelta
-from sec_miner.config import Config
+from sec_miner.config.loader import config
 from sec_miner.persistence.mongodb.database import MongoDbContext
 from sec_miner.persistence.sql.database import DbContext
 from sec_miner.sec.processors.company_processor import CompanyProcessor
@@ -27,10 +27,10 @@ class FilingProcessor:
         self.db_context = db_context
 
         # Constants for queue names and processing
-        self.FILING_QUEUE = Config.FILING_QUEUE
-        self.FAILED_QUEUE = Config.FILING_QUEUE_FAILURES
-        self.MAX_RETRIES = Config.FILING_QUEUE_MAX_RETRIES
-        self.RETRY_DELAY = Config.FILING_QUEUE_RETRY_DELAY
+        self.FILING_QUEUE = config.FILING_QUEUE
+        self.FAILED_QUEUE = config.FILING_QUEUE_FAILURES
+        self.MAX_RETRIES = config.FILING_QUEUE_MAX_RETRIES
+        self.RETRY_DELAY = config.FILING_QUEUE_RETRY_DELAY
 
     @staticmethod
     def _group_filings_by_cik(filings: List[UnprocessedFiling]) -> Dict[str, List[UnprocessedFiling]]:
@@ -65,7 +65,7 @@ class FilingProcessor:
                     json.dumps(filing.to_json())
                 )
                 logger.warning(
-                    f"Re-queued filing {filing.hash_value} "
+                    f"Re-queued filing {filing.accession_number} "
                     f"for retry {filing.retry_count}/{self.MAX_RETRIES}"
                 )
             else:
@@ -73,53 +73,50 @@ class FilingProcessor:
                 filing['final_failure'] = True
                 self.mongodb_context.record_failed_filing(filing)
                 logger.error(
-                    f"Filing {filing.get('entry_hash')} exceeded max retries. "
+                    f"Filing {filing.accession_number} exceeded max retries. "
                     f"Moving to dead letter collection."
                 )
 
     def _process_filing_batch(self, filings_by_cik: Dict[str, List[UnprocessedFiling]],
-                              processed_filing_hashes: Set[str]):
-
+                              processed_file_accessions: Set[str]):
+        """Process a batch of filings by fetching complete filing history for each CIK"""
         company_has_filing_history = self.mongodb_context.check_companies_have_filing_history(
             list(filings_by_cik.keys())
         )
 
-        """Process a batch of filings for a single CIK"""
         for cik, filing_entries in filings_by_cik.items():
             try:
                 if not company_has_filing_history.get(cik):
-                    # If the company doesn't have filing history, skip processing
-                    # We do this because the company processor will handle grabbing all the filings
-                    # in one large batch.
-
                     logger.info(f"Company without filing history detected. Postponing processing of filings for"
                                 f" {cik} to be processed by company processor.")
                     continue
 
-                filings = []
-                for entry in filing_entries:
-                    try:
-                        filing = self.sec_client.get_company_filing(
-                            cik,
-                            entry.accession_number
-                        )
-                        filings.append(filing)
-                    except Exception as e:
-                        logger.error(
-                            f"Error fetching filing with hash {entry['entry_hash']}: {str(e)}"
-                        )
-                        self._requeue_filings([entry], str(e))
-                        continue
+                try:
+                    # Get all filings at once instead of individual requests
+                    filing_history = self.sec_client.get_company_filings(cik)
 
-                if filings:
-                    self.mongodb_context.insert_filings_into_history(filings, cik)
-                    self.db_context.update_company_last_known_filing_date(
-                        cik,
-                        filings[0]['date_filed']
-                    )
-                    # Mark all successfully processed filings
-                    for filing in filings:
-                        processed_filing_hashes.add(filing['accession_number'])
+                    # Filter to just the new filings we need (new filings)
+                    needed_accession_numbers = {entry.accession_number for entry in filing_entries}
+                    new_filings = [
+                        filing for filing in filing_history.filings
+                        if filing.accession_number in needed_accession_numbers
+                    ]
+
+                    if new_filings:
+                        self.mongodb_context.insert_filings_into_history(new_filings, cik)
+                        # Use the most recent filing date from our new filings
+                        self.db_context.update_company_last_known_filing_date(
+                            cik,
+                            max(filing.filing_date for filing in new_filings)
+                        )
+                        # Mark all successfully processed filings
+                        for filing in new_filings:
+                            processed_file_accessions.add(filing.accession_number)
+
+                except Exception as e:
+                    logger.error(f"Error fetching filings for CIK {cik}: {str(e)}")
+                    self._requeue_filings(filing_entries, str(e))
+                    continue
 
             except Exception as e:
                 logger.error(f"Error processing filings for CIK {cik}: {str(e)}")
@@ -174,7 +171,7 @@ class FilingProcessor:
             filings = self.deserialize_filings(filing_entries)
 
             # Set to track successfully processed filings
-            processed_filing_hashes = set()
+            processed_filing_accessions = set()
 
             try:
                 # Group filings by CIK
@@ -184,13 +181,16 @@ class FilingProcessor:
                 self.company_processor.discover_companies_from_filings(filings_by_cik)
 
                 # Process the batches
-                self._process_filing_batch(filings_by_cik, processed_filing_hashes)
+                self._process_filing_batch(filings_by_cik, processed_filing_accessions)
+
+                logger.info(f"Processed {len(filings)} filings")
 
             except Exception as e:
+                logger.error(f"Error processing filings: {str(e)}")
                 # If something fails, requeue only unprocessed filings
                 unprocessed_filings = [
                     filing for filing in filings
-                    if filing.hash_value not in processed_filing_hashes
+                    if filing.accession_number not in processed_filing_accessions
                 ]
                 if unprocessed_filings:
                     self._requeue_filings(unprocessed_filings, str(e))

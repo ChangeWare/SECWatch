@@ -1,10 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SECWatch.Domain.Features.Users;
+using SECWatch.Domain.Features.Users.Models;
+using SECWatch.Domain.Features.Users.Models.Preferences;
 
 namespace SECWatch.Infrastructure.Features.Users;
 
-public class UserConfiguration : IEntityTypeConfiguration<User>
+public class UserConfiguration() : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
@@ -34,5 +35,14 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(u => u.CreatedAt)
             .IsRequired();
+        
+
+        builder.Property<Dictionary<string, UserPreference>>("_preferences")
+            .HasColumnName("Preferences")
+            .HasColumnType("nvarchar(max)")
+            .HasConversion(new UserPreferencesValueConverter())
+            .IsRequired(true);
+
     }
+    
 }

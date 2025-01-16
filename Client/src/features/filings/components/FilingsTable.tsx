@@ -125,7 +125,7 @@ function FilingsTable(props: FilingsTableProps) {
                 />
             </div>
 
-            <Table variant="bordered">
+            <Table variant="bordered" color="surface">
                 <TableHeader>
                     {table.getHeaderGroups().map(headerGroup => (
                         <TableRow key={headerGroup.id}>

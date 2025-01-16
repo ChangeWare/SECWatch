@@ -5,11 +5,12 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using SECWatch.Domain.Features.Users.Models.Infrastructure.Persistence;
 using SECWatch.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace SECWatch.Infrastructure.Persistence.Migrations
+namespace SECWatch.Domain.Features.Users.Models.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20241230192123_RemoveFinancialMetrics")]

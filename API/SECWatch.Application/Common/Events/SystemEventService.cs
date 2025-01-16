@@ -1,6 +1,6 @@
 using SECWatch.Domain.Common;
 
-namespace SECWatch.Application.Common;
+namespace SECWatch.Application.Common.Events;
 
 public class SystemEventService(ISystemEventRepository systemEventRepository) : ISystemEventService
 {

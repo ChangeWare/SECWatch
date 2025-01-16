@@ -112,9 +112,8 @@ export default function DashboardSidebar(props: DashboardSidebarProps) {
             setOpen: setCompaniesOpen,
             href: dashboardPaths.company.default,
             items: [
-                {label: 'Tracked Companies', href: '#'},
+                {label: 'Tracked Companies', href: dashboardPaths.company.tracked},
                 {label: 'Company Search', href: dashboardPaths.company.search},
-                {label: 'Watchlists', href: '#'},
             ],
         },
         {

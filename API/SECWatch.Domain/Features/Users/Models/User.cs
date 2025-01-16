@@ -1,8 +1,10 @@
+using System.Text.Json;
 using FluentResults;
 using SECWatch.Domain.Common;
 using SECWatch.Domain.Features.Authentication;
+using SECWatch.Domain.Features.Users.Models.Preferences;
 
-namespace SECWatch.Domain.Features.Users;
+namespace SECWatch.Domain.Features.Users.Models;
 
 public class User : AggregateRoot
 {
@@ -24,8 +26,8 @@ public class User : AggregateRoot
     
     public DateTime? EmailVerificationTokenExpiry { get; private set; }
 
-    private User() { }
-
+    private Dictionary<string, UserPreference> _preferences = new();
+    
     public static Result<User> Create(
         string email, 
         string passwordHash, 
@@ -42,6 +44,8 @@ public class User : AggregateRoot
             CreatedAt = DateTime.UtcNow,
             CompanyName = companyName
         };
+
+        user.SetupUserPreferences();
         
         if (string.IsNullOrWhiteSpace(email))
             return Result.Fail<User>("Email is required");
@@ -96,9 +100,45 @@ public class User : AggregateRoot
         LastLoginAt = DateTime.UtcNow;
     }
     
+    /// <summary>
+    /// Runs business logic against the user. If there are any updates, return true.
+    /// </summary>
+    /// <returns>Signifies whether business logic resulted in updates to the user.</returns>
+    public Result RunLoginBusinessLogic()
+    {
+        // If the user is missing any preferences, create them.
+        if (!_preferences.ContainsKey(PreferenceKeys.RecentFilingsWidget))
+        {
+            this.SetPreference(PreferenceKeys.RecentFilingsWidget, RecentFilingsWidgetPreferences.Default);
+        }
+        
+        this.UpdateLastLogin();
+        
+        return Result.Ok();
+    }
+    
+    private void SetupUserPreferences()
+    {
+        _preferences = new Dictionary<string, UserPreference>
+        {
+            { PreferenceKeys.RecentFilingsWidget, RecentFilingsWidgetPreferences.Default }
+        };
+    }
+    
     public void UpdateEmailVerificationToken(VerificationToken token)
     {
         EmailVerificationToken = token.Token;
         EmailVerificationTokenExpiry = token.Expiry;
     }
+    
+    public void SetPreference(string key, UserPreference preference)
+    {
+        _preferences[key] = preference;
+    }
+    
+    public UserPreference GetPreference(string key)
+    {
+        return _preferences[key];
+    }
+    
 }

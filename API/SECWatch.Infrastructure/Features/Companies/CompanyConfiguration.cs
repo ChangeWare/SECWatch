@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SECWatch.Domain.Features.Companies.Models;
 
-namespace SECWatch.Infrastructure.Persistence.Configurations;
+namespace SECWatch.Infrastructure.Features.Companies;
 
 public class CompanyConfiguration : IEntityTypeConfiguration<Company>
 {

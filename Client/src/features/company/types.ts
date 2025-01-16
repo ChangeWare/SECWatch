@@ -1,5 +1,11 @@
+import {CompanyFiling} from "@features/filings/types.ts";
+
 export interface CompanyDetailsResponse {
     company: CompanyDetails;
+}
+
+export interface TrackedCompaniesResponse {
+    trackedCompanies: TrackedCompanyDetails[];
 }
 
 export interface CompanyFinancialMetricResponse {
@@ -64,9 +70,20 @@ export interface CompanyFinancialMetric {
 export interface CompanyDetails {
     cik: string;
     name: string;
+    ticker: string;
     mailingAddress: CompanyAddress;
     businessAddress: CompanyAddress;
     lastUpdated: Date;
+    isTracked: boolean;
+}
+
+export interface TrackedCompanyDetails {
+    lastEvent: Date;
+    newFilings: number;
+    dateAdded: Date;
+    ticker: string;
+    company: CompanyDetails;
+    mostRecentFiling: CompanyFiling;
 }
 
 export interface CompanyAddress {

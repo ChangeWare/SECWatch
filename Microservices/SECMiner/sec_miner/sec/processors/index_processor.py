@@ -1,12 +1,11 @@
 import csv
 import json
 import httpx
-from hashlib import sha256
 from datetime import datetime
 from io import StringIO
 from typing import List, Dict, Optional
 from redis import Redis
-from sec_miner.config import Config
+from sec_miner.config.loader import config
 from sec_miner.sec.processors.types import UnprocessedFiling
 from sec_miner.sec.utils import normalize_cik, get_accession_number_from_filename
 from sec_miner.utils.logger_factory import get_logger
@@ -22,9 +21,9 @@ class IndexProcessorResponse:
 
 class IndexProcessor:
     def __init__(self, redis_client: Redis):
-        self.headers = {'User-Agent': Config.SEC_USER_AGENT}
+        self.headers = {'User-Agent': config.SEC_USER_AGENT}
         self.redis_client = redis_client
-        self.FILING_QUEUE = Config.FILING_QUEUE
+        self.FILING_QUEUE = config.FILING_QUEUE
 
     @staticmethod
     def _parse_master_index(content: str) -> List[UnprocessedFiling]:

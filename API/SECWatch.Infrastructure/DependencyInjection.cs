@@ -3,16 +3,15 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson.Serialization.Conventions;
 using SECWatch.Application.Features.Authentication.Utils;
-using SECWatch.Application.Features.Communication.Services;
+using SECWatch.Application.Features.Communication.Email.Services;
 using SECWatch.Domain.Common;
-using SECWatch.Domain.Features.Authentication.Services;
 using SECWatch.Domain.Features.Companies.Repositories;
 using SECWatch.Domain.Features.Notes;
 using SECWatch.Domain.Features.Users;
+using SECWatch.Domain.Features.Users.Models.Preferences;
 using SECWatch.Infrastructure.Common;
 using SECWatch.Infrastructure.Features.Authentication;
 using SECWatch.Infrastructure.Features.Authentication.Utils;
@@ -23,7 +22,6 @@ using SECWatch.Infrastructure.Features.Users;
 using SECWatch.Infrastructure.Persistence;
 using SECWatch.Infrastructure.Persistence.Configurations;
 using SECWatch.Infrastructure.Persistence.Settings;
-using StackExchange.Redis;
 
 namespace SECWatch.Infrastructure;
 
@@ -40,14 +38,6 @@ public static class DependencyInjection
             throw new InvalidOperationException("JWT configuration is missing from appsettings");
         }
         services.AddSingleton(jwtConfig);
-        
-        // Add Redis Configuration
-        services.Configure<RedisConfiguration>(configuration.GetSection("Redis"));
-        services.AddSingleton<IConnectionMultiplexer>(sp =>
-        {
-            var redisConfig = sp.GetRequiredService<IOptions<RedisConfiguration>>().Value;
-            return ConnectionMultiplexer.Connect(redisConfig.ConnectionString);
-        });
         
         // Add MongoDB Configuration
         services.Configure<MongoDbSettings>(
@@ -102,11 +92,13 @@ public static class DependencyInjection
 
         // Register Repositories
         services.AddSingleton<ISelectionDataResolver, SelectionDataResolver>();
+        services.AddSingleton<IPreferenceDataResolver, PreferenceDataResolver>();
         services.AddTransient<ISystemEventRepository, SystemEventRepository>();
         services.AddTransient<IUserRepository, UserRepository>();
         services.AddTransient<ICompanyRepository, CompanyRepository>();
         services.AddTransient<ICompanyFinancialMetricsRepository, CompanyFinancialMetricsRepository>();
         services.AddTransient<INoteRepository, NoteRepository>();
+        services.AddTransient<ITrackedCompanyRepository, TrackedCompanyRepository>();
         
         return services;
     }

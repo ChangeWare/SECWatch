@@ -17,7 +17,7 @@ interface LoadingIndicatorProps {
 function LoadingIndicator(props: LoadingIndicatorProps) {
 
     const {
-        minimumDuration = 3000,
+        minimumDuration = 0,
         isLoading,
         children,
         portalTarget,
@@ -143,11 +143,15 @@ function LoadingIndicator(props: LoadingIndicatorProps) {
 
     const content = portalTarget ? createPortal(loader, portalTarget) : loader;
 
-    return ContainerComponent ? (
-        <ContainerComponent loader={content} isLoading={isLoading}>
-            {children}
-        </ContainerComponent>
-    ) : content;
+    if (ContainerComponent) {
+        return (
+            <ContainerComponent loader={content} isLoading={isLoading || shouldShow}>
+                <>{!isLoading && !shouldShow && children}</>
+            </ContainerComponent>
+        );
+    }
+
+    return isLoading || shouldShow ? content : children;
 }
 
 export default LoadingIndicator;

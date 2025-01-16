@@ -5,7 +5,6 @@ using SECWatch.Application.Common.Utils;
 using SECWatch.Application.Features.Authentication.DTOs;
 using SECWatch.Application.Features.Authentication.Utils;
 using SECWatch.Application.Features.Users.DTOs;
-using SECWatch.Domain.Features.Authentication.Services;
 using SECWatch.Domain.Features.Users;
 
 namespace SECWatch.Application.Features.Authentication.Services;
@@ -18,8 +17,6 @@ public class AuthService(
     IMapper mapper)
     : IAuthService
 {
-    private readonly ILogger<AuthService> _logger = logger;
-
     public async Task<Result<AuthenticationInfo>> LoginAsync(LoginRequest request)
     {
         var user = await userRepository.GetByEmailAsync(request.Email);
@@ -38,7 +35,17 @@ public class AuthService(
         var token = jwtTokenGenerator.GenerateUserToken(user.Id);
         var refreshToken = jwtTokenGenerator.GenerateRefreshToken(user.Id);
         
-        user.UpdateLastLogin();
+        // Process any needed on login business logic for user
+        var result = user.RunLoginBusinessLogic();
+        if (result.IsFailed)
+        {
+            // Allow them to login, but log this error
+            logger.LogError("User login business logic failed: {Error}", result.Errors.First().Message);
+        }
+        else
+        {
+            await userRepository.UpdateAsync(user);
+        }
         
         var userDto = mapper.Map<UserDto>(user);
 

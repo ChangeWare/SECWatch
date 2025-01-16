@@ -6,8 +6,6 @@ import React from "react";
 export default function GuestGuard({ children }: { children: React.ReactNode }) {
     const { isAuthenticated } = useAuth();
     const location = useLocation();
-
-    console.log(isAuthenticated);
     
     if (isAuthenticated && location.pathname !== paths.auth.logout) {
       return <Navigate to={location.state?.from ?? paths.dashboard.default} />;

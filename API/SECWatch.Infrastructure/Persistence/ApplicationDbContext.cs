@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SECWatch.Domain.Common;
 using SECWatch.Domain.Features.Companies.Models;
 using SECWatch.Domain.Features.Notes.Models;
-using SECWatch.Domain.Features.Users;
+using SECWatch.Domain.Features.Users.Models;
 
 namespace SECWatch.Infrastructure.Persistence;
 
@@ -13,6 +13,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<User> Users => Set<User>();
     
     public DbSet<Company> Companies => Set<Company>();
+    
+    public DbSet<TrackedCompany> TrackedCompanies => Set<TrackedCompany>();
 
     public DbSet<Note> Notes => Set<Note>();
     

@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace SECWatch.Infrastructure.Persistence.Migrations
+namespace SECWatch.Domain.Features.Users.Models.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
     public partial class AddCountryToAddress : Migration

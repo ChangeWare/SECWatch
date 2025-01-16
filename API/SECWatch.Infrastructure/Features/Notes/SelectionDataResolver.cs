@@ -1,4 +1,3 @@
-using AutoMapper;
 using Newtonsoft.Json;
 using SECWatch.Domain.Features.Notes;
 using SECWatch.Domain.Features.Notes.Models;

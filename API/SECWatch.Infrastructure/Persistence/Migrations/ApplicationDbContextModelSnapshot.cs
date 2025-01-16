@@ -8,7 +8,7 @@ using SECWatch.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace SECWatch.Infrastructure.Persistence.Migrations
+namespace SECWatch.Domain.Features.Users.Models.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -129,6 +129,36 @@ namespace SECWatch.Infrastructure.Persistence.Migrations
                     b.ToTable("Companies");
                 });
 
+            modelBuilder.Entity("SECWatch.Domain.Features.Companies.Models.TrackedCompany", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateAdded")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("LastEvent")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("CompanyId", "UserId");
+
+                    b.ToTable("TrackedCompanies", (string)null);
+                });
+
             modelBuilder.Entity("SECWatch.Domain.Features.Notes.Models.Note", b =>
                 {
                     b.Property<Guid>("Id")
@@ -185,7 +215,7 @@ namespace SECWatch.Infrastructure.Persistence.Migrations
                     b.ToTable("NoteSubject");
                 });
 
-            modelBuilder.Entity("SECWatch.Domain.Features.Users.User", b =>
+            modelBuilder.Entity("SECWatch.Domain.Features.Users.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -233,6 +263,11 @@ namespace SECWatch.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("VerifiedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("_preferences")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Preferences");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
@@ -250,6 +285,25 @@ namespace SECWatch.Infrastructure.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("SECWatch.Domain.Features.Companies.Models.TrackedCompany", b =>
+                {
+                    b.HasOne("SECWatch.Domain.Features.Companies.Models.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SECWatch.Domain.Features.Users.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SECWatch.Domain.Features.Notes.Models.NoteSubject", b =>

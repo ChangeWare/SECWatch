@@ -2,13 +2,13 @@ from datetime import datetime
 from typing import List
 from sqlalchemy import text, create_engine
 from sqlalchemy.orm import sessionmaker
-from sec_miner.config import Config
+from sec_miner.config.loader import config
 from sec_miner.persistence.sql.models import Company
 
 
 class DbContext:
     def __init__(self):
-        self.engine = create_engine(Config.DATABASE_CONNECTION)
+        self.engine = create_engine(config.DATABASE_CONNECTION)
         self.session = sessionmaker(bind=self.engine)
 
     def find_missing_ciks(self, ciks: list[str], batch_size: int = 2500) -> list[str]:
@@ -44,11 +44,6 @@ class DbContext:
             companies = session.query(Company).all()
             return companies
 
-    def get_companies_by_ciks(self, ciks: List[str]) -> List[Company]:
-        with self.session() as session:
-            companies = session.query(Company).filter(Company.CIK.in_(ciks)).all()
-            return companies
-
     def get_all_company_ciks(self):
         with self.session() as session:
             companies = session.query(Company).all()
@@ -58,11 +53,13 @@ class DbContext:
     def upsert_companies(self, companies: List[Company]):
         with self.session() as session:
             for company in companies:
+                company.last_updated = datetime.utcnow()
                 session.merge(company)
             session.commit()
 
     def update_company_last_known_filing_date(self, cik: str, date: datetime):
         with self.session() as session:
-            company = session.query(Company).filter(Company.CIK == cik).first()
+            company = session.query(Company).filter(Company.cik == cik).first()
             company.last_known_filing_date = date
+            company.last_updated = datetime.utcnow()
             session.commit()

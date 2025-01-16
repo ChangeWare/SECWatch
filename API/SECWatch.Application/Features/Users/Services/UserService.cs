@@ -1,10 +1,12 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using FluentResults;
-using SECWatch.Application.Common;
+using SECWatch.Application.Common.Events;
 using SECWatch.Application.Features.Authentication.Utils;
-using SECWatch.Application.Features.Communication.Services;
+using SECWatch.Application.Features.Communication.Email.Services;
 using SECWatch.Application.Features.Users.DTOs;
-using SECWatch.Domain.Features.Authentication.Services;
 using SECWatch.Domain.Features.Users;
+using SECWatch.Domain.Features.Users.Models.Preferences;
 using SECWatch.Domain.Features.Users.Services;
 
 namespace SECWatch.Application.Features.Users.Services;
@@ -15,7 +17,8 @@ public class UserService(
     ITokenGenerator tokenService,
     IPasswordHasher passwordHasher,
     IUserRepository userRepository,
-    ISystemEventService eventService
+    ISystemEventService eventService,
+    IPreferenceDataResolver preferenceDataResolver
     ) : IUserService
 {
     
@@ -92,5 +95,36 @@ public class UserService(
         );
 
         return result.ToResult();
+    }
+
+    public async Task<Result> UpdateUserPreferenceAsync(Guid id, string key, UserPreference preference)
+    {
+        var user = await userRepository.GetByIdAsync(id);
+        
+        if (user == null)
+            return Result.Fail($"User with id {id} not found");
+        
+        
+
+        user.SetPreference(key, preference);
+        await userRepository.UpdateAsync(user);
+        
+        return Result.Ok();
+    }
+
+    public async Task<Result<UserPreference>> GetUserPreferenceAsync(Guid id, string key)
+    {
+        var user = await userRepository.GetByIdAsync(id);
+    
+        if (user == null)
+            return Result.Fail($"User with id {id} not found");
+
+        var preference = user.GetPreference(key);
+        
+        if (preference == null)
+            return Result.Fail($"Preference with key {key} not found");
+        
+
+        return Result.Ok(preference);
     }
 }

@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SECWatch.Application.Common;
+using SECWatch.Application.Common.Events;
 using SECWatch.Application.Features.Authentication.Services;
 using SECWatch.Application.Features.Companies;
 using SECWatch.Application.Features.Notes;
@@ -24,6 +24,7 @@ public static class DependencyInjection
         services.AddTransient<HttpClient>();
         services.AddScoped<ICompanyService, CompanyService>();
         services.AddScoped<INoteService, NoteService>();
+        services.AddScoped<ICompanyTrackingService, CompanyTrackingService>();
 
         return services;
     }

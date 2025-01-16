@@ -1,11 +1,11 @@
-import json
 import logging
 from datetime import datetime
 from typing import List, Dict, Optional
 from redis import Redis
-from sec_miner.config import Config
+from sec_miner.config.loader import config
 from sec_miner.persistence.sql.database import DbContext
 from sec_miner.persistence.sql.models import Company
+from sec_miner.sec.processors.types import UnprocessedFiling
 from sec_miner.sec.sec_client import SECClient
 from sec_miner.utils.logger_factory import get_logger
 
@@ -82,7 +82,7 @@ class CompanyProcessor:
         pipe = self.redis_client.pipeline()
 
         for company in companies_to_update:
-            pipe.rpush("sec:processing:companies_to_update", json.dumps(company))
+            pipe.rpush("sec:processing:companies_to_update", company.cik)
 
         pipe.execute()
 
@@ -95,8 +95,9 @@ class CompanyProcessor:
         companies_to_update: List[UpdateCompanyInfo] = []
         new_companies: List[NewCompanyInfo] = []
 
-        ciks_in_ticker_list = set([company['cik_str'].zfill(10) for company in ticker_companies])
-        existing_companies = self.sec_client.get_companies_by_ciks(ciks_in_ticker_list)
+        existing_companies = self.db_context.get_all_companies()
+        # Turn existing companies into lookup table
+        existing_companies = {company.cik: company for company in existing_companies}
 
         for company in ticker_companies:
             cik = company['cik_str'].zfill(10)
@@ -105,7 +106,7 @@ class CompanyProcessor:
 
             if existing:
                 # If the company is in our database, but we haven't seen a filing in a while, update it anyway
-                if (datetime.now() - existing.last_known_filing_date).days > Config.FORCE_UPDATE_COMPANY_PERIOD_DAYS:
+                if (datetime.now() - existing.last_known_filing_date).days > config.FORCE_UPDATE_COMPANY_PERIOD_DAYS:
                     companies_to_update.append(
                         UpdateCompanyInfo(
                             cik=cik,
@@ -131,7 +132,7 @@ class CompanyProcessor:
         self.queue_new_companies(new_companies)
         self.queue_companies_needing_updates(companies_to_update)
 
-    def discover_companies_from_filings(self, filings_by_cik: Dict[str, List[Dict]]):
+    def discover_companies_from_filings(self, filings_by_cik: Dict[str, List[UnprocessedFiling]]):
         """
         Discovers new companies in specified filings
 
@@ -142,36 +143,36 @@ class CompanyProcessor:
         companies_to_update: List[UpdateCompanyInfo] = []
         new_companies: List[NewCompanyInfo] = []
 
-        ciks_in_filings = filings_by_cik.keys()
-        existing_companies = self.sec_client.get_companies_by_ciks(ciks_in_filings)
+        existing_companies = self.db_context.get_all_companies()
+        # Turn existing companies into lookup table
+        existing_companies = {company.cik: company for company in existing_companies}
 
         for cik, filings in filings_by_cik.items():
             existing = existing_companies.get(cik)
 
             # Look only at most recent filing.
             recent_filing = filings[0]
-            filing_date = datetime.strptime(recent_filing['date_filed'], '%Y-%m-%d')
 
             if existing:
-                if filing_date > existing.last_known_filing_date:
+                if existing.last_known_filing_date is None or recent_filing.date_filed > existing.last_known_filing_date:
                     companies_to_update.append(
                         UpdateCompanyInfo(
                             cik=cik,
-                            name=recent_filing['company_name'],
-                            latest_filing_date=filing_date,
-                            latest_filing_type=recent_filing['form_type'],
+                            name=recent_filing.company_name,
+                            latest_filing_date=recent_filing.date_filed,
+                            latest_filing_type=recent_filing.form_type,
                             source='master_index',
                             ticker=ticker_mapping.get(cik)
                         )
                     )
                 # Even if the filing is not new, update the company if it's been a while
-                elif (datetime.now() - existing.last_known_filing_date).days > Config.FORCE_UPDATE_COMPANY_PERIOD_DAYS:
+                elif (datetime.now() - existing.last_known_filing_date).days > config.FORCE_UPDATE_COMPANY_PERIOD_DAYS:
                     companies_to_update.append(
                         UpdateCompanyInfo(
                             cik=cik,
-                            name=recent_filing['company_name'],
-                            latest_filing_date=filing_date,
-                            latest_filing_type=recent_filing['form_type'],
+                            name=recent_filing.company_name,
+                            latest_filing_date=recent_filing.date_filed,
+                            latest_filing_type=recent_filing.form_type,
                             source='master_index',
                             ticker=ticker_mapping.get(cik)
                         )
@@ -181,9 +182,9 @@ class CompanyProcessor:
                 new_companies.append(
                     NewCompanyInfo(
                         cik=cik,
-                        name=recent_filing['company_name'],
-                        latest_filing_date=filing_date,
-                        latest_filing_type=recent_filing['form_type'],
+                        name=recent_filing.company_name,
+                        latest_filing_date=recent_filing.date_filed,
+                        latest_filing_type=recent_filing.form_type,
                         source='master_index',
                         ticker=ticker_mapping.get(cik)
                     )

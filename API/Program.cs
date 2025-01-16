@@ -2,11 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using SECWatch.Application;
-using SECWatch.Application.Common;
-using SECWatch.Application.Features.Authentication.Services;
-using SECWatch.Application.Features.Companies;
-using SECWatch.Application.Features.Users.Services;
-using SECWatch.Domain.Features.Users.Services;
+using SECWatch.Domain.Features.Users.Models.Infrastructure;
 using SECWatch.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);

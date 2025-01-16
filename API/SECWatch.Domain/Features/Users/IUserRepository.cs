@@ -1,3 +1,5 @@
+using SECWatch.Domain.Features.Users.Models;
+
 namespace SECWatch.Domain.Features.Users;
 
 public interface IUserRepository

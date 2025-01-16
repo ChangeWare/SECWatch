@@ -1,4 +1,3 @@
-using FluentResults;
 using SECWatch.Domain.Features.Companies.Models;
 using SECWatch.Domain.Features.Companies.Queries;
 
@@ -6,9 +5,13 @@ namespace SECWatch.Domain.Features.Companies.Repositories;
 
 public interface ICompanyRepository
 {
-    Task<Result<IReadOnlyList<Company>>> SearchCompaniesAsync(CompanySearchQuery query);
+    Task<IReadOnlyList<Company>> SearchCompaniesAsync(CompanySearchQuery query);
     
-    Task<Result<Company?>> GetCompanyAsync(string cik);
+    Task<Company?> GetCompanyAsync(string cik);
     
-    Task<Result<CompanyFilingHistory>> GetCompanyFilingsHistoryAsync(string cik);
+    Task<CompanyFilingHistory> GetCompanyFilingsHistoryAsync(string cik);
+
+    Task<CompanyFiling?> GetCompanyMostRecentFilingAsync(string cik);
+
+    Task<Dictionary<string, CompanyFiling?>> GetCompaniesMostRecentFilingsAsync(IEnumerable<string> ciks);
 }

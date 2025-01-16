@@ -1,10 +1,11 @@
 import React from 'react';
 import { useParams } from "react-router-dom";
-import IXBRLViewer from "@features/filings/components/XBRLViewer.tsx";
+import IXBRLViewer, {IXBRLLoadingIndicator} from "@features/filings/components/XBRLViewer.tsx";
 import useCompany from "@features/company/hooks/useCompany.tsx";
 import useSecFiling from "@features/filings/hooks/useSecFiling.ts";
 import {CreateFilingNoteRequest, FilingNote} from "@features/notes/types.ts";
 import useFilingNotes from "@features/notes/hooks/useFilingNotes.tsx";
+import LoadingIndicator from "@common/components/LoadingIndicator.tsx";
 
 export function CompanyFilingView() {
     const { companyId, accessionNumber } = useParams();
@@ -38,16 +39,16 @@ export function CompanyFilingView() {
                 </p>
             </div>
 
-            {filingContents && (
+            <LoadingIndicator isLoading={!filingContents} ContainerComponent={IXBRLLoadingIndicator}>
                 <IXBRLViewer
                     accessionNumber={accessionNumber!}
-                    filingContents={filingContents}
+                    filingContents={filingContents!}
                     notes={notes}
                     onNoteCreate={handleCreateNote}
                     onNoteUpdate={handleUpdateNote}
                     onNoteDelete={handleDeleteNote}
                 />
-            )}
+            </LoadingIndicator>
         </div>
     );
 }
