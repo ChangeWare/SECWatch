@@ -1,7 +1,6 @@
 # Config files
 config.dev.json
 config.prod.json
-config.json
 
 # Python
 __pycache__/
