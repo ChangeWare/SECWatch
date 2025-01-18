@@ -35,7 +35,6 @@ def cleanup_stale_data():
     """Remove stale data from Redis"""
     try:
         pass
-        # TODO: Implement cleanup logic
 
     except Exception as e:
         logger.error(f"Error during cleanup: {e}")

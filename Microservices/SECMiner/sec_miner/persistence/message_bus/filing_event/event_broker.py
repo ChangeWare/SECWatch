@@ -8,7 +8,14 @@ import pika
 class FilingEventBroker:
     def __init__(self):
         self.connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host=config.RABBITMQ_HOST, port=config.RABBITMQ_PORT)
+            pika.ConnectionParameters(
+                host=config.RABBITMQ_HOST,
+                port=config.RABBITMQ_PORT,
+                credentials=pika.PlainCredentials(
+                    username=config.RABBITMQ_USER,
+                    password=config.RABBITMQ_PASSWORD
+                )
+            )
         )
         self.channel = self.connection.channel()
         self.channel.queue_declare(queue='filing_event')
