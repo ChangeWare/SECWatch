@@ -4,6 +4,7 @@ from datetime import datetime
 from sec_miner.config.loader import config
 from sec_miner.persistence.mongodb.models import FinancialMetricDocument, FinancialMetric, MetricDataPoint, \
     CompanyFilingHistoryDocument, SECFiling
+from sec_miner.sec.processors.types import ProcessNewFilingsResult, UnprocessedFiling, QueuedNewCompanyInfo
 from sec_miner.utils.logger_factory import get_logger
 
 logger = get_logger(__name__)
@@ -14,19 +15,68 @@ class MongoDbContext:
         self.client = MongoClient(config.MONGODB_CONNECTION)
         self.db = self.client.get_database(config.MONGODB_DBNAME)
 
-        # Ensure the 'financial_metrics' collection is created and indexes are set up
-        if 'financial_metrics' not in self.db.list_collection_names():
-            self.db.create_collection('financial_metrics')
-            self.db.financial_metrics.create_index([("cik", 1), ("metric", 1)], unique=True)
-            self.db.financial_metrics.create_index([("last_updated", 1)])
+        self.ensure_collections()
+        self.ensure_indexes()
 
-        if 'filing_history' not in self.db.list_collection_names():
-            self.db.create_collection('filing_history')
-            self.db.filing_history.create_index([("cik", 1)], unique=True)
+    def _ensure_index_exists(self, collection, index_fields, unique=False):
+        existing_indexes = collection.list_indexes()
+        index_names = {index['name'] for index in existing_indexes}
 
-        if 'failed_filings' not in self.db.list_collection_names():
-            self.db.create_collection('failed_filings')
-            self.db.failed_filings.create_index([("cik", 1)])
+        # Generate the index name as MongoDB would
+        index_name = "_".join([f"{field[0]}_{field[1]}" for field in index_fields])
+
+        if index_name not in index_names:
+            collection.create_index(index_fields, unique=unique)
+
+    def ensure_indexes(self):
+        try:
+            # Financial metrics indexes
+            self._ensure_index_exists(self.db.financial_metrics, [("cik", 1), ("metric", 1)], unique=True)
+            self._ensure_index_exists(self.db.financial_metrics, [("last_updated", 1)])
+            self._ensure_index_exists(self.db.financial_metrics, [
+                ("cik", 1),
+                ("metric", 1),
+                ("data_points.end_date", 1)
+            ])
+
+            # Filing history indexes
+            self._ensure_index_exists(self.db.filing_history, [("cik", 1)], unique=True)
+            self._ensure_index_exists(self.db.filing_history, [("metadata.last_filed", 1)])
+            self._ensure_index_exists(self.db.filing_history, [("filings.accession_number", 1)])
+
+            # Processing collection indexes
+            self._ensure_index_exists(self.db.failed_filings, [("accession_number", 1)])
+            self._ensure_index_exists(self.db.failed_new_companies, [("cik", 1)])
+
+            logger.info("Successfully ensured all database indexes")
+
+        except Exception as e:
+            logger.error(f"Error ensuring database indexes: {str(e)}")
+            raise
+
+    def ensure_collections(self):
+        """Ensure necessary collections exist and create if not."""
+        try:
+            collection_names = self.db.list_collection_names()
+
+            if 'financial_metrics' not in collection_names:
+                self.db.create_collection('financial_metrics')
+
+            if 'filing_history' not in collection_names:
+                self.db.create_collection('filing_history')
+
+            if 'new_filings_results' not in collection_names:
+                self.db.create_collection('new_filings_results')
+
+            if 'failed_filings' not in collection_names:
+                self.db.create_collection('failed_filings')
+
+            if 'failed_new_companies' not in collection_names:
+                self.db.create_collection('failed_new_companies')
+
+        except Exception as e:
+            logger.error(f"Error ensuring database collections: {str(e)}")
+            raise
 
     def upsert_filing_history_doc(self, filing_history_doc: CompanyFilingHistoryDocument):
         """Update or insert a company's filing history document"""
@@ -54,14 +104,26 @@ class MongoDbContext:
         try:
             collection = self.db.filing_history
 
+            pipeline = [
+                {"$match": {"cik": cik}},
+                {"$project": {
+                    "existing_accessions": {
+                        "$map": {
+                            "input": "$filings",
+                            "as": "filing",
+                            "in": "$$filing.accession_number"
+                        }
+                    },
+                    "metadata": 1
+                }}
+            ]
+
             # Get current document
-            current_doc = collection.find_one({"cik": cik})
+            current_doc = next(collection.aggregate(pipeline), None)
 
             if current_doc:
                 # Create set of existing accession numbers for efficient lookup
-                existing_accessions = {
-                    f["accession_number"] for f in current_doc["filings"]
-                }
+                existing_accessions = set(current_doc.get("existing_accessions", []))
 
                 # Filter out any filings we already have
                 new_filings = [
@@ -74,9 +136,10 @@ class MongoDbContext:
                     return
 
                 # Calculate new metadata
-                all_dates = [current_doc["metadata"]["first_filed"],
-                             current_doc["metadata"]["last_filed"]] + \
-                            [f.filing_date for f in new_filings]
+                all_dates = [
+                        current_doc["metadata"]["first_filed"],
+                        current_doc["metadata"]["last_filed"]
+                ] + [f.filing_date for f in new_filings]
 
                 new_last_filed = max(all_dates)
                 new_first_filed = min(all_dates)
@@ -87,7 +150,7 @@ class MongoDbContext:
                 new_first_filed = min(filing_dates)
 
             # Perform batch update
-            update_result = collection.update_one(
+            collection.update_one(
                 {"cik": cik},
                 {
                     "$push": {
@@ -136,11 +199,11 @@ class MongoDbContext:
             logger.error(f"Error upserting metric for CIK {metric_doc.cik}: {str(e)}")
             raise
 
-    def get_metric_doc(self, cik: str, metric_doc: FinancialMetric) -> Optional[FinancialMetricDocument]:
+    def get_metric_doc(self, cik: str, metric: FinancialMetric) -> Optional[FinancialMetricDocument]:
         """Retrieve a specific metric for a company"""
         try:
             collection = self.db.financial_metrics
-            doc = collection.find_one({"cik": cik, "metric": metric_doc})
+            doc = collection.find_one({"cik": cik, "metric_type": metric})
             return FinancialMetricDocument(**doc) if doc else None
         except Exception as e:
             logger.error(f"Error retrieving metric for CIK {cik}: {str(e)}")
@@ -159,42 +222,6 @@ class MongoDbContext:
             return []
         except Exception as e:
             logger.error(f"Error retrieving latest data points for CIK {cik}: {str(e)}")
-            raise
-
-    def get_metrics_by_date_range(
-            self,
-            cik: str,
-            metric: FinancialMetric,
-            start_date: datetime,
-            end_date: datetime
-    ) -> List[MetricDataPoint]:
-        """Get metric data points within a date range"""
-        try:
-            collection = self.db.financial_metrics
-            doc = collection.find_one({
-                "cik": cik,
-                "metric": metric,
-                "data_points": {
-                    "$elemMatch": {
-                        "end_date": {
-                            "$gte": start_date,
-                            "$lte": end_date
-                        }
-                    }
-                }
-            })
-
-            if not doc:
-                return []
-
-            filtered_points = [
-                dp for dp in doc["data_points"]
-                if start_date <= dp["end_date"] <= end_date
-            ]
-
-            return [MetricDataPoint(**dp) for dp in filtered_points]
-        except Exception as e:
-            logger.error(f"Error retrieving metrics by date range for CIK {cik}: {str(e)}")
             raise
 
     def get_last_filing_date(self, cik: str) -> Optional[datetime]:
@@ -221,7 +248,7 @@ class MongoDbContext:
         :return: Dictionary of CIKs and whether they have filing history
         """
         try:
-            has_history = {}
+            has_history = {cik: False for cik in ciks}
 
             # Process CIKs in batches
             for i in range(0, len(ciks), batch_size):
@@ -237,12 +264,12 @@ class MongoDbContext:
             logger.error(f"Error checking filing history for CIKs {ciks}: {str(e)}")
             raise
 
-    def record_failed_filing(self, filing: Dict):
-        """Record a filing which failed to process"""
+    def record_new_filings_processing_result(self, result: ProcessNewFilingsResult):
+        """Record the result of processing new filings"""
         try:
-            collection = self.db.failed_filings
-            collection.insert_one(filing)
-            logger.log(15, f"Recorded failed filing for CIK {filing.get('cik')}")
+            collection = self.db.new_filings_results
+            collection.insert_one(result.to_json())
+            logger.log(15, f"Recorded new filings processing result")
         except Exception as e:
-            logger.error(f"Error recording failed filing for CIK {filing.get('cik')}: {str(e)}")
+            logger.error(f"Error recording new filings processing result: {str(e)}")
             raise

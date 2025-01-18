@@ -24,6 +24,7 @@ class IndexProcessor:
         self.headers = {'User-Agent': config.SEC_USER_AGENT}
         self.redis_client = redis_client
         self.FILING_QUEUE = config.FILING_QUEUE
+        self.SEC_INDEX = config.SEC_INDEX
 
     @staticmethod
     def _parse_master_index(content: str) -> List[UnprocessedFiling]:
@@ -95,7 +96,7 @@ class IndexProcessor:
         daily_id = self._get_id_from_name(current_daily_index['name'])
 
         # Check if we have the daily index already
-        key = f"sec:index:{year}:q{quarter}:daily:{daily_id}"
+        key = self.SEC_INDEX + f"{year}:q{quarter}:daily:{daily_id}"
         stored_daily_index_data = self.redis_client.get(key)
 
         if stored_daily_index_data:
@@ -114,7 +115,7 @@ class IndexProcessor:
             return True
 
     def _cache_index_entry(self, quarter: int, year: int, daily_id: str, content: Dict):
-        key = f"sec:index:{year}:q{quarter}:daily:{daily_id}"
+        key = self.SEC_INDEX + f"{year}:q{quarter}:daily:{daily_id}"
         self.redis_client.set(key, json.dumps(content))
 
     def _get_new_indexes(self, year: int, quarter: int) -> List[str]:
@@ -146,7 +147,7 @@ class IndexProcessor:
 
     def _cache_filings(self, filings: List[UnprocessedFiling], year: int, quarter: int):
         """Store both raw content and parsed filings in Redis."""
-        quarter_key = f"sec:index:{year}:q{quarter}"
+        quarter_key = self.SEC_INDEX + f"{year}:q{quarter}"
 
         # Store filing hashes in a SET
         filing_set_key = f"{quarter_key}:filings"
@@ -176,7 +177,7 @@ class IndexProcessor:
         # 2025 is the earliest possible year that we would have cached indexes
         for year in range(2025, min_year):
             for quarter in range(1, 4):
-                quarter_key = f"sec:index:{year}:q{quarter}"
+                quarter_key = self.SEC_INDEX + f"{year}:q{quarter}"
 
                 daily_index_key = f"{quarter_key}:daily"
                 self.redis_client.delete(daily_index_key)
@@ -194,7 +195,7 @@ class IndexProcessor:
             )
 
         # Get all the filings we've processed so far, stored in a redis cache.
-        quarter_key = f"sec:index:{year}:q{quarter}"
+        quarter_key = self.SEC_INDEX + f"{year}:q{quarter}"
         existing_hashes = self.redis_client.smembers(f"{quarter_key}:filings")
 
         # Keep track of what we've seen in this run

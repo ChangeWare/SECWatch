@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import List
-from sqlalchemy import text, create_engine
+from sqlalchemy import text, create_engine, QueuePool
 from sqlalchemy.orm import sessionmaker
 from sec_miner.config.loader import config
 from sec_miner.persistence.sql.models import Company
@@ -8,7 +8,20 @@ from sec_miner.persistence.sql.models import Company
 
 class DbContext:
     def __init__(self):
-        self.engine = create_engine(config.DATABASE_CONNECTION)
+        connection_args = {
+            "connect_timeout": 30,  # Give enough time for initial connection
+            "timeout": 30,  # Command timeout
+        }
+
+        # Minimal engine configuration - each task manages its own connection
+        self.engine = create_engine(
+            config.DATABASE_CONNECTION,
+            pool_size=1,
+            max_overflow=0,
+            pool_timeout=30,
+            connect_args=connection_args
+        )
+
         self.session = sessionmaker(bind=self.engine)
 
     def find_missing_ciks(self, ciks: list[str], batch_size: int = 2500) -> list[str]:
