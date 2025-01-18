@@ -36,3 +36,5 @@ ENV/
 
 # Logs
 *.log
+/celerybeat-schedule.db
+/sec_miner/.gitignore.save

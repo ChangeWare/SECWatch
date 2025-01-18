@@ -1,0 +1,105 @@
+{
+    "CELERY_BROKER_URL": "pyamqp://guest@localhost//",
+    "CELERY_RESULT_BACKEND": "redis://localhost",
+
+    "DATABASE_CONNECTION": "mssql+pyodbc://{user}:{pass}@localhost:1433/{db}?driver={driver}&TrustServerCertificate=yes&Encrypt=no&Timeout=30",
+    "MONGODB_CONNECTION": "mongodb://{user}:{pass}@localhost:27017/",
+    "MONGODB_DBNAME": "{db_name}",
+
+    "REDIS_URL": "redis://localhost",
+    "RABBITMQ_HOST": "localhost",
+    "RABBITMQ_PORT": "5672",
+
+    "RATE_LIMIT_SECONDS": 1,
+    "RATE_CALLS_PER_SECOND": 10,
+
+    "CELERY_TASK_SERIALIZER": "json",
+    "CELERY_RESULT_SERIALIZER": "json",
+    "CELERY_ACCEPT_CONTENT": ["json"],
+    "CELERY_TASK_TRACK_STARTED": true,
+
+    "SEC_INDEX": "sec:index:",
+
+    "FILING_QUEUE": "sec:processing:filings:queue",
+    "FILING_QUEUE_CRITICAL_FAILURE": "sec:processing:filings:critical_failure",
+    "FILING_QUEUE_FAILURES": "sec:processing:filings:failed",
+    "FILING_QUEUE_UNRECOVERABLE_FAILURES": "sec:processing:filings:unrecoverable",
+    "FILING_QUEUE_MAX_RETRIES": 3,
+    "FILING_QUEUE_RETRY_DELAY": 300,
+
+    "NEW_COMPANY_QUEUE": "sec:processing:new_companies:queue",
+    "NEW_COMPANY_QUEUE_CRITICAL_FAILURE": "sec:processing:new_companies:critical_failure",
+    "NEW_COMPANY_UNRECOVERABLE_FAILURES": "sec:processing:new_companies:unrecoverable",
+    "NEW_COMPANY_QUEUE_FAILURES": "sec:processing:new_companies:failed",
+    "NEW_COMPANY_QUEUE_MAX_RETRIES": 3,
+    "NEW_COMPANY_QUEUE_RETRY_DELAY": 300,
+    "NEW_COMPANY_BATCH_SIZE": 100,
+
+    "UPDATE_COMPANY_QUEUE": "sec:processing:update_companies:queue",
+    "UPDATE_COMPANY_QUEUE_FAILURES": "sec:processing:update_companies:failed",
+    "UPDATE_COMPANY_QUEUE_CRITICAL_FAILURE": "sec:processing:update_companies:critical_failure",
+    "UPDATE_COMPANY_UNRECOVERABLE_FAILURES": "sec:processing:update_companies:unrecoverable",
+    "UPDATE_COMPANY_QUEUE_MAX_RETRIES": 3,
+    "UPDATE_COMPANY_QUEUE_RETRY_DELAY": 300,
+    "UPDATE_COMPANY_BATCH_SIZE": 100,
+
+    "FORCE_UPDATE_COMPANY_PERIOD_DAYS": 60,
+
+    "SEC_API_BASE_URL": "https://www.sec.gov/Archives/edgar/data",
+    "SEC_TICKERS_URL": "https://www.sec.gov/files/company_tickers.json",
+    "SEC_CIK_SUBMISSIONS_URL": "https://data.sec.gov/submissions/CIK{cik}.json",
+    "SEC_USER_AGENT": "SECMiner secminer@changeware.net",
+    "SEC_CIK_ACCOUNTS_PAYABLE_URL": "https://data.sec.gov/api/xbrl/companyconcept/CIK{cik}/us-gaap/AccountsPayableCurrent.json",
+
+    "CELERY_QUEUE_CONFIG": {
+        "filing_task_queue": {
+            "concurrency": 1
+        },
+        "company_task_queue": {
+            "concurrency": 1
+        },
+        "maintenance_task_queue": {
+            "concurrency": 1
+        },
+        "monitoring_task_queue": {
+            "concurrency": 1
+        }
+    },
+
+    "TASK_ROUTES": {
+        "tasks.filing.*": {"queue": "filing_task_queue"},
+        "tasks.company.*": {"queue": "company_task_queue"},
+        "tasks.maintenance.*": {"queue": "maintenance_task_queue"},
+        "tasks.monitoring.*": {"queue": "monitoring_task_queue"}
+    },
+
+    "BEAT_SCHEDULE": {
+        "cleanup_stale_data": {
+            "task": "tasks.maintenance.cleanup_stale_data",
+            "schedule": {
+                "hour": "*/6",
+                "minute": "0"
+            }
+        },
+        "process_index": {
+            "task": "tasks.maintenance.process_index_updates",
+            "schedule": {
+                "minute": "*/30",
+                "hour": "9-16",
+                "day_of_week": "1-5"
+            }
+        },
+        "check-new-filings": {
+            "task": "tasks.monitoring.check_new_filings",
+            "schedule": {
+                "minute": "*/1"
+            }
+        },
+        "check-company-updates": {
+            "task": "tasks.monitoring.check_company_updates",
+            "schedule": {
+                "minute": "*/7"
+            }
+        }
+    }
+}
