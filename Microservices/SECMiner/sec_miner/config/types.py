@@ -23,8 +23,11 @@ class CeleryQueueConfig(BaseModel):
 class ConfigModel(BaseModel):
     # Redis Configuration
     REDIS_URL: str
+
     RABBITMQ_HOST: str
     RABBITMQ_PORT: str
+    RABBITMQ_USER: str
+    RABBITMQ_PASS: str
 
     RATE_LIMIT_SECONDS: int
     RATE_CALLS_PER_SECOND: int
