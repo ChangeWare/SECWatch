@@ -1,3 +1,4 @@
+import httpx
 import pyodbc
 import redis
 from sec_miner.celery_app import celery_app
@@ -10,10 +11,11 @@ logger = get_logger(__name__)
 
 
 @celery_app.task(
+    name='tasks.index.process_index_updates',
+    acks_late=True,
     max_retries=3,
-    autoretry_for=(pyodbc.OperationalError,),
-    retry_kwargs={'countdown': 60},
-    name='tasks.index.process_index_updates'
+    autoretry_for=(redis.RedisError, httpx.TimeoutException),
+    retry_kwargs={'countdown': 60}
 )
 def process_index():
     """Processes and stores new companies in SQL database"""

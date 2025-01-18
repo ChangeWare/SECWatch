@@ -4,13 +4,13 @@ from celery.result import AsyncResult
 from datetime import datetime
 import redis
 from celery_app import celery_app
-from tasks.company import process_companies, process_companies_financial_metrics, \
-    process_companies_filings
+from tasks.company import process_companies_financial_metrics, \
+    process_companies_filings, process_new_companies
 from tasks.maintenance import process_index
 from tasks.monitoring import check_new_filings, check_company_updates
 import uvicorn
 from sec_miner.utils.logger_factory import get_logger
-from config.loader import config
+from sec_miner.config.loader import config
 
 app = FastAPI(title="SEC Miner API")
 redis_client = redis.from_url(config.REDIS_URL)
@@ -36,8 +36,11 @@ async def health_check():
 async def trigger_monitoring_refresh():
     """Trigger monitoring refresh"""
     try:
-        check_new_filings.delay()
-        check_company_updates.delay()
+        tasks = [check_new_filings.delay(),
+                 check_company_updates.delay()]
+        return {
+            "task_ids": [t.id for t in tasks],
+        }
     except Exception as e:
         logger.error(f"Error triggering monitoring refresh: {str(e)}")
 
@@ -61,7 +64,7 @@ async def get_metrics():
 async def trigger_update_companies():
     """Manually trigger company list update"""
     try:
-        task = process_companies.delay()
+        task = process_new_companies.delay()
         return {
             "task_id": task.id,
             "status": "started",

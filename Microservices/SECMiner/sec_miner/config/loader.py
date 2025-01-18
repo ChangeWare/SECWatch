@@ -2,10 +2,8 @@ import json
 import os
 from pathlib import Path
 from typing import Dict, Any
-
 from celery.schedules import crontab
-
-from types import ConfigModel
+from sec_miner.config.types import ConfigModel
 
 
 class ConfigurationError(Exception):
@@ -37,7 +35,7 @@ class ConfigLoader:
 
     def load_config(self):
         """Load configuration based on environment"""
-        env = os.getenv('APP_ENV', 'development').lower()
+        env = os.getenv('APP_ENV', 'dev').lower()
         config_dir = Path(__file__).parent.parent / 'config'
 
         # Load base config
@@ -48,13 +46,6 @@ class ConfigLoader:
 
         # Merge configurations
         merged_config = {**base_config, **env_config}
-
-        # Convert schedule strings to crontab objects
-        if 'BEAT_SCHEDULE' in merged_config:
-            for task_name, task_config in merged_config['BEAT_SCHEDULE'].items():
-                if isinstance(task_config['schedule'], dict):
-                    schedule_args = task_config['schedule']
-                    task_config['schedule'] = crontab(**schedule_args)
 
         # Validate configuration
         try:

@@ -1,6 +1,3 @@
-import json
-
-import httpx
 from datetime import datetime, timedelta
 from typing import List, Dict
 from ratelimit import sleep_and_retry, limits
@@ -15,6 +12,8 @@ from sec_miner.sec.processors.index_processor import IndexProcessor
 from sec_miner.sec.results import CompanyMetricResult
 from sec_miner.sec.utils import normalize_cik
 from sec_miner.utils.logger_factory import get_logger
+import json
+import httpx
 
 logger = get_logger(__name__)
 
@@ -26,6 +25,8 @@ class SECClient:
         self.redis_client = redis_client
         self.index_processor = IndexProcessor(redis_client)
 
+    @sleep_and_retry
+    @limits(calls=config.RATE_CALLS_PER_SECOND, period=config.RATE_LIMIT_SECONDS)
     def get_company_ticker_list(self):
         """Get company tickers from company_tickers.json"""
 
@@ -33,8 +34,11 @@ class SECClient:
         company_tickers_cache_data = self.redis_client.get('sec:company_tickers_cache')
         company_tickers_cache = json.loads(company_tickers_cache_data) if company_tickers_cache_data else None
 
-        if company_tickers_cache and company_tickers_cache.last_updated > datetime.utcnow() - timedelta(hours=12):
-            return company_tickers_cache.data
+        last_updated = datetime.strptime(company_tickers_cache['last_updated'], '%Y-%m-%d %H:%M:%S.%f') \
+            if company_tickers_cache else None
+
+        if last_updated and last_updated > datetime.utcnow() - timedelta(hours=12):
+            return company_tickers_cache['data']
 
         with httpx.Client() as client:
             response = client.get(config.SEC_TICKERS_URL, headers=self.headers)
@@ -51,12 +55,12 @@ class SECClient:
 
             return companies
 
+    @sleep_and_retry
+    @limits(calls=config.RATE_CALLS_PER_SECOND, period=config.RATE_LIMIT_SECONDS)
     def get_ticker_mapping(self) -> Dict[str, str]:
         """Get CIK to ticker mapping from SEC company tickers list """
 
         company_tickers = self.get_company_ticker_list()
-
-        print(company_tickers)
 
         # Create CIK to ticker mapping
         return {
@@ -64,6 +68,8 @@ class SECClient:
             for item in company_tickers
         }
 
+    @sleep_and_retry
+    @limits(calls=config.RATE_CALLS_PER_SECOND, period=config.RATE_LIMIT_SECONDS)
     def get_company_accounts_payable(self, cik: str) -> CompanyMetricResult:
         """Get accounts payable for companies"""
 
@@ -144,6 +150,8 @@ class SECClient:
                 logger.error(f"Error processing SEC data: {str(e)}")
                 raise
 
+    @sleep_and_retry
+    @limits(calls=config.RATE_CALLS_PER_SECOND, period=config.RATE_LIMIT_SECONDS)
     def get_company_filing(self, cik: str, accession_number: str) -> SECFiling:
         # Ensure CIK is 10 digits for SEC API
         cik = normalize_cik(cik)
@@ -188,6 +196,8 @@ class SECClient:
                 logger.error(f"Error processing SEC data: {str(e)}")
                 raise
 
+    @sleep_and_retry
+    @limits(calls=config.RATE_CALLS_PER_SECOND, period=config.RATE_LIMIT_SECONDS)
     def get_company_filings(self, cik: str) -> CompanyFilingHistoryDocument:
         """Get filings for a company"""
 
@@ -266,15 +276,6 @@ class SECClient:
                 logger.error(f"Error processing SEC data: {str(e)}")
                 raise
 
-    def get_company_financial_metrics(self, cik: str) -> List[CompanyMetricResult]:
-        # CIK needs to be 10 digits for SEC API
-        cik = cik.zfill(10)
-
-        """Get financial metrics for companies"""
-        return [
-            self.get_company_accounts_payable(cik)
-        ]
-
     @sleep_and_retry
     @limits(calls=config.RATE_CALLS_PER_SECOND, period=config.RATE_LIMIT_SECONDS)
     def get_company_details(self, cik: str) -> Company:
@@ -288,23 +289,32 @@ class SECClient:
             addresses = []
             for addr_type, addr_data in company_data['addresses'].items():
                 address = Address(
-                    Street=addr_data.get('street1'),
-                    Street2=addr_data.get('street2'),
-                    City=addr_data.get('city'),
-                    State=addr_data.get('state'),
-                    Zip=addr_data.get('zip'),
-                    Country=addr_data.get('country'),
-                    AddressType=addr_type
+                    street=addr_data.get('street1'),
+                    street2=addr_data.get('street2'),
+                    city=addr_data.get('city'),
+                    state=addr_data.get('state'),
+                    zip=addr_data.get('zip'),
+                    country=addr_data.get('country'),
+                    address_type=addr_type
                 )
                 addresses.append(address)
 
             company = Company(
-                CIK=cik,
-                Name=company_data['name'],
-                SIC=company_data['sic'],
-                Ticker=len(company_data['tickers']) > 0 and company_data['tickers'][0] or None,
-                Addresses=addresses,
-                LastUpdated=datetime.utcnow()
+                cik=cik,
+                name=company_data['name'],
+                sic=company_data['sic'],
+                ticker=len(company_data['tickers']) > 0 and company_data['tickers'][0] or None,
+                addresses=addresses,
+                last_updated=datetime.utcnow()
             )
 
             return company
+
+    def get_company_financial_metrics(self, cik: str) -> List[CompanyMetricResult]:
+        # CIK needs to be 10 digits for SEC API
+        cik = cik.zfill(10)
+
+        """Get financial metrics for companies"""
+        return [
+            self.get_company_accounts_payable(cik)
+        ]

@@ -39,6 +39,48 @@ class SECFiling(BaseModel):
     primary_document: Optional[str]
     primary_doc_description: Optional[str]
 
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert filing to dictionary for storage"""
+        return {
+            'accession_number': self.accession_number,
+            'filing_date': self.filing_date.isoformat(),
+            'report_date': self.report_date.isoformat() if self.report_date else None,
+            'act': self.act,
+            'form': self.form,
+            'file_number': self.file_number,
+            'film_number': self.film_number,
+            'items': self.items,
+            'size': self.size,
+            'is_xbrl': self.is_xbrl,
+            'is_inline_xbrl': self.is_inline_xbrl,
+            'primary_document': self.primary_document,
+            'primary_doc_description': self.primary_doc_description
+        }
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'SECFiling':
+        """Create filing from dictionary data"""
+        # Parse datetime fields
+        filing_date = datetime.fromisoformat(data['filing_date'])
+        report_date = (datetime.fromisoformat(data['report_date'])
+                       if data.get('report_date') else None)
+
+        return cls(
+            accession_number=data['accession_number'],
+            filing_date=filing_date,
+            report_date=report_date,
+            act=data.get('act'),
+            form=data.get('form'),
+            file_number=data.get('file_number'),
+            film_number=data.get('film_number'),
+            items=data.get('items'),
+            size=data['size'],
+            is_xbrl=data['is_xbrl'],
+            is_inline_xbrl=data['is_inline_xbrl'],
+            primary_document=data.get('primary_document'),
+            primary_doc_description=data.get('primary_doc_description')
+        )
+
 
 class FilingHistoryMetadata(BaseModel):
     """Metadata about the company's filing history"""

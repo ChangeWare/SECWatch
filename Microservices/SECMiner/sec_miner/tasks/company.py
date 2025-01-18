@@ -12,22 +12,53 @@ import pyodbc
 logger = get_logger(__name__)
 
 
+@celery_app.task(name='tasks.company.check_new_companies')
+def check_new_companies():
+    """Checks for new companies in the queue and triggers processing if needed"""
+    redis_client = redis.from_url(config.REDIS_URL)
+
+    # Check if there are any filings in the queue
+    queue_length = redis_client.llen(config.NEW_COMPANY_QUEUE)
+
+    if queue_length > 0:
+        # If there are filings to process, trigger the processing task
+        process_new_companies.delay()
+        logger.info(f"Triggered processing of {queue_length} new companies")
+
+
+@celery_app.task(name='tasks.company.check_companies_needing_update')
+def check_companies_needing_update():
+    """Checks for new companies in the queue and triggers processing if needed"""
+    redis_client = redis.from_url(config.REDIS_URL)
+
+    # Check if there are any filings in the queue
+    queue_length = redis_client.llen(config.UPDATE_COMPANY_QUEUE)
+
+    if queue_length > 0:
+        # If there are filings to process, trigger the processing task
+        # TODO: implement update company processing
+        logger.info(f"Triggered processing of {queue_length} for updating")
+
+
 @celery_app.task(
+    name='tasks.company.process_new_companies',
+    acks_late=True,
     max_retries=3,
     autoretry_for=(pyodbc.OperationalError,),
-    retry_kwargs={'countdown': 60},
-    name='tasks.company.process_companies'
+    retry_kwargs={'countdown': 60}
 )
-def process_companies():
+def process_new_companies():
     """Processes and stores new companies in SQL database"""
     redis_client = redis.from_url(config.REDIS_URL)
     db_context = DbContext()
     sec_client = SECClient(db_context, redis_client)
-    company_processor = CompanyProcessor(redis_client, sec_client, db_context)
+    mongodb_context = MongoDbContext()
+    company_processor = CompanyProcessor(redis_client, sec_client,
+                                         db_context, mongodb_context)
 
-    new_processed_companies = company_processor.process_new_companies()
-    process_companies_financial_metrics.delay(new_processed_companies)
-    process_companies_filings.delay(new_processed_companies)
+    result = company_processor.process_new_companies()
+    process_companies_financial_metrics.delay(result.new_company_ciks)
+    process_companies_filings.delay(result.new_company_ciks)
 
 
 @celery_app.task(

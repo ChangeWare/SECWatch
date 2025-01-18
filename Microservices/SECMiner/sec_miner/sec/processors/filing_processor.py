@@ -1,15 +1,20 @@
-import json
+from itertools import groupby
 from redis import Redis
-from typing import List, Dict, Any, Set
+from typing import List, Dict, Set
 from datetime import datetime, timedelta
 from sec_miner.config.loader import config
+from sec_miner.persistence.message_bus.filing_event.event_broker import FilingEventBroker
+from sec_miner.persistence.message_bus.filing_event.types import FilingEvent, FilingEventData
 from sec_miner.persistence.mongodb.database import MongoDbContext
+from sec_miner.persistence.mongodb.models import SECFiling
 from sec_miner.persistence.sql.database import DbContext
 from sec_miner.sec.processors.company_processor import CompanyProcessor
-from sec_miner.sec.processors.types import UnprocessedFiling
+from sec_miner.sec.processors.types import UnprocessedFiling, ProcessNewFilingsResult
 from sec_miner.sec.sec_client import SECClient
 from sec_miner.sec.utils import normalize_cik
 from sec_miner.utils.logger_factory import get_logger
+import uuid
+import json
 
 logger = get_logger(__name__)
 
@@ -19,122 +24,136 @@ class FilingProcessor:
                  sec_client: SECClient,
                  company_processor: CompanyProcessor,
                  mongodb_context: MongoDbContext,
-                 db_context: DbContext):
+                 db_context: DbContext,
+                 event_broker: FilingEventBroker):
         self.redis_client = redis_client
         self.company_processor = company_processor
         self.mongodb_context = mongodb_context
         self.sec_client = sec_client
         self.db_context = db_context
+        self.event_broker = event_broker
 
         # Constants for queue names and processing
         self.FILING_QUEUE = config.FILING_QUEUE
+        self.FILING_QUEUE_CRITICAL_FAILURE = config.FILING_QUEUE_CRITICAL_FAILURE
         self.FAILED_QUEUE = config.FILING_QUEUE_FAILURES
+        self.UNRECOVERABLE_FAILURES = config.FILING_QUEUE_UNRECOVERABLE_FAILURES
         self.MAX_RETRIES = config.FILING_QUEUE_MAX_RETRIES
         self.RETRY_DELAY = config.FILING_QUEUE_RETRY_DELAY
 
     @staticmethod
     def _group_filings_by_cik(filings: List[UnprocessedFiling]) -> Dict[str, List[UnprocessedFiling]]:
         """Group filings by CIK and sort each group by date"""
-        filings_by_cik: Dict[str, List[UnprocessedFiling]] = {}
-        for filing in filings:
-            cik = normalize_cik(filing.cik)
-            if cik not in filings_by_cik:
-                filings_by_cik[cik] = []
-            filings_by_cik[cik].append(filing)
-
-        # Sort each group by date descending
-        for cik_filings in filings_by_cik.values():
-            cik_filings.sort(key=lambda x: x.date_filed, reverse=True)
-
-        return filings_by_cik
+        return {
+            cik: sorted(group, key=lambda x: x.date_filed, reverse=True)
+            for cik, group in groupby(
+                sorted(filings, key=lambda x: normalize_cik(x.cik)),
+                key=lambda x: normalize_cik(x.cik)
+            )
+        }
 
     def _requeue_filings(self, filings: List[UnprocessedFiling], error: str):
+        num_retry_filings = 0
+
+        pipeline = self.redis_client.pipeline()
         """Re-queue filings with retry metadata"""
         for filing in filings:
             filing.retry_count += 1
             filing.last_error = error
-            filing.last_attempt = datetime.utcnow().isoformat()
+            filing.last_attempt = datetime.utcnow()
 
             if filing.retry_count <= self.MAX_RETRIES:
-                # Add to delayed retry queue with exponential backoff
+                # Add to delayed retry queue
                 retry_at = datetime.utcnow() + timedelta(seconds=self.RETRY_DELAY)
-                filing.retry_at = retry_at.isoformat()
+                filing.retry_at = retry_at
 
-                self.redis_client.rpush(
+                pipeline.rpush(
                     self.FAILED_QUEUE,
                     json.dumps(filing.to_json())
                 )
-                logger.warning(
-                    f"Re-queued filing {filing.accession_number} "
-                    f"for retry {filing.retry_count}/{self.MAX_RETRIES}"
-                )
+                num_retry_filings += 1
             else:
                 # Log dead letter for manual review
-                filing['final_failure'] = True
-                self.mongodb_context.record_failed_filing(filing)
-                logger.error(
-                    f"Filing {filing.accession_number} exceeded max retries. "
-                    f"Moving to dead letter collection."
+                filing.final_failure = True
+                pipeline.rpush(
+                    self.UNRECOVERABLE_FAILURES,
+                    json.dumps(filing.to_json())
                 )
+
+        pipeline.execute()
+        logger.error(f"Queued {num_retry_filings} filings for retries; "
+                     f"{len(filings) - num_retry_filings} were stored as dead letters.")
+
+    @staticmethod
+    def _new_filings_to_events(cik: str, new_filings: List[SECFiling]):
+        filing_events: List[FilingEvent] = []
+        timestamp = datetime.now()
+
+        for filing in new_filings:
+            filing_events.append(FilingEvent(
+                cik=cik,
+                event_type='new_filing',
+                event_id=str(uuid.uuid4()),
+                timestamp=timestamp,
+                data=FilingEventData(
+                    form_type=filing.form,
+                    filing_date=filing.filing_date,
+                    accession_number=filing.accession_number
+                )
+            ))
+
+        return filing_events
 
     def _process_filing_batch(self, filings_by_cik: Dict[str, List[UnprocessedFiling]],
                               processed_file_accessions: Set[str]):
         """Process a batch of filings by fetching complete filing history for each CIK"""
-        company_has_filing_history = self.mongodb_context.check_companies_have_filing_history(
-            list(filings_by_cik.keys())
-        )
 
         for cik, filing_entries in filings_by_cik.items():
             try:
-                if not company_has_filing_history.get(cik):
-                    logger.info(f"Company without filing history detected. Postponing processing of filings for"
-                                f" {cik} to be processed by company processor.")
-                    continue
+                # Get all filings at once instead of individual requests
+                filing_history = self.sec_client.get_company_filings(cik)
 
-                try:
-                    # Get all filings at once instead of individual requests
-                    filing_history = self.sec_client.get_company_filings(cik)
+                # Filter to just the new filings we need (new filings)
+                needed_accession_numbers = {entry.accession_number for entry in filing_entries}
+                new_filings = [
+                    filing for filing in filing_history.filings
+                    if filing.accession_number in needed_accession_numbers
+                ]
 
-                    # Filter to just the new filings we need (new filings)
-                    needed_accession_numbers = {entry.accession_number for entry in filing_entries}
-                    new_filings = [
-                        filing for filing in filing_history.filings
-                        if filing.accession_number in needed_accession_numbers
-                    ]
+                if new_filings:
+                    self.mongodb_context.insert_filings_into_history(new_filings, cik)
+                    # Use the most recent filing date from our new filings
+                    self.db_context.update_company_last_known_filing_date(
+                        cik,
+                        max(filing.filing_date for filing in new_filings)
+                    )
 
-                    if new_filings:
-                        self.mongodb_context.insert_filings_into_history(new_filings, cik)
-                        # Use the most recent filing date from our new filings
-                        self.db_context.update_company_last_known_filing_date(
-                            cik,
-                            max(filing.filing_date for filing in new_filings)
-                        )
-                        # Mark all successfully processed filings
-                        for filing in new_filings:
-                            processed_file_accessions.add(filing.accession_number)
+                    # Publish info about new filings to our message bus for consumers
+                    filing_events = self._new_filings_to_events(cik, new_filings)
+                    self.event_broker.queue_filings_events(filing_events)
 
-                except Exception as e:
-                    logger.error(f"Error fetching filings for CIK {cik}: {str(e)}")
-                    self._requeue_filings(filing_entries, str(e))
-                    continue
+                    # Mark all successfully processed filings
+                    for filing in new_filings:
+                        processed_file_accessions.add(filing.accession_number)
 
             except Exception as e:
-                logger.error(f"Error processing filings for CIK {cik}: {str(e)}")
-                raise
+                logger.error(f"Error processing new filings for CIK {cik}: {str(e)}")
+                self._requeue_filings(filing_entries, str(e))
+                continue
 
     @staticmethod
-    def deserialize_filings(filing_entries: List[bytes]) -> List[UnprocessedFiling]:
+    def deserialize_queued_filings(filing_entries: List[bytes]) -> List[UnprocessedFiling]:
         filings = []
 
         for entry in filing_entries:
             data = json.loads(entry.decode('utf-8'))
 
-            # Since date was serialized with str(), parse it with datetime
             date_filed = datetime.strptime(data['date_filed'], '%Y-%m-%d %H:%M:%S')
 
-            last_attempt = datetime.strptime(data['last_attempt'], '%Y-%m-%d %H:%M:%S') \
+            last_attempt = datetime.strptime(data['last_attempt'], '%Y-%m-%d %H:%M:%S.%f') \
                 if data['last_attempt'] else None
-            retry_at = datetime.strptime(data['retry_at'], '%Y-%m-%d %H:%M:%S') \
+
+            retry_at = datetime.strptime(data['retry_at'], '%Y-%m-%d %H:%M:%S.%f') \
                 if data['retry_at'] else None
 
             filing = UnprocessedFiling(
@@ -154,51 +173,101 @@ class FilingProcessor:
 
         return filings
 
-    def process_new_filings(self):
+    def process_new_filings(self) -> ProcessNewFilingsResult:
         """Main method to process new filings with error handling"""
+
+        # Get queue length first
+        queue_length = self.redis_client.llen(self.FILING_QUEUE)
+        if queue_length == 0:
+            logger.info("No new filings to process despite monitoring execution.")
+            return ProcessNewFilingsResult(
+                total_new_filings=0,
+                total_failed_filings=0,
+                total_companies_discovered=0,
+                total_companies_identified_to_update=0,
+                message="No new filings to process despite monitoring execution."
+            )
+
+        filing_entries = self.redis_client.lpop(self.FILING_QUEUE, queue_length)
+
+        if not filing_entries:
+            logger.warning(f"No new filings to process monitoring execution despite queue reading: "
+                           f"${queue_length} items.")
+            return ProcessNewFilingsResult(
+                total_new_filings=0,
+                total_failed_filings=0,
+                total_companies_discovered=0,
+                total_companies_identified_to_update=0,
+                message=f"No new filings to process monitoring execution despite queue reading: "
+                        f"${queue_length} items."
+            )
+
         try:
-            # Get queue length first
-            queue_length = self.redis_client.llen(self.FILING_QUEUE)
-            if queue_length == 0:
-                logger.info("No new filings to process")
-                return
+            filings_to_process = self.deserialize_queued_filings(filing_entries)
+        except Exception as e:
+            logger.error(f"Critical error: Failed to parse queued filings: {e}")
+            # Put them into a queue for critical failures for manual review.
+            pipeline = self.redis_client.pipeline()
+            for entry in filing_entries:
+                pipeline.rpush(self.FILING_QUEUE_CRITICAL_FAILURE, entry)
+            pipeline.execute()
+            return ProcessNewFilingsResult(
+                total_new_filings=0,
+                total_failed_filings=0,
+                total_companies_discovered=0,
+                total_companies_identified_to_update=0,
+                message=f"Failed to parse queued filings: {e}"
+            )
 
-            filing_entries = self.redis_client.lpop(self.FILING_QUEUE, queue_length)
+        # Set to track successfully processed filings
+        processed_filing_accessions = set()
 
-            if not filing_entries:
-                return
+        discover_companies_result = None
+        try:
+            # Group filings by CIK
+            filings_by_cik = self._group_filings_by_cik(filings_to_process)
 
-            filings = self.deserialize_filings(filing_entries)
+            # Process any new companies in the filings first.
+            discover_companies_result = self.company_processor.discover_companies_from_filings(filings_by_cik)
 
-            # Set to track successfully processed filings
-            processed_filing_accessions = set()
+            # Process the batches for any companies which aren't new.
+            # Newly identified companies will have their full histories processed later by the company processor.
+            # Filter the filings_by_cik to get rid of these newly identified companies.
 
-            try:
-                # Group filings by CIK
-                filings_by_cik = self._group_filings_by_cik(filings)
+            filings_by_cik = {cik: filings for cik, filings in filings_by_cik.items()
+                              if cik not in discover_companies_result.new_company_ciks}
 
-                # Process any new companies in the filings first.
-                self.company_processor.discover_companies_from_filings(filings_by_cik)
+            self._process_filing_batch(filings_by_cik, processed_filing_accessions)
 
-                # Process the batches
-                self._process_filing_batch(filings_by_cik, processed_filing_accessions)
+            logger.info(f"Processed {len(filings_to_process)} filings")
 
-                logger.info(f"Processed {len(filings)} filings")
-
-            except Exception as e:
-                logger.error(f"Error processing filings: {str(e)}")
-                # If something fails, requeue only unprocessed filings
-                unprocessed_filings = [
-                    filing for filing in filings
-                    if filing.accession_number not in processed_filing_accessions
-                ]
-                if unprocessed_filings:
-                    self._requeue_filings(unprocessed_filings, str(e))
-                raise
+            return ProcessNewFilingsResult(
+                total_new_filings=len(processed_filing_accessions),
+                total_failed_filings=queue_length - len(processed_filing_accessions),
+                total_companies_discovered=discover_companies_result.total_new_companies,
+                total_companies_identified_to_update=discover_companies_result.total_companies_to_update,
+                message="Successfully processed filings"
+            )
 
         except Exception as e:
-            logger.error(f"Critical error in filing processor: {str(e)}")
-            raise
+            logger.error(f"Critical error in processing filings: {str(e)}")
+
+            # If something fails, requeue only unprocessed filings
+            unprocessed_filings = [
+                filing for filing in filings_to_process
+                if filing.accession_number not in processed_filing_accessions
+            ]
+
+            if unprocessed_filings:
+                self._requeue_filings(unprocessed_filings, str(e))
+
+            return ProcessNewFilingsResult(
+                total_new_filings=len(processed_filing_accessions),
+                total_failed_filings=len(unprocessed_filings),
+                total_companies_discovered=getattr(discover_companies_result, 'total_new_companies', 0),
+                total_companies_identified_to_update=getattr(discover_companies_result, 'total_companies_to_update', 0),
+                message=f"Critical error in processing filings: {str(e)}"
+            )
 
     def retry_failed_filings(self):
         """Process the failed queue for retries"""
@@ -208,7 +277,7 @@ class FilingProcessor:
                 break
 
             filing = json.loads(failed_filing)
-            retry_at = datetime.fromisoformat(filing['retry_at'])
+            retry_at = datetime.strptime(filing['retry_at'], '%Y-%m-%d %H:%M:%S.%f')
 
             if datetime.utcnow() >= retry_at:
                 logger.info(f"Retrying failed filing {filing['entry_hash']}")

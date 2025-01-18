@@ -3,7 +3,7 @@ from sec_miner.config.loader import config
 from sec_miner.celery_app import celery_app
 from sec_miner.utils.logger_factory import get_logger
 from sec_miner.tasks.filing import process_new_filings
-from sec_miner.tasks.company import process_companies
+from sec_miner.tasks.company import process_new_companies
 
 logger = get_logger(__name__)
 _redis_client = Redis.from_url(config.REDIS_URL)
@@ -22,9 +22,9 @@ def check_new_filings():
 @celery_app.task(name='tasks.monitoring.check_company_updates')
 def check_company_updates():
     """Checks for companies needing updates and triggers processing"""
-    new_company_queue_length = _redis_client.llen('sec:processing:new_companies')
-    companies_to_update_queue_length = _redis_client.llen('sec:processing:companies_to_update')
+    new_company_queue_length = _redis_client.llen(config.NEW_COMPANY_QUEUE)
+    companies_to_update_queue_length = _redis_client.llen(config.UPDATE_COMPANY_QUEUE)
 
     if new_company_queue_length > 0 or companies_to_update_queue_length > 0:
-        process_companies.delay()
+        process_new_companies.delay()
         logger.info(f"Triggered processing of companies.")
