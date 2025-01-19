@@ -3,6 +3,7 @@ import pyodbc
 import redis
 from sec_miner.celery_app import celery_app
 from sec_miner.config.loader import config
+from sec_miner.persistence.mongodb.database import MongoDbContext
 from sec_miner.sec.processors.index_processor import IndexProcessor
 from sec_miner.sec.utils import get_current_year, get_current_quarter
 from sec_miner.utils.logger_factory import get_logger
@@ -21,10 +22,12 @@ def process_index():
     """Processes and stores new companies in SQL database"""
     redis_client = redis.from_url(config.REDIS_URL)
     index_processor = IndexProcessor(redis_client)
+    mongodb_context = MongoDbContext()
 
     cur_year = get_current_year()
     cur_quarter = get_current_quarter()
-    index_processor.process_index_updates(cur_year, cur_quarter)
+    result = index_processor.process_index_updates(cur_year, cur_quarter)
+    mongodb_context.record_new_indexes_processing_result(result)
 
 
 @celery_app.task(

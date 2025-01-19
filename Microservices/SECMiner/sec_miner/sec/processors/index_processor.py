@@ -6,17 +6,11 @@ from io import StringIO
 from typing import List, Dict, Optional
 from redis import Redis
 from sec_miner.config.loader import config
-from sec_miner.sec.processors.types import UnprocessedFiling
+from sec_miner.sec.processors.types import UnprocessedFiling, ProcessIndexResult
 from sec_miner.sec.utils import normalize_cik, get_accession_number_from_filename
 from sec_miner.utils.logger_factory import get_logger
 
 logger = get_logger(__name__)
-
-
-class IndexProcessorResponse:
-    def __init__(self, status: str, new_filings: int):
-        self.status = status
-        self.new_filings = new_filings
 
 
 class IndexProcessor:
@@ -185,13 +179,14 @@ class IndexProcessor:
                 filing_set_key = f"{quarter_key}:filings"
                 self.redis_client.delete(filing_set_key)
 
-    def process_index_updates(self, year: int, quarter: int):
+    def process_index_updates(self, year: int, quarter: int) -> ProcessIndexResult:
         new_indexes = self._get_new_indexes(year, quarter)
 
         if len(new_indexes) <= 0:
-            return IndexProcessorResponse(
-                status='no_updates',
-                new_filings=0
+            return ProcessIndexResult(
+                total_new_filings=0,
+                new_indexes=[],
+                message=f"No new indexes found for {year} Q{quarter}"
             )
 
         # Get all the filings we've processed so far, stored in a redis cache.
@@ -228,12 +223,14 @@ class IndexProcessor:
             self._cache_filings(cum_new_filings, year, quarter)
             self._queue_new_filings(cum_new_filings)
 
-            return IndexProcessorResponse(
-                status='updated',
-                new_filings=len(cum_new_filings),
+            return ProcessIndexResult(
+                total_new_filings=len(cum_new_filings),
+                new_indexes=new_indexes,
+                message=f"Queued {len(cum_new_filings)} new filings for processing"
             )
 
-        return IndexProcessorResponse(
-            status='no_updates',
-            new_filings=0,
+        return ProcessIndexResult(
+            total_new_filings=0,
+            new_indexes=new_indexes,
+            message=f"No new filings found in {len(new_indexes)} indexes"
         )

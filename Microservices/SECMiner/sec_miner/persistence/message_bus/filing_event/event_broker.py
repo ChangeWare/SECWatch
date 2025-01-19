@@ -13,7 +13,7 @@ class FilingEventBroker:
                 port=config.RABBITMQ_PORT,
                 credentials=pika.PlainCredentials(
                     username=config.RABBITMQ_USER,
-                    password=config.RABBITMQ_PASSWORD
+                    password=config.RABBITMQ_PASS
                 )
             )
         )
