@@ -9,6 +9,8 @@
     "REDIS_URL": "redis://localhost",
     "RABBITMQ_HOST": "localhost",
     "RABBITMQ_PORT": "5672",
+    "RABBITMQ_USER": "",
+    "RABBITMQ_PASS": "",
 
     "RATE_LIMIT_SECONDS": 1,
     "RATE_CALLS_PER_SECOND": 10,
