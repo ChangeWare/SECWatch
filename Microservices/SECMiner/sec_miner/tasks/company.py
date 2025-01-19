@@ -57,6 +57,7 @@ def process_new_companies():
                                          db_context, mongodb_context)
 
     result = company_processor.process_new_companies()
+    mongodb_context.record_new_companies_processing_result(result)
     process_companies_financial_metrics.delay(result.new_company_ciks)
     process_companies_filings.delay(result.new_company_ciks)
 

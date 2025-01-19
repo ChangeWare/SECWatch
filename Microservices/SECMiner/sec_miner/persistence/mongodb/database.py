@@ -4,7 +4,8 @@ from datetime import datetime
 from sec_miner.config.loader import config
 from sec_miner.persistence.mongodb.models import FinancialMetricDocument, FinancialMetric, MetricDataPoint, \
     CompanyFilingHistoryDocument, SECFiling
-from sec_miner.sec.processors.types import ProcessNewFilingsResult, UnprocessedFiling, QueuedNewCompanyInfo
+from sec_miner.sec.processors.types import ProcessNewFilingsResult, UnprocessedFiling, QueuedNewCompanyInfo, \
+    ProcessNewCompaniesResult, ProcessIndexResult
 from sec_miner.utils.logger_factory import get_logger
 
 logger = get_logger(__name__)
@@ -67,6 +68,12 @@ class MongoDbContext:
 
             if 'new_filings_results' not in collection_names:
                 self.db.create_collection('new_filings_results')
+
+            if 'new_companies_results' not in collection_names:
+                self.db.create_collection('new_companies_results')
+
+            if 'new_indexes_results' not in collection_names:
+                self.db.create_collection('new_indexes_results')
 
             if 'failed_filings' not in collection_names:
                 self.db.create_collection('failed_filings')
@@ -272,4 +279,22 @@ class MongoDbContext:
             logger.log(15, f"Recorded new filings processing result")
         except Exception as e:
             logger.error(f"Error recording new filings processing result: {str(e)}")
+            raise
+
+    def record_new_companies_processing_result(self, result: ProcessNewCompaniesResult):
+        try:
+            collection = self.db.new_companies_results
+            collection.insert_one(result.to_json())
+            logger.log(15, f"Recorded new companies processing result")
+        except Exception as e:
+            logger.error(f"Error recording new filings processing result: {str(e)}")
+            raise
+
+    def record_new_indexes_processing_result(self, result: ProcessIndexResult):
+        try:
+            collection = self.db.new_indexes_results
+            collection.insert_one(result.to_json())
+            logger.log(15, f"Recorded new indexes processing result")
+        except Exception as e:
+            logger.error(f"Error recording new indexes processing result: {str(e)}")
             raise
