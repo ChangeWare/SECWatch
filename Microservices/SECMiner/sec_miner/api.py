@@ -1,8 +1,9 @@
 from typing import Optional, List
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Depends
 from celery.result import AsyncResult
 from datetime import datetime
 import redis
+from fastapi.security import HTTPBasicCredentials, HTTPBasic
 from celery_app import celery_app
 from tasks.company import process_companies_financial_metrics, \
     process_companies_filings, process_new_companies
@@ -12,7 +13,18 @@ import uvicorn
 from sec_miner.utils.logger_factory import get_logger
 from sec_miner.config.loader import config
 
-app = FastAPI(title="SEC Miner API")
+
+security = HTTPBasic()
+
+def verify_credentials(credentials: HTTPBasicCredentials = Depends(security)):
+    if credentials.username != config.API_USER or credentials.password != config.API_PASS:
+        raise HTTPException(
+            status_code=401,
+            detail="Incorrect username or password",
+        )
+    return credentials.username
+
+app = FastAPI(title="SEC Miner API", dependencies=[Depends(verify_credentials)])
 redis_client = redis.from_url(config.REDIS_URL)
 logger = get_logger(__name__)
 

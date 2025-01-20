@@ -2,6 +2,9 @@
 config.dev.json
 config.prod.json
 
+# Deploy files
+deploy.sh
+
 # Python
 __pycache__/
 *.py[cod]

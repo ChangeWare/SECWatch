@@ -6,6 +6,9 @@
     "MONGODB_CONNECTION": "mongodb://{user}:{pass}@localhost:27017/",
     "MONGODB_DBNAME": "{db_name}",
 
+    "API_USER": "admin",
+    "API_PASS": "admin",
+
     "REDIS_URL": "redis://localhost",
     "RABBITMQ_HOST": "localhost",
     "RABBITMQ_PORT": "5672",
@@ -94,13 +97,13 @@
         "check-new-filings": {
             "task": "tasks.monitoring.check_new_filings",
             "schedule": {
-                "minute": "*/1"
+                "minute": "*/5"
             }
         },
         "check-company-updates": {
             "task": "tasks.monitoring.check_company_updates",
             "schedule": {
-                "minute": "*/7"
+                "minute": "*/10"
             }
         }
     }

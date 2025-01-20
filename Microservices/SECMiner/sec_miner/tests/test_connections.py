@@ -1,11 +1,10 @@
 import sys
-from pathlib import Path
-
 import redis
 import pika
 from typing import Dict, Any
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
+from sqlalchemy import create_engine
 from sec_miner.config.loader import config
 
 
@@ -13,6 +12,30 @@ class ConnectionTester:
     def __init__(self):
         self.config = config
         self.results: Dict[str, Any] = {}
+
+    def test_mssql(self) -> bool:
+        try:
+            connection_args = {
+                "connect_timeout": 30,  # Give enough time for initial connection
+                "timeout": 30,  # Command timeout
+            }
+            engine = create_engine(
+                config.DATABASE_CONNECTION,
+                pool_size=1,
+                max_overflow=0,
+                pool_timeout=30,
+                connect_args=connection_args
+            )
+            connection = engine.connect()
+            connection.close()
+            print("✅ MSSQL connection successful")
+            self.results['mssql'] = True
+            return True
+        except Exception as e:
+            print(f"❌ MSSQL connection failed: {str(e)}")
+            self.results['mssql'] = False
+            return False
+
 
     def test_redis(self) -> bool:
         """Test Redis connection"""
@@ -82,6 +105,7 @@ print("\nTesting connections...\n")
 redis_ok = tester.test_redis()
 rabbitmq_ok = tester.test_rabbitmq()
 mongodb_ok = tester.test_mongodb()
+mssql_ok = tester.test_mssql()
 
 tester.print_summary()
 
