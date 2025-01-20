@@ -1,3 +1,14 @@
+import {getBaseUrl} from "@common/api/apiClient.ts";
+
+function getProxiedImageSrc(src: string, cik: string, accessionNumber: string): string {
+
+    const baseUrl = getBaseUrl();
+
+    const cleanedAccessionNumber = accessionNumber.replace(/-/g, '');
+
+    return baseUrl + `proxy/filing/edgar/data/${cik}/${cleanedAccessionNumber}/` + src;
+}
+
 function getXPathForNode(node: Node): string {
     if (node.nodeType === Node.TEXT_NODE) {
         const parent = node.parentNode;
@@ -58,4 +69,4 @@ function getTableCellXPath(table: HTMLTableElement, row: number, col: number): s
     return `${getXPathForNode(table)}/tr[${row + 1}]/td[${col + 1}]`;
 }
 
-export { getXPathForNode, getNodeFromXPath, getTableCellXPath };
+export { getXPathForNode, getNodeFromXPath, getTableCellXPath, getProxiedImageSrc };
