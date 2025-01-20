@@ -9,6 +9,7 @@ interface CompanySearchBarProps {
     onQueryComplete: (response: SearchResponse) => void;
     onSearchStart?: () => void;
     className?: string;
+    iconClassName?: string;
 }
 
 export default function CompanySearchBar(props: CompanySearchBarProps) {
@@ -32,6 +33,7 @@ export default function CompanySearchBar(props: CompanySearchBarProps) {
 
         if (value.length === 0) {
             setQuery("");
+            setIsOpen(false);
         }
     };
 
@@ -60,7 +62,7 @@ export default function CompanySearchBar(props: CompanySearchBarProps) {
     }, []);
 
     return (
-        <div className={cn("relative", props.className)} ref={searchBarRef}>
+        <div className="relative" ref={searchBarRef}>
             {/* Search Input */}
             <div className="relative">
                 <input
@@ -68,13 +70,9 @@ export default function CompanySearchBar(props: CompanySearchBarProps) {
                     value={debouncedQuery}
                     onChange={handleInputChange}
                     placeholder="Search companies by name or ticker..."
-                    className="w-full px-4 py-3 bg-surface/50 backdrop-blur-sm rounded-lg
-                        border border-border
-                        text-foreground placeholder-secondary
-                        focus:outline-none focus:border-info focus:ring-1 focus:ring-info
-                        transition-all"
+                    className={cn("w-full pl-10 py-3 bg-surface/50 backdrop-blur-sm rounded-lg border border-border text-foreground placeholder-secondary focus:outline-none focus:border-info focus:ring-1 focus:ring-info transition-all", props.className)}
                 />
-                <Search className="absolute right-3 top-3 h-5 w-5 text-secondary"/>
+                <Search className={cn("absolute left-3 top-3.5 h-5 w-5 text-secondary", props.iconClassName)}/>
             </div>
 
             {/* Dropdown Results */}
