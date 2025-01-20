@@ -29,6 +29,9 @@ class ConfigModel(BaseModel):
     RABBITMQ_USER: str
     RABBITMQ_PASS: str
 
+    API_USER: str
+    API_PASS: str
+
     RATE_LIMIT_SECONDS: int
     RATE_CALLS_PER_SECOND: int
 
