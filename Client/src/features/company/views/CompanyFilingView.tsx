@@ -41,6 +41,7 @@ export function CompanyFilingView() {
 
             <LoadingIndicator isLoading={!filingContents} ContainerComponent={IXBRLLoadingIndicator}>
                 <IXBRLViewer
+                    cik={companyId!}
                     accessionNumber={accessionNumber!}
                     filingContents={filingContents!}
                     notes={notes}

@@ -119,7 +119,7 @@ function FilingsTable(props: FilingsTableProps) {
                 <input
                     type="text"
                     placeholder="Search filings..."
-                    className="h-10 w-full rounded-lg bg-surface-foreground pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="h-10 w-full rounded-lg bg-surface/80 border border-border pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                     value={globalFilter}
                     onChange={(e) => setGlobalFilter(e.target.value)}
                 />

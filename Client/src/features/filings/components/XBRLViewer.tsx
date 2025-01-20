@@ -6,11 +6,12 @@ import {PanelRightOpen} from "lucide-react";
 import {CreateFilingNoteRequest, FilingNote, FilingNoteSelectionData} from "@features/notes/types.ts";
 import secDocumentStyles from '../styles/filing.css?raw';
 import noteStyles from '../styles/noteStyles.css?raw'
-import {getNodeFromXPath, getXPathForNode} from "@features/filings/utils.ts";
+import {getNodeFromXPath, getProxiedImageSrc, getXPathForNode} from "@features/filings/utils.ts";
 
 interface IXBRLViewerProps {
     filingContents: string;
     accessionNumber: string;
+    cik: string;
     notes?: FilingNote[];
     onNoteCreate: (note: CreateFilingNoteRequest) => void;
     onNoteUpdate: (note: FilingNote) => void;
@@ -33,14 +34,17 @@ export const IXBRLLoadingIndicator: React.FC<{
     )
 };
 
-const IXBRLViewer: React.FC<IXBRLViewerProps> = ({
-                                                     filingContents,
-                                                     notes = [],
-                                                     onNoteCreate,
-                                                     onNoteUpdate,
-                                                     onNoteDelete,
-                                                     accessionNumber
-                                                 }: IXBRLViewerProps) => {
+const IXBRLViewer: React.FC<IXBRLViewerProps> = (props: IXBRLViewerProps) => {
+    const {
+        filingContents,
+        notes = [],
+        onNoteCreate,
+        onNoteUpdate,
+        onNoteDelete,
+        accessionNumber,
+        cik
+    } = props;
+
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const [selection, setSelection] = useState<FilingNoteSelectionData | null>(null);
     const [isAddingNote, setIsAddingNote] = useState(false);
@@ -96,7 +100,12 @@ const IXBRLViewer: React.FC<IXBRLViewerProps> = ({
             .replace(
                 /<link[^>]*?SDR_print[^>]*?>/gi,
                 `<style>${secDocumentStyles}</style>`
-            );
+            )
+            // Fix image src URLs
+            .replace(/<img[^>]+src="([^"]+)"/g, (match, src) => {
+                const newSrc = getProxiedImageSrc(src, cik, accessionNumber);
+                return match.replace(src, newSrc);
+            });
 
         // Add our custom styles
         return `
@@ -447,7 +456,7 @@ const IXBRLViewer: React.FC<IXBRLViewerProps> = ({
                             )}
                             <iframe
                                 ref={iframeRef}
-                                className="w-full border-none"
+                                className="w-full border-none bg-white"
                                 title="SEC Filing Content"
                             />
                         </>
