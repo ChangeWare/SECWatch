@@ -83,7 +83,7 @@ class ConfigModel(BaseModel):
     SEC_TICKERS_URL: str
     SEC_CIK_SUBMISSIONS_URL: str
     SEC_USER_AGENT: str
-    SEC_CIK_ACCOUNTS_PAYABLE_URL: str
+    SEC_CIK_COMPANY_FACTS_URL: str
 
     # Database Configuration
     DATABASE_CONNECTION: str

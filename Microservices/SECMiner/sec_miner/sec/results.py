@@ -1,4 +1,4 @@
-from sec_miner.persistence.mongodb.models import FinancialMetricDocument, CompanyFilingHistoryDocument
+from sec_miner.persistence.mongodb.models import CompanyConceptDocument, CompanyFilingHistoryDocument
 
 
 class CompanyFilingsResult:
@@ -8,8 +8,10 @@ class CompanyFilingsResult:
         self.filing_history = filing_history
 
 
-class CompanyMetricResult:
-    metric_document: FinancialMetricDocument
+class CompanyConceptResult:
+    concept_document: CompanyConceptDocument
+    message: str
 
-    def __init__(self, metric_document: FinancialMetricDocument):
-        self.metric_document = metric_document
+    def __init__(self, concept_document: CompanyConceptDocument, message: str):
+        self.concept_document = concept_document
+        self.message = message

@@ -1,11 +1,12 @@
 from typing import Optional, List
 from fastapi import FastAPI, HTTPException, Request, Depends
 from celery.result import AsyncResult
-from datetime import datetime
+from datetime import datetime, timezone
 import redis
 from fastapi.security import HTTPBasicCredentials, HTTPBasic
 from celery_app import celery_app
-from tasks.company import process_companies_financial_metrics, \
+from sec_miner.api_types import CIKsRequest
+from tasks.company import process_companies_concepts, \
     process_companies_filings, process_new_companies
 from tasks.maintenance import process_index
 from tasks.monitoring import check_new_filings, check_company_updates
@@ -39,7 +40,7 @@ async def health_check():
         # Check Celery/RabbitMQ connection
         celery_app.control.inspect().active()
 
-        return {"status": "healthy", "timestamp": datetime.utcnow()}
+        return {"status": "healthy", "timestamp": datetime.now(timezone.utc)}
     except Exception as e:
         raise HTTPException(status_code=503, detail=str(e))
 
@@ -100,15 +101,14 @@ async def trigger_update_companies():
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/tasks/trigger_company_financials_processing")
-async def trigger_company_financials_processing(
-        request: Request
+@app.post("/tasks/trigger_company_concepts_processing")
+async def trigger_company_concepts_processing(
+    request: CIKsRequest,
 ):
     """Manually trigger company list update"""
     try:
-        body = await request.json()
-        ciks: Optional[List[str]] = body.get("ciks") or None
-        task = process_companies_financial_metrics.delay(ciks, ciks is not None)
+        ciks = request.ciks
+        task = process_companies_concepts.delay(ciks, len(ciks) == 0)
 
         return {
             "task_id": task.id,

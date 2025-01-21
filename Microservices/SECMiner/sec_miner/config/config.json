@@ -53,8 +53,9 @@
     "SEC_API_BASE_URL": "https://www.sec.gov/Archives/edgar/data",
     "SEC_TICKERS_URL": "https://www.sec.gov/files/company_tickers.json",
     "SEC_CIK_SUBMISSIONS_URL": "https://data.sec.gov/submissions/CIK{cik}.json",
+    "SEC_CIK_COMPANY_FACTS_URL": "https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json",
     "SEC_USER_AGENT": "SECMiner secminer@changeware.net",
-    "SEC_CIK_ACCOUNTS_PAYABLE_URL": "https://data.sec.gov/api/xbrl/companyconcept/CIK{cik}/us-gaap/AccountsPayableCurrent.json",
+
 
     "CELERY_QUEUE_CONFIG": {
         "filing_task_queue": {

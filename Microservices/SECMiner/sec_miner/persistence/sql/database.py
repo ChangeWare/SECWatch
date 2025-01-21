@@ -60,7 +60,7 @@ class DbContext:
     def get_all_company_ciks(self):
         with self.session() as session:
             companies = session.query(Company).all()
-            company_ciks = [c.CIK for c in companies]
+            company_ciks = [c.cik for c in companies]
             return company_ciks
 
     def upsert_companies(self, companies: List[Company]):
