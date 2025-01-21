@@ -1,7 +1,9 @@
+from datetime import datetime, timezone
 from typing import List
 from sec_miner.celery_app import celery_app
 from sec_miner.config.loader import config
 from sec_miner.persistence.mongodb.database import MongoDbContext
+from sec_miner.persistence.mongodb.models import CompanyConceptsMetadataDocument
 from sec_miner.persistence.sql.database import DbContext
 from sec_miner.sec.processors.company_processor import CompanyProcessor
 from sec_miner.sec.sec_client import SECClient
@@ -58,7 +60,7 @@ def process_new_companies():
 
     result = company_processor.process_new_companies()
     mongodb_context.record_new_companies_processing_result(result)
-    process_companies_financial_metrics.delay(result.new_company_ciks)
+    process_companies_concepts.delay(result.new_company_ciks)
     process_companies_filings.delay(result.new_company_ciks)
 
 
@@ -66,10 +68,10 @@ def process_new_companies():
     max_retries=3,
     autoretry_for=(pyodbc.OperationalError,),
     retry_kwargs={'countdown': 60},
-    name='tasks.company.process_companies_financial_metrics'
+    name='tasks.company.process_companies_concepts'
 )
-def process_companies_financial_metrics(ciks: List[str], all_companies: bool = False):
-    """Processes and stores financial metrics for specified companies"""
+def process_companies_concepts(ciks: List[str], all_companies: bool = False):
+    """Processes and stores concepts for specified companies"""
 
     mongodb_context = MongoDbContext()
     db_context = DbContext()
@@ -81,10 +83,19 @@ def process_companies_financial_metrics(ciks: List[str], all_companies: bool = F
         ciks = db_context.get_all_company_ciks()
 
     for cik in ciks:
-        financial_metrics_results = sec_client.get_company_financial_metrics(cik)
-        for result in financial_metrics_results:
-            if result.metric_document is not None:
-                mongodb_context.upsert_metric_doc(result.metric_document)
+        concept_results = sec_client.get_company_concepts(cik)
+        for result in concept_results:
+            if result.concept_document is not None:
+                mongodb_context.upsert_concept_doc(result.concept_document)
+
+        # Construct a metadata document about all available concepts
+        company_concepts_metadata = CompanyConceptsMetadataDocument(
+            cik=cik,
+            available_concepts=[str(result.concept_document.concept_type) for result in concept_results],
+            total_concepts=len(concept_results),
+            last_updated=datetime.now(timezone.utc)
+        )
+        mongodb_context.update_concept_metadata_doc(company_concepts_metadata)
 
 
 @celery_app.task(

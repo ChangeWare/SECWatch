@@ -1,15 +1,15 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import List, Dict
 from ratelimit import sleep_and_retry, limits
 from redis import Redis
 from sec_miner.config.loader import config
-from sec_miner.persistence.financial_metric import FinancialMetric
-from sec_miner.persistence.mongodb.models import MetricDataPoint, FinancialMetricDocument, FinancialMetricMetadata, \
+from sec_miner.persistence.concept_types import ConceptType
+from sec_miner.persistence.mongodb.models import ConceptDataPoint, CompanyConceptDocument, CompanyConceptMetadata, \
     SECFiling, CompanyFilingHistoryDocument, FilingHistoryMetadata
 from sec_miner.persistence.sql.database import DbContext
 from sec_miner.persistence.sql.models import Company, Address
 from sec_miner.sec.processors.index_processor import IndexProcessor
-from sec_miner.sec.results import CompanyMetricResult
+from sec_miner.sec.results import CompanyConceptResult
 from sec_miner.sec.utils import normalize_cik
 from sec_miner.utils.logger_factory import get_logger
 import json
@@ -37,7 +37,7 @@ class SECClient:
         last_updated = datetime.strptime(company_tickers_cache['last_updated'], '%Y-%m-%d %H:%M:%S.%f') \
             if company_tickers_cache else None
 
-        if last_updated and last_updated > datetime.utcnow() - timedelta(hours=12):
+        if last_updated and last_updated > datetime.now(timezone.utc) - timedelta(hours=12):
             return company_tickers_cache['data']
 
         with httpx.Client() as client:
@@ -47,7 +47,7 @@ class SECClient:
 
             cache_entry = {
                 'data': companies,
-                'last_updated': datetime.utcnow()
+                'last_updated': datetime.now(timezone.utc)
             }
 
             # Cache the data in Redis
@@ -68,87 +68,72 @@ class SECClient:
             for item in company_tickers
         }
 
-    @sleep_and_retry
-    @limits(calls=config.RATE_CALLS_PER_SECOND, period=config.RATE_LIMIT_SECONDS)
-    def get_company_accounts_payable(self, cik: str) -> CompanyMetricResult:
-        """Get accounts payable for companies"""
+    @staticmethod
+    def _get_concept_datapoint(unit_data: Dict, unit_type: str) -> ConceptDataPoint:
+        """Gets standard datapoint items from concept data"""
+        return ConceptDataPoint(
+            # start_date may not be present in all cases
+            start_date=datetime.strptime(unit_data.get("start"), "%Y-%m-%d") if unit_data.get("start") else None,
+            end_date=datetime.strptime(unit_data["end"], "%Y-%m-%d"),
+            value=float(unit_data["val"]),
+            fiscal_year=int(unit_data["fy"] or 0),
+            fiscal_period=unit_data["fp"],
+            form_type=unit_data["form"],
+            filing_date=datetime.strptime(unit_data["filed"], "%Y-%m-%d"),
+            frame=unit_data.get("frame") or None,
+            accession_number=unit_data.get("accn") or None,
+            unit_type=unit_type,
+        )
 
-        with httpx.Client() as client:
-            response = client.get(
-                config.SEC_CIK_ACCOUNTS_PAYABLE_URL.format(cik=cik),
-                headers=self.headers
+    def _construct_concept_document(self, cik: str, data: Dict, concept_type: ConceptType) \
+            -> CompanyConceptDocument:
+        try:
+            ap_data = data["units"]
+
+            data_points: List[ConceptDataPoint] = []
+            unit_types = []
+            for unit_type, entry_data in ap_data.items():
+                # Sanitize unit types by forcing to all uppercase
+                unit_type = unit_type.upper()
+                if unit_type not in unit_types:
+                    unit_types.append(unit_type)
+                for unit_data in entry_data:
+                    data_points.append(
+                        self._get_concept_datapoint(unit_data=unit_data, unit_type=unit_type)
+                    )
+
+            data_points.sort(key=lambda x: x.end_date)
+
+            logger.info(f"Processed {concept_type} for CIK {cik}")
+
+            return CompanyConceptDocument(
+                cik=cik,
+                concept_type=concept_type,
+                data_points=data_points,
+                metadata=CompanyConceptMetadata(
+                    first_reported=data_points[0].end_date,
+                    last_reported=data_points[-1].end_date,
+                    last_updated=datetime.now(timezone.utc),
+                    last_value=data_points[-1].value,
+                    unit_types=unit_types,
+                    total_data_points=len(data_points),
+                    date_range={
+                        "start": data_points[0].end_date,
+                        "end": data_points[-1].end_date,
+                        "span": {
+                            "years": (data_points[-1].end_date - data_points[0].end_date).days / 365.25,
+                            "months": (data_points[-1].end_date - data_points[0].end_date).days / 30,
+                        }
+                    }
+                )
             )
 
-            # If we get a 404, the company doesn't have any accounts payable data
-            if response.status_code == 404:
-                return CompanyMetricResult(
-                    metric_document=None
-                )
-
-            data = response.json()
-
-            try:
-                ap_data = data["units"]
-                logger.info(f"Processing accounts payable for CIK {cik}")
-
-                data_points = []
-                currency_types = []
-                for currency_type, entry_data in ap_data.items():
-                    if currency_type not in currency_types:
-                        currency_types.append(currency_type)
-                    for unit_data in entry_data:
-                        data_points.append(
-                            MetricDataPoint(
-                                end_date=datetime.strptime(unit_data["end"], "%Y-%m-%d"),
-                                value=float(unit_data["val"]),
-                                fiscal_year=int(unit_data["fy"] or 0),
-                                fiscal_period=unit_data["fp"],
-                                form_type=unit_data["form"],
-                                filing_date=datetime.strptime(unit_data["filed"], "%Y-%m-%d"),
-                                frame=unit_data.get("frame") or None,
-                                currency_type=currency_type,
-                                metadata={
-                                    "accn": unit_data.get("accn")
-                                }
-                            )
-                        )
-
-                data_points.sort(key=lambda x: x.end_date)
-
-                metric_document = FinancialMetricDocument(
-                    cik=cik,
-                    metric_type=FinancialMetric.ACCOUNTS_PAYABLE,
-                    data_points=data_points,
-                    metadata=FinancialMetricMetadata(
-                        first_reported=data_points[0].end_date,
-                        last_reported=data_points[-1].end_date,
-                        last_updated=datetime.utcnow(),
-                        last_value=data_points[-1].value,
-                        currency_types=currency_types,
-                        total_data_points=len(data_points),
-                        date_range={
-                            "start": data_points[0].end_date,
-                            "end": data_points[-1].end_date,
-                            "span": {
-                                "years": (data_points[-1].end_date - data_points[0].end_date).days / 365.25,
-                                "months": (data_points[-1].end_date - data_points[0].end_date).days / 30,
-                            }
-                        }
-                    )
-                )
-
-                logger.info("Processed accounts payable for CIK {cik}")
-
-                return CompanyMetricResult(
-                    metric_document=metric_document
-                )
-
-            except KeyError as e:
-                logger.error(f"Error processing SEC data: {e}")
-                raise
-            except Exception as e:
-                logger.error(f"Error processing SEC data: {str(e)}")
-                raise
+        except KeyError as e:
+            logger.error(f"Error processing SEC data: {e}")
+            raise
+        except Exception as e:
+            logger.error(f"Error processing SEC data: {str(e)}")
+            raise
 
     @sleep_and_retry
     @limits(calls=config.RATE_CALLS_PER_SECOND, period=config.RATE_LIMIT_SECONDS)
@@ -251,7 +236,7 @@ class SECClient:
                     metadata=FilingHistoryMetadata(
                         first_filed=filings[0].filing_date,
                         last_filed=filings[-1].filing_date,
-                        last_fetched=datetime.utcnow(),
+                        last_fetched=datetime.now(timezone.utc),
                         total_filings=len(filings),
                         form_types=form_types,
                         date_range={
@@ -305,16 +290,49 @@ class SECClient:
                 sic=company_data['sic'],
                 ticker=len(company_data['tickers']) > 0 and company_data['tickers'][0] or None,
                 addresses=addresses,
-                last_updated=datetime.utcnow()
+                last_updated=datetime.now(timezone.utc)
             )
 
             return company
 
-    def get_company_financial_metrics(self, cik: str) -> List[CompanyMetricResult]:
-        # CIK needs to be 10 digits for SEC API
-        cik = cik.zfill(10)
+    @sleep_and_retry
+    @limits(calls=config.RATE_CALLS_PER_SECOND, period=config.RATE_LIMIT_SECONDS)
+    def get_company_concepts(self, cik: str) -> List[CompanyConceptResult]:
+        """Get all concepts for a company from companyfacts endpoint"""
+        cik = normalize_cik(cik)
 
-        """Get financial metrics for companies"""
-        return [
-            self.get_company_accounts_payable(cik)
-        ]
+        with httpx.Client() as client:
+            response = client.get(
+                config.SEC_CIK_COMPANY_FACTS_URL.format(cik=cik),
+                headers=self.headers
+            )
+
+            if response.status_code == 404:
+                return []
+
+            data = response.json()
+            facts = data.get('facts', {}).get('us-gaap', {})
+
+            results: List[CompanyConceptResult] = []
+
+            for concept_type in ConceptType:
+                concept = concept_type.value
+                if concept in facts:
+                    try:
+                        concept_document = self._construct_concept_document(
+                            cik=cik,
+                            data=facts[concept],
+                            concept_type=concept_type
+                        )
+                        results.append(CompanyConceptResult(
+                            concept_document=concept_document,
+                            message=f"Successfully processed {concept_type} data"
+                        ))
+                    except Exception as e:
+                        logger.error(f"Error processing {concept}: {str(e)}")
+                        results.append(CompanyConceptResult(
+                            concept_document=None,
+                            message=f"Failed to process {concept_type} data: {str(e)}"
+                        ))
+
+            return results

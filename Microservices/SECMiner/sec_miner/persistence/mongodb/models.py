@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from datetime import datetime
 from typing import List, Optional, Dict, Any
 from bson.objectid import ObjectId
-from sec_miner.persistence.financial_metric import FinancialMetric
+from sec_miner.persistence.concept_types import ConceptType
 
 
 class PyObjectId(ObjectId):
@@ -99,7 +99,8 @@ class CompanyFilingHistoryDocument(BaseModel):
     metadata: FilingHistoryMetadata
 
 
-class MetricDataPoint(BaseModel):
+class ConceptDataPoint(BaseModel):
+    start_date: Optional[datetime] = None
     end_date: datetime
     value: float
 
@@ -107,38 +108,38 @@ class MetricDataPoint(BaseModel):
 
     fiscal_period: Optional[str] = None
 
+    accession_number: Optional[str] = None
     form_type: str
     filing_date: datetime
     frame: Optional[str] = None
-    metadata: Optional[dict] = None
-    currency_type: str
+    unit_type: str
 
     class Config:
         populate_by_name = True
-        json_encoders = {
-            datetime: lambda dt: dt.isoformat(),
-        }
 
 
-class FinancialMetricMetadata(BaseModel):
+class CompanyConceptMetadata(BaseModel):
     first_reported: datetime
     last_reported: datetime
     last_updated: datetime
     last_value: float
-    currency_types: List[str]
+    unit_types: List[str]
     total_data_points: int
     date_range: Dict[str, Any]
 
 
-class FinancialMetricDocument(BaseModel):
+class CompanyConceptsMetadataDocument(BaseModel):
     cik: str
-    metric_type: FinancialMetric
-    data_points: List[MetricDataPoint]
-    metadata: FinancialMetricMetadata
+    available_concepts: List[str]
+    total_concepts: int
+    last_updated: datetime
+
+
+class CompanyConceptDocument(BaseModel):
+    cik: str
+    concept_type: ConceptType
+    data_points: List[ConceptDataPoint]
+    metadata: CompanyConceptMetadata
 
     class Config:
         allow_population_by_field_name = True
-        json_encoders = {
-            ObjectId: str,
-            datetime: lambda dt: dt.isoformat(),
-        }

@@ -5,6 +5,8 @@ config.prod.json
 # Deploy files
 deploy.sh
 
+.tools/
+
 # Python
 __pycache__/
 *.py[cod]

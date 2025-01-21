@@ -1,11 +1,11 @@
-from pymongo import MongoClient
+from datetime import datetime, timezone
 from typing import List, Optional, Dict
-from datetime import datetime
+from pymongo import MongoClient
 from sec_miner.config.loader import config
-from sec_miner.persistence.mongodb.models import FinancialMetricDocument, FinancialMetric, MetricDataPoint, \
-    CompanyFilingHistoryDocument, SECFiling
-from sec_miner.sec.processors.types import ProcessNewFilingsResult, UnprocessedFiling, QueuedNewCompanyInfo, \
-    ProcessNewCompaniesResult, ProcessIndexResult
+from sec_miner.persistence.mongodb.models import CompanyConceptDocument, ConceptType, CompanyFilingHistoryDocument, \
+    SECFiling, CompanyConceptsMetadataDocument
+from sec_miner.persistence.mongodb.utils import convert_enums_to_strings
+from sec_miner.sec.processors.types import ProcessNewFilingsResult, ProcessNewCompaniesResult, ProcessIndexResult
 from sec_miner.utils.logger_factory import get_logger
 
 logger = get_logger(__name__)
@@ -19,7 +19,8 @@ class MongoDbContext:
         self.ensure_collections()
         self.ensure_indexes()
 
-    def _ensure_index_exists(self, collection, index_fields, unique=False):
+    @staticmethod
+    def _ensure_index_exists(collection, index_fields, unique=False):
         existing_indexes = collection.list_indexes()
         index_names = {index['name'] for index in existing_indexes}
 
@@ -31,14 +32,16 @@ class MongoDbContext:
 
     def ensure_indexes(self):
         try:
-            # Financial metrics indexes
-            self._ensure_index_exists(self.db.financial_metrics, [("cik", 1), ("metric", 1)], unique=True)
-            self._ensure_index_exists(self.db.financial_metrics, [("last_updated", 1)])
-            self._ensure_index_exists(self.db.financial_metrics, [
+            # Company concepts indexes
+            self._ensure_index_exists(self.db.company_concepts, [("cik", 1), ("concept_type", 1)], unique=True)
+            self._ensure_index_exists(self.db.company_concepts, [("last_updated", 1)])
+            self._ensure_index_exists(self.db.company_concepts, [
                 ("cik", 1),
-                ("metric", 1),
+                ("concept_type", 1),
                 ("data_points.end_date", 1)
             ])
+
+            self._ensure_index_exists(self.db.company_concepts_metadata, [("cik", 1)], unique=True)
 
             # Filing history indexes
             self._ensure_index_exists(self.db.filing_history, [("cik", 1)], unique=True)
@@ -60,8 +63,8 @@ class MongoDbContext:
         try:
             collection_names = self.db.list_collection_names()
 
-            if 'financial_metrics' not in collection_names:
-                self.db.create_collection('financial_metrics')
+            if 'company_concepts' not in collection_names:
+                self.db.create_collection('company_concepts')
 
             if 'filing_history' not in collection_names:
                 self.db.create_collection('filing_history')
@@ -75,11 +78,8 @@ class MongoDbContext:
             if 'new_indexes_results' not in collection_names:
                 self.db.create_collection('new_indexes_results')
 
-            if 'failed_filings' not in collection_names:
-                self.db.create_collection('failed_filings')
-
-            if 'failed_new_companies' not in collection_names:
-                self.db.create_collection('failed_new_companies')
+            if 'company_concepts_metadata' not in collection_names:
+                self.db.create_collection('company_concepts_metadata')
 
         except Exception as e:
             logger.error(f"Error ensuring database collections: {str(e)}")
@@ -91,7 +91,7 @@ class MongoDbContext:
             collection = self.db.filing_history
             collection.update_one(
                 {"cik": filing_history_doc.cik},
-                {"$set": filing_history_doc.dict(by_alias=True)},
+                {"$set": filing_history_doc.model_dump(by_alias=True)},
                 upsert=True
             )
             logger.log(15, f"Upserted filing history for CIK {filing_history_doc.cik}")
@@ -162,13 +162,13 @@ class MongoDbContext:
                 {
                     "$push": {
                         "filings": {
-                            "$each": [f.dict(by_alias=True) for f in new_filings]
+                            "$each": [f.model_dump(by_alias=True) for f in new_filings]
                         }
                     },
                     "$set": {
                         "metadata.last_filed": new_last_filed,
                         "metadata.first_filed": new_first_filed,
-                        "metadata.last_fetched": datetime.utcnow(),
+                        "metadata.last_fetched": datetime.now(timezone.utc),
                         "metadata.date_range": {
                             "start": new_first_filed,
                             "end": new_last_filed
@@ -192,52 +192,47 @@ class MongoDbContext:
             logger.error(f"Error inserting filings for CIK {cik}: {str(e)}")
             raise
 
-    def upsert_metric_doc(self, metric_doc: FinancialMetricDocument) -> None:
-        """Update or insert a financial metric document"""
+    def update_concept_metadata_doc(self, concept_metadata_doc: CompanyConceptsMetadataDocument) -> None:
+        """Update or insert a company concept metadata document"""
         try:
-            collection = self.db.financial_metrics
-            collection.update_one(
-                {"cik": metric_doc.cik, "metric_type": metric_doc.metric_type},
-                {"$set": metric_doc.dict(by_alias=True)},
+            collection = self.db.company_concepts_metadata
+            collection.replace_one(
+                {"cik": concept_metadata_doc.cik},
+                concept_metadata_doc.model_dump(by_alias=True),
                 upsert=True
             )
-            logger.log(15, f"Upserted financial metric for CIK {metric_doc.cik}")
+            logger.log(15, f"Updated company concept metadata for CIK {concept_metadata_doc.cik}")
         except Exception as e:
-            logger.error(f"Error upserting metric for CIK {metric_doc.cik}: {str(e)}")
+            logger.error(f"Error updating company concept metadata for CIK {concept_metadata_doc.cik}: {str(e)}")
             raise
 
-    def get_metric_doc(self, cik: str, metric: FinancialMetric) -> Optional[FinancialMetricDocument]:
-        """Retrieve a specific metric for a company"""
+    def upsert_concept_doc(self, concept_doc: CompanyConceptDocument) -> None:
+        """Update or insert a company concept document"""
         try:
-            collection = self.db.financial_metrics
-            doc = collection.find_one({"cik": cik, "metric_type": metric})
-            return FinancialMetricDocument(**doc) if doc else None
-        except Exception as e:
-            logger.error(f"Error retrieving metric for CIK {cik}: {str(e)}")
-            raise
+            collection = self.db.company_concepts
 
-    def get_latest_data_points(self, cik: str, metric_doc: FinancialMetric, limit: int = 4) -> List[MetricDataPoint]:
-        """Get the most recent data points for a metric"""
-        try:
-            collection = self.db.financial_metrics
-            doc = collection.find_one(
-                {"cik": cik, "metric": metric_doc},
-                {"data_points": {"$slice": -limit}}
+            concept_doc_dict = concept_doc.model_dump(by_alias=True)
+            concept_doc_dict = convert_enums_to_strings(concept_doc_dict)
+
+            collection.update_one(
+                {"cik": concept_doc.cik, "concept_type": str(concept_doc.concept_type)},
+                {"$set": concept_doc_dict},
+                upsert=True
             )
-            if doc and doc.get("data_points"):
-                return [MetricDataPoint(**dp) for dp in doc["data_points"]]
-            return []
+            logger.log(15, f"Upserted company concept for CIK {concept_doc.cik}")
         except Exception as e:
-            logger.error(f"Error retrieving latest data points for CIK {cik}: {str(e)}")
+            logger.error(f"Error upserting company concept for CIK {concept_doc.cik}: {str(e)}")
             raise
 
-    def get_last_filing_date(self, cik: str) -> Optional[datetime]:
-        """Get the last processed filing date for a company"""
+    def get_concept_doc(self, cik: str, concept_type: ConceptType) -> Optional[CompanyConceptDocument]:
+        """Retrieve a specific concept for a company"""
         try:
-            doc: CompanyFilingHistoryDocument = self.db.filing_history.find_one({"cik": cik})
-            return doc.metadata.last_filed if doc else None
+            collection = self.db.company_concepts
+            doc = collection.find_one({"cik": cik, "concept_type": concept_type})
+            doc["concept_type"] = ConceptType(doc["concept_type"])
+            return CompanyConceptDocument(**doc) if doc else None
         except Exception as e:
-            logger.error(f"Error retrieving last filing date for CIK {cik}: {str(e)}")
+            logger.error(f"Error retrieving concept for CIK {cik}: {str(e)}")
             raise
 
     def company_has_filing_history(self, cik: str) -> bool:
