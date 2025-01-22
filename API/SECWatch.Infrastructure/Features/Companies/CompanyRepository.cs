@@ -10,14 +10,13 @@ namespace SECWatch.Infrastructure.Features.Companies;
 
 public class CompanyRepository(
     ApplicationDbContext context,
-    IMongoDbContext mongoDbContext,
-    IMapper mapper) : ICompanyRepository
+    IMongoDbContext mongoDbContext) : ICompanyRepository
 {
     public async Task<IReadOnlyList<Company>> SearchCompaniesAsync(CompanySearchQuery query)
     {
         var companies = await context.Companies
-            .Where(c => c.Name.Contains(query.SearchTerm) || 
-                        c.Ticker.Contains(query.SearchTerm))
+            .Where(c => c.Ticker != null && (c.Name.Contains(query.SearchTerm) || 
+                                             c.Ticker.Contains(query.SearchTerm)))
             .ToListAsync();
 
         return companies.AsReadOnly();

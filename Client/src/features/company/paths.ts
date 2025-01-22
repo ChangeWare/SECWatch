@@ -4,12 +4,13 @@ export const companyPaths = {
     tracked: '/companies/tracked',
     dashboard: {
         default: '/companies/:companyId',
-        overview: 'overview',         // Changed to relative
+        overview: 'overview',
         filings: 'filings', // Changed to relative
         filing: 'filings/:accessionNumber',
-        analysis: 'analysis',       // Changed to relative
-        alerts: 'alerts',            // Changed to relative
-        settings: 'settings',        // Changed to relative
+        concepts: 'concepts',
+        analysis: 'analysis',
+        alerts: 'alerts',
+        settings: 'settings',
     }
 }
 

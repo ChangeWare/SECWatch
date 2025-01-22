@@ -1,6 +1,5 @@
 using FluentResults;
 using SECWatch.Application.Features.Companies.DTOs;
-using SECWatch.Domain.Features.Companies;
 
 namespace SECWatch.Application.Features.Companies;
 
@@ -10,8 +9,11 @@ public interface ICompanyService
     
     Task<Result<CompanyDetails>> GetCompanyDetailsAsync(Guid userId, string ticker);
     
+    Task<Result<IReadOnlyList<string>>> GetCompanyConceptTypesAsync(string cik);
     
-    Task<Result<CompanyFinancialMetricDto>> GetCompanyFinancialMetricAsync(string cik, FinancialMetricType metric);
+    Task<Result<CompanyConceptDto>> GetCompanyConceptAsync(string cik, string conceptType);
+    
+    Task<Result<IReadOnlyList<CompanyConceptDto>>> GetCompanyConceptsAsync(string cik);
     
     Task<Result<CompanyFilingHistoryDto>> GetCompanyFilingHistoryAsync(string cik);
 }

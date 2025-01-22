@@ -88,7 +88,7 @@ public class UserService(
             new Dictionary<string, string>
             {
                 { "email", result.Value.Email },
-                { "verifiedAt", result.Value.VerifiedAt.ToString() },
+                { "verifiedAt", result.Value.VerifiedAt.ToString() ?? string.Empty },
                 { "success", result.IsSuccess.ToString() },
                 { "errors", string.Join(", ", result.Errors) }
             }

@@ -1,16 +1,44 @@
-import {CurrencyGroupedData, MetricDataPoint, MetricType, ProcessedDataPoint} from "@features/company/types.ts";
+import {CurrencyGroupedData, ConceptDataPoint, MetricType, ProcessedFinancialDataPoint} from "@features/company/types.ts";
 
 export function getMetricTypeDisplayName(metricType: number): string {
     const metricTypeName = MetricType[metricType];
     return metricTypeName ? metricTypeName.replace(/([a-z])([A-Z])/g, '$1 $2') : 'Unknown Metric Type';
 }
 
-export function formatFiscalPeriod(point: MetricDataPoint): string {
+export function getChangeOverPriorYear(data: ConceptDataPoint[]): number {
+    const mostRecent = data[0];
+    const priorYear = data.find(d => d.fiscalYear === mostRecent.fiscalYear - 1);
+
+    if (!priorYear) return 0;
+
+    return mostRecent.value - priorYear.value;
+}
+
+export function getPercentChangeOverPriorYear(data: ConceptDataPoint[]): number {
+    const mostRecent = data[0];
+    const priorYear = data.find(d => d.fiscalYear === mostRecent.fiscalYear - 1);
+
+    if (!priorYear) return 0;
+
+    return ((mostRecent.value - priorYear.value) / priorYear.value) * 100;
+}
+
+
+
+export function formatFiscalPeriod(point: ConceptDataPoint): string {
     if (!point.fiscalPeriod) return 'NA';
 
     return point.fiscalPeriod === 'FY'
         ? `FY${point.fiscalYear}`
         : `${point.fiscalYear}Q${point.fiscalPeriod.replace('Q', '')}`;
+}
+
+export function formatConceptType(conceptType: string): string {
+    // Format TYPES_LIKE_THIS to Types Like This
+    return conceptType
+        .toLowerCase() // Convert the entire string to lowercase first
+        .replace(/_/g, ' ') // Replace underscores with spaces
+        .replace(/\b\w/g, l => l.toUpperCase()); // Capitalize the first letter of each word
 }
 
 export function getInvertedChangePercentClassName(changePercent: number): string {
@@ -67,35 +95,20 @@ export function formatCurrency (value: number): string {
         style: 'currency',
         currency: 'USD',
         minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
+        maximumFractionDigits: 1,
     }).format(value);
 }
 
-export const findTextNode = (root: Node, offset: number): Node | null => {
-    let total = 0;
-    const walk = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
-    let current = walk.nextNode();
 
-    while (current) {
-        const length = (current as Text).length;
-        if (total + length > offset) {
-            return current;
-        }
-        total += length;
-        current = walk.nextNode();
-    }
-    return null;
-};
-
-export function processData(data: MetricDataPoint[]): CurrencyGroupedData {
+export function processData(data: ConceptDataPoint[]): CurrencyGroupedData {
     // First, group by currency type
     const groupedByCurrency = data.reduce((acc, curr) => {
-        if (!acc[curr.currencyType]) {
-            acc[curr.currencyType] = [];
+        if (!acc[curr.unitType]) {
+            acc[curr.unitType] = [];
         }
-        acc[curr.currencyType].push(curr);
+        acc[curr.unitType].push(curr);
         return acc;
-    }, {} as Record<string, MetricDataPoint[]>);
+    }, {} as Record<string, ConceptDataPoint[]>);
 
     // Process each currency group separately
     return Object.entries(groupedByCurrency).reduce((acc, [currency, currencyData]) => {
@@ -107,7 +120,7 @@ export function processData(data: MetricDataPoint[]): CurrencyGroupedData {
             }
             acc[dateStr].push(curr);
             return acc;
-        }, {} as Record<string, MetricDataPoint[]>);
+        }, {} as Record<string, ConceptDataPoint[]>);
 
         // Process each date group within the currency group
         const processedData = Object.entries(groupedByDate).map(([_, points]) => {
@@ -133,7 +146,7 @@ export function processData(data: MetricDataPoint[]): CurrencyGroupedData {
                 fiscalYear: mostRecent.fiscalYear,
                 fiscalPeriod: mostRecent.fiscalPeriod,
                 fiscalLabel: formatFiscalPeriod(mostRecent),
-                currencyType: mostRecent.currencyType,
+                currencyType: mostRecent.unitType,
                 value: mostRecent.value,
                 hasDiscrepancy,
                 hasMultipleFilings,

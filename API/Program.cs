@@ -2,6 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using SECWatch.Application;
+using SECWatch.Domain.Common;
 using SECWatch.Domain.Features.Users.Models.Infrastructure;
 using SECWatch.Infrastructure;
 

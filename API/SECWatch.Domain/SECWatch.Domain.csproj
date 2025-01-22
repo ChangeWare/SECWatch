@@ -16,4 +16,10 @@
       <PackageReference Include="FluentResults" Version="3.16.0" />
     </ItemGroup>
 
+    <ItemGroup>
+        <None Include="ReferenceData\concept_categories.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
 </Project>
