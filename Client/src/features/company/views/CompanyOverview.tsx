@@ -13,22 +13,12 @@ export function CompanyOverview() {
     const {
         company,
         companyDetailsLoading,
-        accountsPayableMetric,
-        accountsPayableLoading,
     } = useCompany(companyId);
 
     const {
         trackCompany,
         untrackCompany
     } = useCompanyTracking();
-
-    const availableCurrencyTypes = useMemo(() => {
-        if (!accountsPayableMetric) return ['USD'];
-
-        return accountsPayableMetric.currencyTypes;
-    }, [accountsPayableMetric]);
-
-    const [selectedCurrencyType, setSelectedCurrencyType] = useState<string>('USD');
 
     const handleToggleTrackCompany = () => {
         if (!company) return;
@@ -45,20 +35,12 @@ export function CompanyOverview() {
             <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold text-foreground">Financial Metrics</h2>
                 <div className="flex space-x-6">
-                    <CurrencySelector
-                        availableCurrencies={availableCurrencyTypes}
-                        selectedCurrency={selectedCurrencyType}
-                        onCurrencyChange={setSelectedCurrencyType}
-                    />
-
                     <TrackCompanyButton loading={companyDetailsLoading} companyTracked={company?.isTracked} onClick={handleToggleTrackCompany}></TrackCompanyButton>
                 </div>
 
 
             </div>
 
-            <AccountsPayableSection selectedCurrencyType={selectedCurrencyType}
-                                    accountsPayableMetric={accountsPayableMetric}/>
         </div>
     )
 }

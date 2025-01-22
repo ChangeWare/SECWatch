@@ -3,11 +3,11 @@ using SECWatch.Domain.Features.Companies.Models;
 
 namespace SECWatch.Application.Features.Companies.DTOs.Configurations;
 
-public class CompanyFinancialMetricMapperProfile : Profile
+public class CompanyConceptMapperProfile : Profile
 {
-    public CompanyFinancialMetricMapperProfile()
+    public CompanyConceptMapperProfile()
     {
-        CreateMap<CompanyFinancialMetric, CompanyFinancialMetricDto>()
+        CreateMap<CompanyConcept, CompanyConceptDto>()
             .ForMember(dest => dest.LastUpdated,
                 opt =>
                     opt.MapFrom(src => src.Metadata.LastUpdated))
@@ -19,6 +19,6 @@ public class CompanyFinancialMetricMapperProfile : Profile
                     opt.MapFrom(src => src.Metadata.LastValue))
             .ForMember(dest => dest.CurrencyTypes,
                 opt =>
-                    opt.MapFrom(src => src.Metadata.CurrencyTypes));
+                    opt.MapFrom(src => src.Metadata.UnitTypes));
     }
 }

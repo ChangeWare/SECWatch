@@ -17,7 +17,7 @@ function CompanyFilingsContent({ filingHistory, isLoading }: CompanyFilingsConte
     );
 }
 
-export function CompanyFilings() {
+export function CompanyFilingsView() {
     const { companyId } = useParams();
 
     const { filingHistory, filingHistoryLoading } = useCompanyFilings(companyId);
@@ -36,4 +36,4 @@ export function CompanyFilings() {
     )
 }
 
-export default CompanyFilings;
+export default CompanyFilingsView;

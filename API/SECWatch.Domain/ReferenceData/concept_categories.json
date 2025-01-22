@@ -1,0 +1,1843 @@
+{
+  "ACCOUNTS_PAYABLE_AND_ACCRUED_LIABILITIES_CURRENT": {
+    "description": "Sum of the carrying values as of the balance sheet date of obligations incurred through that date and due within one year (or the operating cycle, if longer), including liabilities incurred (and for which invoices have typically been received) and payable to vendors for goods and services received, taxes, interest, rent and utilities, accrued salaries and bonuses, payroll taxes and fringe benefits.",
+    "category": "legal_and_compliance"
+  },
+  "ACCOUNTS_PAYABLE_AND_OTHER_ACCRUED_LIABILITIES_CURRENT": {
+    "description": "Amount of liabilities incurred to vendors for goods and services received, and accrued liabilities classified as other, payable within one year or the normal operating cycle, if longer.",
+    "category": "operations"
+  },
+  "ACCOUNTS_PAYABLE_CURRENT": {
+    "description": "Carrying value as of the balance sheet date of liabilities incurred (and for which invoices have typically been received) and payable to vendors for goods and services received that are used in an entity's business. Used to reflect the current portion of the liabilities (due within one year or within the normal operating cycle if longer).",
+    "category": "operations"
+  },
+  "ACCOUNTS_PAYABLE_RELATED_PARTIES_CURRENT_AND_NONCURRENT": {
+    "description": "Amount for accounts payable to related parties.",
+    "category": "financial"
+  },
+  "ACCOUNTS_PAYABLE_TRADE_CURRENT": {
+    "description": "Carrying value as of the balance sheet date of obligations incurred (and for which invoices have typically been received) and payable to vendors for goods and services received that are used in an entity's business. Used to reflect the current portion of the liabilities (due within one year or within the normal operating cycle if longer).",
+    "category": "operations"
+  },
+  "ACCOUNTS_RECEIVABLE_NET_CURRENT": {
+    "description": "Amount, after allowance for credit loss, of right to consideration from customer for product sold and service rendered in normal course of business, classified as current.",
+    "category": "financial"
+  },
+  "ACCOUNTS_RECEIVABLE_RELATED_PARTIES": {
+    "description": "For an unclassified balance sheet, amount of receivables arising from transactions with related parties.",
+    "category": "financial"
+  },
+  "ACCRETION_EXPENSE_INCLUDING_ASSET_RETIREMENT_OBLIGATIONS": {
+    "description": "Amount of accretion expense, which includes, but is not limited to, accretion expense from asset retirement obligations, environmental remediation obligations, and other contingencies.",
+    "category": "labor_and_employment"
+  },
+  "ACCRUED_BONUSES_CURRENT": {
+    "description": "Carrying value as of the balance sheet date of obligations incurred and payable for incentive compensation awarded to employees and directors or earned by them based on the terms of one or more relevant arrangements. Used to reflect the current portion of the liabilities (due within one year or within the normal operating cycle if longer).",
+    "category": "labor_and_employment"
+  },
+  "ACCRUED_EMPLOYEE_BENEFITS_CURRENT": {
+    "description": "Carrying value as of the balance sheet date of obligations, excluding pension and other postretirement benefits, incurred through that date and payable for perquisites provided to employees pertaining to services received from them. Used to reflect the current portion of the liabilities (due within one year or within the normal operating cycle if longer).",
+    "category": "labor_and_employment"
+  },
+  "ACCRUED_INCOME_TAXES_CURRENT": {
+    "description": "Carrying amount as of the balance sheet date of the unpaid sum of the known and estimated amounts payable to satisfy all currently due domestic and foreign income tax obligations.",
+    "category": "legal_and_compliance"
+  },
+  "ACCRUED_LIABILITIES_CURRENT": {
+    "description": "Carrying value as of the balance sheet date of obligations incurred and payable, pertaining to costs that are statutory in nature, are incurred on contractual obligations, or accumulate over time and for which invoices have not yet been received or will not be rendered. Examples include taxes, interest, rent and utilities. Used to reflect the current portion of the liabilities (due within one year or within the normal operating cycle if longer).",
+    "category": "legal_and_compliance"
+  },
+  "ACCRUED_LIABILITIES_FOR_UNREDEEEMED_GIFT_CARDS": {
+    "description": "Carrying value as of the balance sheet date of the liability for outstanding gift cards. Retail customers purchase gift cards or gift certificates that can be redeemed at a later date for merchandise or services; those unredeemed represent a liability of the entity because the revenue is being deferred.",
+    "category": "financial"
+  },
+  "ACCRUED_VACATION_CURRENT": {
+    "description": "Carrying value as of the balance sheet date of obligations incurred and payable for unused vacation time owed to employees based on the entity's vacation benefit given to its employees. Used to reflect the current portion of the liabilities (due within one year or within the normal operating cycle if longer).",
+    "category": "labor_and_employment"
+  },
+  "ACCUMULATED_DEPRECIATION_DEPLETION_AND_AMORTIZATION_PROPERTY_PLANT_AND_EQUIPMENT": {
+    "description": "Amount of accumulated depreciation, depletion and amortization for physical assets used in the normal conduct of business to produce goods and services.",
+    "category": "operations"
+  },
+  "ACCUMULATED_OTHER_COMPREHENSIVE_INCOME_LOSS_NET_OF_TAX": {
+    "description": "Accumulated change in equity from transactions and other events and circumstances from non-owner sources, net of tax effect, at period end. Excludes Net Income (Loss), and accumulated changes in equity from transactions resulting from investments by owners and distributions to owners. Includes foreign currency translation items, certain pension adjustments, unrealized gains and losses on certain investments in debt and equity securities, other than temporary impairment (OTTI) losses related to factors other than credit losses on available-for-sale and held-to-maturity debt securities that an entity does not intend to sell and it is not more likely than not that the entity will be required to sell before recovery of the amortized cost basis, as well as changes in the fair value of derivatives related to the effective portion of a designated cash flow hedge.",
+    "category": "legal_and_compliance"
+  },
+  "ADDITIONAL_PAID_IN_CAPITAL": {
+    "description": "Excess of issue price over par or stated value of the entity's capital stock and amounts received from other transactions involving the entity's stock or stockholders. Includes adjustments to additional paid in capital. Some examples of such adjustments include recording the issuance of debt with a beneficial conversion feature and certain tax consequences of equity instruments awarded to employees. Use this element for the aggregate amount of additional paid-in capital associated with common and preferred stock. For additional paid-in capital associated with only common stock, use the element additional paid in capital, common stock. For additional paid-in capital associated with only preferred stock, use the element additional paid in capital, preferred stock.",
+    "category": "legal_and_compliance"
+  },
+  "ADDITIONAL_PAID_IN_CAPITAL_COMMON_STOCK": {
+    "description": "Value received from shareholders in common stock-related transactions that are in excess of par value or stated value and amounts received from other stock-related transactions. Includes only common stock transactions (excludes preferred stock transactions). May be called contributed capital, capital in excess of par, capital surplus, or paid-in capital.",
+    "category": "financial"
+  },
+  "ADJUSTMENTS_TO_ADDITIONAL_PAID_IN_CAPITAL_INCOME_TAX_DEFICIENCY_FROM_SHARE_BASED_COMPENSATION": {
+    "description": "Amount of decrease in additional paid in capital (APIC) resulting from a tax deficiency associated with a share-based compensation plan other than an employee stock ownership plan (ESOP).",
+    "category": "legal_and_compliance"
+  },
+  "ADJUSTMENTS_TO_ADDITIONAL_PAID_IN_CAPITAL_SHAREBASED_COMPENSATION_REQUISITE_SERVICE_PERIOD_RECOGNITION_VALUE": {
+    "description": "Amount of increase to additional paid-in capital (APIC) for recognition of cost for award under share-based payment arrangement.",
+    "category": "labor_and_employment"
+  },
+  "ADJUSTMENTS_TO_ADDITIONAL_PAID_IN_CAPITAL_TAX_EFFECT_FROM_SHARE_BASED_COMPENSATION": {
+    "description": "Amount of increase in additional paid in capital (APIC) resulting from a tax benefit associated with share-based compensation plan other than an employee stock ownership plan (ESOP). Includes, but is not limited to, excess tax benefit.",
+    "category": "legal_and_compliance"
+  },
+  "ADJUSTMENT_TO_ADDITIONAL_PAID_IN_CAPITAL_INCOME_TAX_EFFECT_FROM_SHARE_BASED_COMPENSATION_NET": {
+    "description": "Amount of increase (decrease) in additional paid in capital (APIC) resulting from a tax benefit (deficiency) associated with an share-based compensation plan other than an employee stock ownership plan (ESOP).",
+    "category": "legal_and_compliance"
+  },
+  "ADVERTISING_EXPENSE": {
+    "description": "Amount charged to advertising expense for the period, which are expenses incurred with the objective of increasing revenue for a specified brand, product or product line.",
+    "category": "financial"
+  },
+  "AIRCRAFT_RENTAL": {
+    "description": "Expenses incurred related to the lease of aircraft from outside third parties that are used in the entity's business operations.",
+    "category": "operations"
+  },
+  "ALLOCATED_SHARE_BASED_COMPENSATION_EXPENSE": {
+    "description": "Amount of expense for award under share-based payment arrangement. Excludes amount capitalized.",
+    "category": "labor_and_employment"
+  },
+  "ALLOCATED_SHARE_BASED_COMPENSATION_EXPENSE_NET_OF_TAX": {
+    "description": "Amount, after tax, of expense for award under share-based payment arrangement.",
+    "category": "legal_and_compliance"
+  },
+  "ALLOWANCE_FOR_DOUBTFUL_ACCOUNTS_RECEIVABLE_CURRENT": {
+    "description": "Amount of allowance for credit loss on accounts receivable, classified as current.",
+    "category": "financial"
+  },
+  "AMORTIZATION_OF_DEBT_DISCOUNT_PREMIUM": {
+    "description": "Amount of noncash expense included in interest expense to amortize debt discount and premium associated with the related debt instruments. Excludes amortization of financing costs. Alternate captions include noncash interest expense.",
+    "category": "operations"
+  },
+  "AMORTIZATION_OF_DEFERRED_CHARGES": {
+    "description": "The amount of amortization of deferred charges applied against earnings during the period.",
+    "category": "operations"
+  },
+  "AMORTIZATION_OF_FINANCING_COSTS": {
+    "description": "Amount of amortization expense attributable to debt issuance costs.",
+    "category": "operations"
+  },
+  "AMORTIZATION_OF_INTANGIBLE_ASSETS": {
+    "description": "The aggregate expense charged against earnings to allocate the cost of intangible assets (nonphysical assets not used in production) in a systematic and rational manner to the periods expected to benefit from such assets. As a noncash expense, this element is added back to net income when calculating cash provided by or used in operations using the indirect method.",
+    "category": "labor_and_employment"
+  },
+  "ASSET_IMPAIRMENT_CHARGES": {
+    "description": "Amount of write-down of assets recognized in the income statement. Includes, but is not limited to, losses from tangible assets, intangible assets and goodwill.",
+    "category": "key_metrics"
+  },
+  "ASSET_RETIREMENT_OBLIGATION_ACCRETION_EXPENSE": {
+    "description": "Amount of accretion expense recognized during the period that is associated with an asset retirement obligation. Accretion expense measures and incorporates changes due to the passage of time into the carrying amount of the liability.",
+    "category": "labor_and_employment"
+  },
+  "ASSET_RETIREMENT_OBLIGATION_LIABILITIES_INCURRED": {
+    "description": "Amount of asset retirement obligations incurred during the period.",
+    "category": "labor_and_employment"
+  },
+  "ASSET_RETIREMENT_OBLIGATION_REVISION_OF_ESTIMATE": {
+    "description": "Amount of increase (decrease) in the asset retirement obligation from changes in the amount or timing of the estimated cash flows associated with the settlement of the obligation.",
+    "category": "legal_and_compliance"
+  },
+  "ASSET_RETIREMENT_OBLIGATIONS_NONCURRENT": {
+    "description": "Noncurrent portion of the carrying amount of a liability for an asset retirement obligation. An asset retirement obligation is a legal obligation associated with the disposal or retirement of a tangible long-lived asset that results from the acquisition, construction or development, or the normal operations of a long-lived asset, except for certain obligations of lessees.",
+    "category": "legal_and_compliance"
+  },
+  "ASSETS": {
+    "description": "Sum of the carrying amounts as of the balance sheet date of all assets that are recognized. Assets are probable future economic benefits obtained or controlled by an entity as a result of past transactions or events.",
+    "category": "labor_and_employment"
+  },
+  "ASSETS_CURRENT": {
+    "description": "Sum of the carrying amounts as of the balance sheet date of all assets that are expected to be realized in cash, sold, or consumed within one year (or the normal operating cycle, if longer). Assets are probable future economic benefits obtained or controlled by an entity as a result of past transactions or events.",
+    "category": "labor_and_employment"
+  },
+  "BUILDINGS_AND_IMPROVEMENTS_GROSS": {
+    "description": "Amount before accumulated depreciation of building structures held for productive use including addition, improvement, or renovation to the structure, including, but not limited to, interior masonry, interior flooring, electrical, and plumbing.",
+    "category": "operations"
+  },
+  "BUSINESS_ACQUISITIONS_PRO_FORMA_NET_INCOME_LOSS": {
+    "description": "The pro forma net Income or Loss for the period as if the business combination or combinations had been completed at the beginning of a period.",
+    "category": "key_metrics"
+  },
+  "BUSINESS_ACQUISITIONS_PRO_FORMA_REVENUE": {
+    "description": "The pro forma revenue for a period as if the business combination or combinations had been completed at the beginning of the period.",
+    "category": "key_metrics"
+  },
+  "BUSINESS_COMBINATION_ACQUISITION_RELATED_COSTS": {
+    "description": "This element represents acquisition-related costs incurred to effect a business combination which costs have been expensed during the period. Such costs include finder's fees; advisory, legal, accounting, valuation, and other professional or consulting fees; general administrative costs, including the costs of maintaining an internal acquisitions department; and may include costs of registering and issuing debt and equity securities.",
+    "category": "legal_and_compliance"
+  },
+  "BUSINESS_EXIT_COSTS1": {
+    "description": "Amount of expenses associated with exit or disposal activities pursuant to an authorized plan. Includes, but is not limited to, one-time termination benefits, termination of an operating lease or other contract, consolidating or closing facilities, and relocating employees, and termination benefits associated with an ongoing benefit arrangement. Excludes expenses associated with special or contractual termination benefits, a discontinued operation or an asset retirement obligation.",
+    "category": "labor_and_employment"
+  },
+  "CAPITAL_EXPENDITURES_INCURRED_BUT_NOT_YET_PAID": {
+    "description": "Future cash outflow to pay for purchases of fixed assets that have occurred.",
+    "category": "financial"
+  },
+  "CAPITAL_LEASED_ASSETS_NUMBER_OF_UNITS": {
+    "description": "The number of units (items of property) under capital lease arrangements.",
+    "category": "operations"
+  },
+  "CAPITAL_LEASE_OBLIGATIONS_CURRENT": {
+    "description": "Amount of capital lease obligation due within one year or the normal operating cycle, if longer.",
+    "category": "operations"
+  },
+  "CAPITAL_LEASE_OBLIGATIONS_INCURRED": {
+    "description": "Amount of increase in lease obligation from new lease.",
+    "category": "operations"
+  },
+  "CAPITAL_LEASE_OBLIGATIONS_NONCURRENT": {
+    "description": "Amount equal to the present value (the principal) at the beginning of the lease term of minimum lease payments during the lease term (excluding that portion of the payments representing executory costs such as insurance, maintenance, and taxes to be paid by the lessor, together with any profit thereon) net of payments or other amounts applied to the principal, through the balance sheet date and due to be paid more than one year (or one operating cycle, if longer) after the balance sheet date.",
+    "category": "legal_and_compliance"
+  },
+  "CAPITAL_LEASES_FUTURE_MINIMUM_PAYMENTS_DUE": {
+    "description": "Amount of minimum lease payments for capital leases.",
+    "category": "operations"
+  },
+  "CAPITAL_LEASES_FUTURE_MINIMUM_PAYMENTS_DUE_CURRENT": {
+    "description": "Amount of minimum lease payments for capital leases due in the next fiscal year following the latest fiscal year. Excludes interim and annual periods when interim periods are reported on a rolling approach, from latest balance sheet date.",
+    "category": "operations"
+  },
+  "CAPITAL_LEASES_FUTURE_MINIMUM_PAYMENTS_DUE_IN_FIVE_YEARS": {
+    "description": "Amount of minimum lease payments for capital leases due in the fifth fiscal year following the latest fiscal year. Excludes interim and annual periods when interim periods are reported on a rolling approach, from latest balance sheet date.",
+    "category": "operations"
+  },
+  "CAPITAL_LEASES_FUTURE_MINIMUM_PAYMENTS_DUE_IN_FOUR_YEARS": {
+    "description": "Amount of minimum lease payments for capital leases due in the fourth fiscal year following the latest fiscal year. Excludes interim and annual periods when interim periods are reported on a rolling approach, from latest balance sheet date.",
+    "category": "operations"
+  },
+  "CAPITAL_LEASES_FUTURE_MINIMUM_PAYMENTS_DUE_IN_THREE_YEARS": {
+    "description": "Amount of minimum lease payments for capital leases due in the third fiscal year following the latest fiscal year. Excludes interim and annual periods when interim periods are reported on a rolling approach, from latest balance sheet date.",
+    "category": "operations"
+  },
+  "CAPITAL_LEASES_FUTURE_MINIMUM_PAYMENTS_DUE_IN_TWO_YEARS": {
+    "description": "Amount of minimum lease payments for capital leases due in the second fiscal year following the latest fiscal year. Excludes interim and annual periods when interim periods are reported on a rolling approach, from latest balance sheet date.",
+    "category": "operations"
+  },
+  "CAPITAL_LEASES_FUTURE_MINIMUM_PAYMENTS_DUE_THEREAFTER": {
+    "description": "Amount of minimum lease payments for capital leases due after the fifth fiscal year following the latest fiscal year. Excludes interim and annual periods when interim periods are reported on a rolling approach, from latest balance sheet date.",
+    "category": "operations"
+  },
+  "CAPITAL_LEASES_FUTURE_MINIMUM_PAYMENTS_INTEREST_INCLUDED_IN_PAYMENTS": {
+    "description": "Amount necessary to reduce net minimum lease payments to present value for capital leases.",
+    "category": "operations"
+  },
+  "CAPITAL_LEASES_FUTURE_MINIMUM_PAYMENTS_PRESENT_VALUE_OF_NET_MINIMUM_PAYMENTS": {
+    "description": "Present value of minimum lease payments for capital leases net of executory costs, including amounts paid by the lessee to the lessor for insurance, maintenance and taxes.",
+    "category": "legal_and_compliance"
+  },
+  "CAPITAL_LEASES_FUTURE_MINIMUM_PAYMENTS_REMAINDER_OF_FISCAL_YEAR": {
+    "description": "Amount of minimum lease payments for capital leases due in the remainder of the fiscal year following the latest fiscal year. Excludes interim and annual periods when interim periods are reported on a rolling approach, from latest balance sheet date.",
+    "category": "operations"
+  },
+  "CASH_AND_CASH_EQUIVALENTS_AT_CARRYING_VALUE": {
+    "description": "Amount of currency on hand as well as demand deposits with banks or financial institutions. Includes other kinds of accounts that have the general characteristics of demand deposits. Also includes short-term, highly liquid investments that are both readily convertible to known amounts of cash and so near their maturity that they present insignificant risk of changes in value because of changes in interest rates. Excludes cash and cash equivalents within disposal group and discontinued operation.",
+    "category": "financial"
+  },
+  "CASH_AND_CASH_EQUIVALENTS_PERIOD_INCREASE_DECREASE": {
+    "description": "Amount of increase (decrease) in cash and cash equivalents. Cash and cash equivalents are the amount of currency on hand as well as demand deposits with banks or financial institutions. Includes other kinds of accounts that have the general characteristics of demand deposits. Also includes short-term, highly liquid investments that are both readily convertible to known amounts of cash and so near their maturity that they present insignificant risk of changes in value because of changes in interest rates. Includes effect from exchange rate changes.",
+    "category": "financial"
+  },
+  "CASH_CASH_EQUIVALENTS_RESTRICTED_CASH_AND_RESTRICTED_CASH_EQUIVALENTS_INCLUDING_DISPOSAL_GROUP_AND_DISCONTINUED_operations": {
+    "description": "Amount of cash and cash equivalents, and cash and cash equivalents restricted to withdrawal or usage; including, but not limited to, disposal group and discontinued operations. Cash includes, but is not limited to, currency on hand, demand deposits with banks or financial institutions, and other accounts with general characteristics of demand deposits. Cash equivalents include, but are not limited to, short-term, highly liquid investments that are both readily convertible to known amounts of cash and so near their maturity that they present insignificant risk of changes in value because of changes in interest rates.",
+    "category": "financial"
+  },
+  "CASH_CASH_EQUIVALENTS_RESTRICTED_CASH_AND_RESTRICTED_CASH_EQUIVALENTS_PERIOD_INCREASE_DECREASE_INCLUDING_EXCHANGE_RATE_EFFECT": {
+    "description": "Amount of increase (decrease) in cash, cash equivalents, and cash and cash equivalents restricted to withdrawal or usage; including effect from exchange rate change. Cash includes, but is not limited to, currency on hand, demand deposits with banks or financial institutions, and other accounts with general characteristics of demand deposits. Cash equivalents include, but are not limited to, short-term, highly liquid investments that are both readily convertible to known amounts of cash and so near their maturity that they present insignificant risk of changes in value because of changes in interest rates.",
+    "category": "financial"
+  },
+  "COMMON_STOCK_PAR_OR_STATED_VALUE_PER_SHARE": {
+    "description": "Face amount or stated value per share of common stock.",
+    "category": "financial"
+  },
+  "COMMON_STOCK_SHARES_AUTHORIZED": {
+    "description": "The maximum number of common shares permitted to be issued by an entity's charter and bylaws.",
+    "category": "financial"
+  },
+  "COMMON_STOCK_SHARES_ISSUED": {
+    "description": "Total number of common shares of an entity that have been sold or granted to shareholders (includes common shares that were issued, repurchased and remain in the treasury). These shares represent capital invested by the firm's shareholders and owners, and may be all or only a portion of the number of shares authorized. Shares issued include shares outstanding and shares held in the treasury.",
+    "category": "financial"
+  },
+  "COMMON_STOCK_SHARES_OUTSTANDING": {
+    "description": "Number of shares of common stock outstanding. Common stock represent the ownership interest in a corporation.",
+    "category": "financial"
+  },
+  "COMMON_STOCK_VALUE": {
+    "description": "Aggregate par or stated value of issued nonredeemable common stock (or common stock redeemable solely at the option of the issuer). This item includes treasury stock repurchased by the entity. Note: elements for number of nonredeemable common shares, par value and other disclosure concepts are in another section within stockholders' equity.",
+    "category": "financial"
+  },
+  "COMPREHENSIVE_INCOME_NET_OF_TAX": {
+    "description": "Amount after tax of increase (decrease) in equity from transactions and other events and circumstances from net income and other comprehensive income, attributable to parent entity. Excludes changes in equity resulting from investments by owners and distributions to owners.",
+    "category": "legal_and_compliance"
+  },
+  "CONSTRUCTION_IN_PROGRESS_GROSS": {
+    "description": "Amount of structure or a modification to a structure under construction. Includes recently completed structures or modifications to structures that have not been placed into service.",
+    "category": "financial"
+  },
+  "CONTRACT_WITH_CUSTOMER_LIABILITY": {
+    "description": "Amount of obligation to transfer good or service to customer for which consideration has been received or is receivable.",
+    "category": "financial"
+  },
+  "CONTRIBUTION_OF_PROPERTY": {
+    "description": "Value of property contributed in noncash investing and financing activities.",
+    "category": "operations"
+  },
+  "COST_OF_GOODS_AND_SERVICES_SOLD": {
+    "description": "The aggregate costs related to goods produced and sold and services rendered by an entity during the reporting period. This excludes costs incurred during the reporting period related to financial services rendered and other revenue generating activities.",
+    "category": "financial"
+  },
+  "COST_OF_GOODS_AND_SERVICES_SOLD_DEPRECIATION_AND_AMORTIZATION": {
+    "description": "Amount of expense for allocation of cost of tangible and intangible assets over their useful lives directly used in production of good and rendering of service.",
+    "category": "financial"
+  },
+  "COST_OF_MERCHANDISE_SALES_BUYING_AND_OCCUPANCY_COSTS": {
+    "description": "The aggregate of buying and occupancy costs reported during the period related to merchandise sold. Costs could include, but not be limited to, inbound and outbound freight; costs of operating distribution centers; payroll, benefits, and travel costs directly associated with buying inventory; systems costs related to the buying and tracking of inventory; rent; depreciation; property taxes; and facility operations.",
+    "category": "legal_and_compliance"
+  },
+  "COSTS_AND_EXPENSES_RELATED_PARTY": {
+    "description": "Costs of sales and operating expenses for the period incurred from transactions with related parties.",
+    "category": "operations"
+  },
+  "CUMULATIVE_EFFECT_ON_RETAINED_EARNINGS_NET_OF_TAX1": {
+    "description": "Amount of the cumulative effect on retained earnings net of related income tax effect.",
+    "category": "legal_and_compliance"
+  },
+  "CURRENT_FEDERAL_TAX_EXPENSE_BENEFIT": {
+    "description": "Amount of current federal tax expense (benefit) pertaining to income (loss) from continuing operations.",
+    "category": "legal_and_compliance"
+  },
+  "CURRENT_STATE_AND_LOCAL_TAX_EXPENSE_BENEFIT": {
+    "description": "Amount of current state and local tax expense (benefit) pertaining to income (loss) from continuing operations.",
+    "category": "legal_and_compliance"
+  },
+  "DEBT_INSTRUMENT_CARRYING_AMOUNT": {
+    "description": "Amount, before unamortized (discount) premium and debt issuance costs, of long-term debt. Includes, but is not limited to, notes payable, bonds payable, commercial loans, mortgage loans, convertible debt, subordinated debt and other types of debt.",
+    "category": "financial"
+  },
+  "DEBT_INSTRUMENT_FEE_AMOUNT": {
+    "description": "Amount of the fee that accompanies borrowing money under the debt instrument.",
+    "category": "financial"
+  },
+  "DEBT_INSTRUMENT_INTEREST_RATE_INCREASE_DECREASE": {
+    "description": "Incremental percentage increase (decrease) in the stated rate on a debt instrument.",
+    "category": "financial"
+  },
+  "DEBT_INSTRUMENT_UNAMORTIZED_DISCOUNT": {
+    "description": "Amount, after accumulated amortization, of debt discount.",
+    "category": "operations"
+  },
+  "DECREASE_IN_UNRECOGNIZED_TAX_BENEFITS_IS_REASONABLY_POSSIBLE": {
+    "description": "Amount of decrease reasonably possible in the next twelve months for the unrecognized tax benefit.",
+    "category": "legal_and_compliance"
+  },
+  "DEFERRED_FEDERAL_INCOME_TAX_EXPENSE_BENEFIT": {
+    "description": "Amount of deferred federal income tax expense (benefit) pertaining to income (loss) from continuing operations.",
+    "category": "legal_and_compliance"
+  },
+  "DEFERRED_INCOME_TAX_EXPENSE_BENEFIT": {
+    "description": "Amount of deferred income tax expense (benefit) pertaining to income (loss) from continuing operations.",
+    "category": "legal_and_compliance"
+  },
+  "DEFERRED_INCOME_TAX_LIABILITIES": {
+    "description": "Amount of deferred tax liability attributable to taxable temporary differences.",
+    "category": "legal_and_compliance"
+  },
+  "DEFERRED_INCOME_TAX_LIABILITIES_NET": {
+    "description": "Amount, after deferred tax asset, of deferred tax liability attributable to taxable differences with jurisdictional netting.",
+    "category": "legal_and_compliance"
+  },
+  "DEFERRED_RENT_CREDIT_NONCURRENT": {
+    "description": "For a classified balance sheet, the cumulative difference between the rental income or payments required by a lease agreement and the rental income or expense recognized on a straight-line basis, or other systematic and rational basis more representative of the time pattern in which use or benefit is granted or derived from the leased property, expected to be recognized in income or expense, by the lessor or lessee, respectively, more than one year after the balance sheet date.",
+    "category": "labor_and_employment"
+  },
+  "DEFERRED_STATE_AND_LOCAL_INCOME_TAX_EXPENSE_BENEFIT": {
+    "description": "Amount of deferred state and local tax expense (benefit) pertaining to income (loss) from continuing operations.",
+    "category": "legal_and_compliance"
+  },
+  "DEFERRED_TAX_ASSETS_CHARITABLE_CONTRIBUTION_CARRYFORWARDS": {
+    "description": "Amount before allocation of valuation allowances of deferred tax asset attributable to deductible charitable contribution carryforwards.",
+    "category": "legal_and_compliance"
+  },
+  "DEFERRED_TAX_ASSETS_GOODWILL_AND_INTANGIBLE_ASSETS": {
+    "description": "Amount before allocation of valuation allowances of deferred tax asset attributable to deductible temporary differences from intangible assets including goodwill.",
+    "category": "legal_and_compliance"
+  },
+  "DEFERRED_TAX_ASSETS_GROSS": {
+    "description": "Amount before allocation of valuation allowances of deferred tax asset attributable to deductible temporary differences and carryforwards.",
+    "category": "legal_and_compliance"
+  },
+  "DEFERRED_TAX_ASSETS_LIABILITIES_NET": {
+    "description": "Amount, after allocation of valuation allowances and deferred tax liability, of deferred tax asset attributable to deductible differences and carryforwards, without jurisdictional netting.",
+    "category": "legal_and_compliance"
+  },
+  "DEFERRED_TAX_ASSETS_LIABILITIES_NET_CURRENT": {
+    "description": "Amount, after allocation of valuation allowances and deferred tax liability, of deferred tax asset attributable to deductible differences and carryforwards, netted by jurisdiction and classified as current.",
+    "category": "legal_and_compliance"
+  },
+  "DEFERRED_TAX_ASSETS_LIABILITIES_NET_NONCURRENT": {
+    "description": "Amount, after allocation of valuation allowances and deferred tax liability, of deferred tax asset attributable to deductible differences and carryforwards, with jurisdictional netting and classified as noncurrent.",
+    "category": "legal_and_compliance"
+  },
+  "DEFERRED_TAX_ASSETS_NET_CURRENT": {
+    "description": "Amount after allocation of valuation allowances of deferred tax asset attributable to deductible temporary differences and carryforwards classified as current.",
+    "category": "legal_and_compliance"
+  },
+  "DEFERRED_TAX_ASSETS_NET_NONCURRENT": {
+    "description": "Amount after allocation of valuation allowances of deferred tax asset attributable to deductible temporary differences and carryforwards classified as noncurrent.",
+    "category": "legal_and_compliance"
+  },
+  "DEFERRED_TAX_ASSETS_TAX_CREDIT_CARRYFORWARDS": {
+    "description": "Amount, before allocation of a valuation allowances, of deferred tax assets attributable to deductible tax credit carryforwards including, but not limited to, research, foreign, general business, alternative minimum tax, and other deductible tax credit carryforwards.",
+    "category": "legal_and_compliance"
+  },
+  "DEFERRED_TAX_ASSETS_TAX_CREDIT_CARRYFORWARDS_ALTERNATIVE_MINIMUM_TAX": {
+    "description": "Amount before allocation of valuation allowances of deferred tax asset attributable to deductible alternative minimum tax credit carryforwards.",
+    "category": "legal_and_compliance"
+  },
+  "DEFERRED_TAX_ASSETS_TAX_CREDIT_CARRYFORWARDS_GENERAL_BUSINESS": {
+    "description": "Amount before allocation of valuation allowances of deferred tax asset attributable to deductible general business tax credit carryforwards.",
+    "category": "legal_and_compliance"
+  },
+  "DEFERRED_TAX_ASSETS_TAX_DEFERRED_EXPENSE_COMPENSATION_AND_BENEFITS_EMPLOYEE_BENEFITS": {
+    "description": "Amount, before allocation of valuation allowance, of deferred tax asset attributable to deductible temporary differences from employee benefits, classified as other.",
+    "category": "legal_and_compliance"
+  },
+  "DEFERRED_TAX_ASSETS_TAX_DEFERRED_EXPENSE_RESERVES_AND_ACCRUALS_ACCRUED_LIABILITIES": {
+    "description": "Amount before allocation of valuation allowances of deferred tax asset attributable to deductible temporary differences from accrued liabilities.",
+    "category": "legal_and_compliance"
+  },
+  "DEFERRED_TAX_LIABILITIES": {
+    "description": "Amount, after deferred tax asset, of deferred tax liability attributable to taxable differences without jurisdictional netting.",
+    "category": "legal_and_compliance"
+  },
+  "DEFERRED_TAX_LIABILITIES_GOODWILL_AND_INTANGIBLE_ASSETS_INTANGIBLE_ASSETS": {
+    "description": "Amount of deferred tax liability attributable to taxable temporary differences from intangible assets other than goodwill.",
+    "category": "legal_and_compliance"
+  },
+  "DEFERRED_TAX_LIABILITIES_LEASING_ARRANGEMENTS": {
+    "description": "Amount of deferred tax liability attributable to taxable temporary differences from leasing arrangements.",
+    "category": "legal_and_compliance"
+  },
+  "DEFERRED_TAX_LIABILITIES_NONCURRENT": {
+    "description": "Amount, after deferred tax asset, of deferred tax liability attributable to taxable differences, with jurisdictional netting and classified as noncurrent.",
+    "category": "legal_and_compliance"
+  },
+  "DEFERRED_TAX_LIABILITIES_OTHER": {
+    "description": "Amount of deferred tax liability attributable to taxable temporary differences classified as other.",
+    "category": "legal_and_compliance"
+  },
+  "DEFERRED_TAX_LIABILITIES_PROPERTY_PLANT_AND_EQUIPMENT": {
+    "description": "Amount of deferred tax liability attributable to taxable temporary differences from property, plant, and equipment.",
+    "category": "legal_and_compliance"
+  },
+  "DEFINED_CONTRIBUTION_PLAN_COST_RECOGNIZED": {
+    "description": "Amount of cost for defined contribution plan.",
+    "category": "financial"
+  },
+  "DEFINED_CONTRIBUTION_PLAN_EMPLOYER_MATCHING_CONTRIBUTION_PERCENT": {
+    "description": "Percentage of employees' gross pay for which the employer contributes a matching contribution to a defined contribution plan.",
+    "category": "labor_and_employment"
+  },
+  "DEFINED_CONTRIBUTION_PLAN_EMPLOYER_MATCHING_CONTRIBUTION_PERCENT_OF_MATCH": {
+    "description": "Percentage employer matches of the employee's percentage contribution matched.",
+    "category": "labor_and_employment"
+  },
+  "DEFINED_CONTRIBUTION_PLAN_MAXIMUM_ANNUAL_CONTRIBUTIONS_PER_EMPLOYEE_PERCENT": {
+    "description": "Maximum percentage of employee gross pay the employee may contribute to a defined contribution plan.",
+    "category": "labor_and_employment"
+  },
+  "DEPOSIT_LIABILITIES_COLLATERAL_ISSUED_FINANCIAL_INSTRUMENTS": {
+    "description": "Amount of securities, mortgage loans, or other financial instruments pledged as collateral for deposits.",
+    "category": "financial"
+  },
+  "DEPRECIATION": {
+    "description": "The amount of expense recognized in the current period that reflects the allocation of the cost of tangible assets over the assets' useful lives. Includes production and non-production related depreciation.",
+    "category": "operations"
+  },
+  "DEPRECIATION_AND_AMORTIZATION": {
+    "description": "The current period expense charged against earnings on long-lived, physical assets not used in production, and which are not intended for resale, to allocate or recognize the cost of such assets over their useful lives; or to record the reduction in book value of an intangible asset over the benefit period of such asset; or to reflect consumption during the period of an asset that is not used in production.",
+    "category": "labor_and_employment"
+  },
+  "DEPRECIATION_DEPLETION_AND_AMORTIZATION": {
+    "description": "The aggregate expense recognized in the current period that allocates the cost of tangible assets, intangible assets, or depleting assets to periods that benefit from use of the assets.",
+    "category": "labor_and_employment"
+  },
+  "DIVIDENDS": {
+    "description": "Amount of paid and unpaid cash, stock, and paid-in-kind (PIK) dividends declared, for example, but not limited to, common and preferred stock.",
+    "category": "financial"
+  },
+  "DUE_FROM_BANKS": {
+    "description": "A bank's noninterest bearing demand deposits in other banks (such as correspondents).",
+    "category": "financial"
+  },
+  "EARNINGS_PER_SHARE_BASIC": {
+    "description": "The amount of net income (loss) for the period per each share of common stock or unit outstanding during the reporting period.",
+    "category": "key_metrics"
+  },
+  "EARNINGS_PER_SHARE_DILUTED": {
+    "description": "The amount of net income (loss) for the period available to each share of common stock or common unit outstanding during the reporting period and to each share or unit that would have been outstanding assuming the issuance of common shares or units for all dilutive potential common shares or units outstanding during the reporting period.",
+    "category": "key_metrics"
+  },
+  "EFFECTIVE_INCOME_TAX_RATE_CONTINUING_operations": {
+    "description": "Percentage of current income tax expense (benefit) and deferred income tax expense (benefit) pertaining to continuing operations.",
+    "category": "legal_and_compliance"
+  },
+  "EFFECTIVE_INCOME_TAX_RATE_RECONCILIATION_AT_FEDERAL_STATUTORY_INCOME_TAX_RATE": {
+    "description": "Percentage of domestic federal statutory tax rate applicable to pretax income (loss).",
+    "category": "legal_and_compliance"
+  },
+  "EFFECTIVE_INCOME_TAX_RATE_RECONCILIATION_CHANGE_IN_ENACTED_TAX_RATE": {
+    "description": "Percentage of the difference between reported income tax expense (benefit) and expected income tax expense (benefit) computed by applying the domestic federal statutory income tax rates to pretax income (loss) from continuing operations attributable to changes in the income tax rates.",
+    "category": "legal_and_compliance"
+  },
+  "EFFECTIVE_INCOME_TAX_RATE_RECONCILIATION_NONDEDUCTIBLE_EXPENSE": {
+    "description": "Percentage of the difference between reported income tax expense (benefit) and expected income tax expense (benefit) computed by applying the domestic federal statutory income tax rates to pretax income (loss) from continuing operations attributable to nondeductible expenses.",
+    "category": "legal_and_compliance"
+  },
+  "EFFECTIVE_INCOME_TAX_RATE_RECONCILIATION_NONDEDUCTIBLE_EXPENSE_CHARITABLE_CONTRIBUTIONS": {
+    "description": "Percentage of the difference between reported income tax expense (benefit) and expected income tax expense (benefit) computed by applying the domestic federal statutory income tax rates to pretax income (loss) from continuing operations attributable to charitable contributions expense.",
+    "category": "legal_and_compliance"
+  },
+  "EFFECTIVE_INCOME_TAX_RATE_RECONCILIATION_OTHER_ADJUSTMENTS": {
+    "description": "Percentage of the difference between reported income tax expense (benefit) and expected income tax expense (benefit) computed by applying the domestic federal statutory income tax rates to pretax income (loss) from continuing operations attributable to other adjustments.",
+    "category": "legal_and_compliance"
+  },
+  "EFFECTIVE_INCOME_TAX_RATE_RECONCILIATION_OTHER_RECONCILING_ITEMS_PERCENT": {
+    "description": "Percentage of the difference, between reported income tax expense (benefit) and the expected income tax expense (benefit) computed by applying the domestic federal statutory income tax rates to pretax income (loss) from continuing operations, that is attributable to tax exempt income, equity in earnings (loss) of an unconsolidated subsidiary, minority interest income (expense), tax holiday, disposition of a business, disposition of an asset, repatriation of foreign earnings, repatriation of foreign earnings jobs creation act of 2004, change in enacted tax rate, prior year income taxes, change in deferred tax asset valuation allowance, and other adjustments.",
+    "category": "legal_and_compliance"
+  },
+  "EFFECTIVE_INCOME_TAX_RATE_RECONCILIATION_SHARE_BASED_COMPENSATION_EXCESS_TAX_BENEFIT_PERCENT": {
+    "description": "Percentage of difference between reported income tax expense (benefit) and expected income tax expense (benefit) computed by applying domestic federal statutory income tax rate to pretax income (loss) from continuing operation, attributable to expense for award under share-based payment arrangement. Excludes expense determined to be nondeductible upon grant or after for award under share-based payment arrangement.",
+    "category": "legal_and_compliance"
+  },
+  "EFFECTIVE_INCOME_TAX_RATE_RECONCILIATION_STATE_AND_LOCAL_INCOME_TAXES": {
+    "description": "Percentage of the difference between reported income tax expense (benefit) and expected income tax expense (benefit) computed by applying the domestic federal statutory income tax rates to pretax income (loss) from continuing operations applicable to state and local income tax expense (benefit), net of federal tax expense (benefit).",
+    "category": "legal_and_compliance"
+  },
+  "EFFECTIVE_INCOME_TAX_RATE_RECONCILIATION_TAX_CONTINGENCIES": {
+    "description": "Percentage of the difference between reported income tax expense (benefit) and expected income tax expense (benefit) computed by applying the domestic federal statutory income tax rates to pretax income (loss) from continuing operations attributable to income tax contingencies. Includes, but not limited to, domestic tax contingency, foreign tax contingency, state and local tax contingency, and other contingencies.",
+    "category": "legal_and_compliance"
+  },
+  "EFFECTIVE_INCOME_TAX_RATE_RECONCILIATION_TAX_CREDITS": {
+    "description": "Percentage of the difference between reported income tax expense (benefit) and expected income tax expense (benefit) computed by applying the domestic federal statutory income tax rates to pretax income (loss) from continuing operations attributable to tax credits. Including, but not limited to, research credit, foreign tax credit, investment tax credit, and other tax credits.",
+    "category": "legal_and_compliance"
+  },
+  "EMPLOYEE_RELATED_LIABILITIES_CURRENT": {
+    "description": "Total of the carrying values as of the balance sheet date of obligations incurred through that date and payable for obligations related to services received from employees, such as accrued salaries and bonuses, payroll taxes and fringe benefits. Used to reflect the current portion of the liabilities (due within one year or within the normal operating cycle if longer).",
+    "category": "legal_and_compliance"
+  },
+  "EMPLOYEE_SERVICE_SHARE_BASED_COMPENSATION_ALLOCATION_OF_RECOGNIZED_PERIOD_COSTS_CAPITALIZED_AMOUNT": {
+    "description": "Amount of cost capitalized for award under share-based payment arrangement.",
+    "category": "labor_and_employment"
+  },
+  "EMPLOYEE_SERVICE_SHARE_BASED_COMPENSATION_CASH_RECEIVED_FROM_EXERCISE_OF_STOCK_OPTIONS": {
+    "description": "Aggregate proceeds received by the entity during the annual period from exercises of stock or unit options and conversion of similar instruments granted under equity-based payment arrangements.",
+    "category": "labor_and_employment"
+  },
+  "EMPLOYEE_SERVICE_SHARE_BASED_COMPENSATION_NONVESTED_AWARDS_TOTAL_COMPENSATION_COST_NOT_YET_RECOGNIZED": {
+    "description": "Amount of cost not yet recognized for nonvested award under share-based payment arrangement.",
+    "category": "labor_and_employment"
+  },
+  "EMPLOYEE_SERVICE_SHARE_BASED_COMPENSATION_NONVESTED_AWARDS_TOTAL_COMPENSATION_COST_NOT_YET_RECOGNIZED_STOCK_OPTIONS": {
+    "description": "Amount of cost to be recognized for option under share-based payment arrangement.",
+    "category": "labor_and_employment"
+  },
+  "EMPLOYEE_SERVICE_SHARE_BASED_COMPENSATION_TAX_BENEFIT_FROM_COMPENSATION_EXPENSE": {
+    "description": "Amount of tax benefit for recognition of expense of award under share-based payment arrangement.",
+    "category": "legal_and_compliance"
+  },
+  "EMPLOYEE_SERVICE_SHARE_BASED_COMPENSATION_TAX_BENEFIT_FROM_EXERCISE_OF_STOCK_OPTIONS": {
+    "description": "Amount of tax benefit from exercise of option under share-based payment arrangement.",
+    "category": "legal_and_compliance"
+  },
+  "EMPLOYEE_SERVICE_SHARE_BASED_COMPENSATION_TAX_BENEFIT_REALIZED_FROM_EXERCISE_OF_STOCK_OPTIONS": {
+    "description": "Disclosure of the aggregate tax benefit realized from the exercise of stock options and the conversion of similar instruments during the annual period.",
+    "category": "legal_and_compliance"
+  },
+  "EXCESS_TAX_BENEFIT_FROM_SHARE_BASED_COMPENSATION_FINANCING_ACTIVITIES": {
+    "description": "Amount of cash inflow from realized tax benefit related to deductible compensation cost reported on the entity's tax return for equity instruments in excess of the compensation cost for those instruments recognized for financial reporting purposes.",
+    "category": "legal_and_compliance"
+  },
+  "EXCESS_TAX_BENEFIT_FROM_SHARE_BASED_COMPENSATION_OPERATING_ACTIVITIES": {
+    "description": "Amount of cash outflow for realized tax benefit related to deductible compensation cost reported on the entity's tax return for equity instruments in excess of the compensation cost for those instruments recognized for financial reporting purposes.",
+    "category": "legal_and_compliance"
+  },
+  "FEDERAL_INCOME_TAX_EXPENSE_BENEFIT_CONTINUING_operations": {
+    "description": "Amount of current and deferred federal income tax expense (benefit) attributable to income (loss) from continuing operations.",
+    "category": "legal_and_compliance"
+  },
+  "FINANCE_LEASE_INTEREST_PAYMENT_ON_LIABILITY": {
+    "description": "Amount of interest paid on finance lease liability.",
+    "category": "operations"
+  },
+  "FINANCE_LEASE_LIABILITY": {
+    "description": "Present value of lessee's discounted obligation for lease payments from finance lease.",
+    "category": "operations"
+  },
+  "FINANCE_LEASE_LIABILITY_CURRENT": {
+    "description": "Present value of lessee's discounted obligation for lease payments from finance lease, classified as current.",
+    "category": "operations"
+  },
+  "FINANCE_LEASE_LIABILITY_NONCURRENT": {
+    "description": "Present value of lessee's discounted obligation for lease payments from finance lease, classified as noncurrent.",
+    "category": "operations"
+  },
+  "FINANCE_LEASE_LIABILITY_PAYMENTS_DUE": {
+    "description": "Amount of lessee's undiscounted obligation for lease payments for finance lease.",
+    "category": "operations"
+  },
+  "FINANCE_LEASE_LIABILITY_PAYMENTS_DUE_AFTER_YEAR_FIVE": {
+    "description": "Amount of lessee's undiscounted obligation for lease payment for finance lease to be paid after fifth fiscal year following current fiscal year. Excludes interim and annual periods when interim periods are reported from current statement of financial position date (rolling approach).",
+    "category": "operations"
+  },
+  "FINANCE_LEASE_LIABILITY_PAYMENTS_DUE_NEXT_TWELVE_MONTHS": {
+    "description": "Amount of lessee's undiscounted obligation for lease payment for finance lease to be paid in next fiscal year following current fiscal year. Excludes interim and annual periods when interim periods are reported from current statement of financial position date (rolling approach).",
+    "category": "operations"
+  },
+  "FINANCE_LEASE_LIABILITY_PAYMENTS_DUE_YEAR_FIVE": {
+    "description": "Amount of lessee's undiscounted obligation for lease payment for finance lease to be paid in fifth fiscal year following current fiscal year. Excludes interim and annual periods when interim periods are reported from current statement of financial position date (rolling approach).",
+    "category": "operations"
+  },
+  "FINANCE_LEASE_LIABILITY_PAYMENTS_DUE_YEAR_FOUR": {
+    "description": "Amount of lessee's undiscounted obligation for lease payment for finance lease to be paid in fourth fiscal year following current fiscal year. Excludes interim and annual periods when interim periods are reported from current statement of financial position date (rolling approach).",
+    "category": "operations"
+  },
+  "FINANCE_LEASE_LIABILITY_PAYMENTS_DUE_YEAR_THREE": {
+    "description": "Amount of lessee's undiscounted obligation for lease payment for finance lease to be paid in third fiscal year following current fiscal year. Excludes interim and annual periods when interim periods are reported from current statement of financial position date (rolling approach).",
+    "category": "operations"
+  },
+  "FINANCE_LEASE_LIABILITY_PAYMENTS_DUE_YEAR_TWO": {
+    "description": "Amount of lessee's undiscounted obligation for lease payment for finance lease to be paid in second fiscal year following current fiscal year. Excludes interim and annual periods when interim periods are reported from current statement of financial position date (rolling approach).",
+    "category": "operations"
+  },
+  "FINANCE_LEASE_LIABILITY_PAYMENTS_REMAINDER_OF_FISCAL_YEAR": {
+    "description": "Amount of lessee's undiscounted obligation for lease payment for finance lease to be paid in remainder of current fiscal year.",
+    "category": "operations"
+  },
+  "FINANCE_LEASE_LIABILITY_UNDISCOUNTED_EXCESS_AMOUNT": {
+    "description": "Amount of lessee's undiscounted obligation for lease payments in excess of discounted obligation for lease payments for finance lease.",
+    "category": "operations"
+  },
+  "FINANCE_LEASE_PRINCIPAL_PAYMENTS": {
+    "description": "Amount of cash outflow for principal payment on finance lease.",
+    "category": "operations"
+  },
+  "FINANCE_LEASE_RIGHT_OF_USE_ASSET": {
+    "description": "Amount, after accumulated amortization, of right-of-use asset from finance lease.",
+    "category": "operations"
+  },
+  "FINANCE_LEASE_WEIGHTED_AVERAGE_DISCOUNT_RATE_PERCENT": {
+    "description": "Weighted average discount rate for finance lease calculated at point in time.",
+    "category": "operations"
+  },
+  "FINITE_LIVED_INTANGIBLE_ASSETS_ACCUMULATED_AMORTIZATION": {
+    "description": "Accumulated amount of amortization of assets, excluding financial assets and goodwill, lacking physical substance with a finite life.",
+    "category": "operations"
+  },
+  "FINITE_LIVED_INTANGIBLE_ASSETS_AMORTIZATION_EXPENSE_AFTER_YEAR_FIVE": {
+    "description": "Amount of amortization for asset, excluding financial asset and goodwill, lacking physical substance with finite life expected to be recognized after fifth fiscal year following current fiscal year. Excludes interim and annual periods when interim periods are reported from current statement of financial position date (rolling approach).",
+    "category": "operations"
+  },
+  "FINITE_LIVED_INTANGIBLE_ASSETS_AMORTIZATION_EXPENSE_NEXT_TWELVE_MONTHS": {
+    "description": "Amount of amortization for assets, excluding financial assets and goodwill, lacking physical substance with finite life expected to be recognized in next fiscal year following current fiscal year. Excludes interim and annual periods when interim periods are reported from current statement of financial position date (rolling approach).",
+    "category": "operations"
+  },
+  "FINITE_LIVED_INTANGIBLE_ASSETS_AMORTIZATION_EXPENSE_YEAR_FIVE": {
+    "description": "Amount of amortization for assets, excluding financial assets and goodwill, lacking physical substance with finite life expected to be recognized in fifth fiscal year following current fiscal year. Excludes interim and annual periods when interim periods are reported from current statement of financial position date (rolling approach).",
+    "category": "operations"
+  },
+  "FINITE_LIVED_INTANGIBLE_ASSETS_AMORTIZATION_EXPENSE_YEAR_FOUR": {
+    "description": "Amount of amortization for assets, excluding financial assets and goodwill, lacking physical substance with finite life expected to be recognized in fourth fiscal year following current fiscal year. Excludes interim and annual periods when interim periods are reported from current statement of financial position date (rolling approach).",
+    "category": "operations"
+  },
+  "FINITE_LIVED_INTANGIBLE_ASSETS_AMORTIZATION_EXPENSE_YEAR_THREE": {
+    "description": "Amount of amortization for assets, excluding financial assets and goodwill, lacking physical substance with finite life expected to be recognized in third fiscal year following current fiscal year. Excludes interim and annual periods when interim periods are reported from current statement of financial position date (rolling approach).",
+    "category": "operations"
+  },
+  "FINITE_LIVED_INTANGIBLE_ASSETS_AMORTIZATION_EXPENSE_YEAR_TWO": {
+    "description": "Amount of amortization for assets, excluding financial assets and goodwill, lacking physical substance with finite life expected to be recognized in second fiscal year following current fiscal year. Excludes interim and annual periods when interim periods are reported from current statement of financial position date (rolling approach).",
+    "category": "operations"
+  },
+  "FINITE_LIVED_INTANGIBLE_ASSETS_NET": {
+    "description": "Amount after amortization of assets, excluding financial assets and goodwill, lacking physical substance with a finite life.",
+    "category": "operations"
+  },
+  "FLIGHT_EQUIPMENT_OWNED_GROSS": {
+    "description": "The gross amount of long-lived, depreciable flight assets owned by the entity and used in the entity's principle business operations, including owned aircraft as well as capitalized improvements.",
+    "category": "operations"
+  },
+  "FURNITURE_AND_FIXTURES_GROSS": {
+    "description": "Amount before accumulated depreciation of equipment commonly used in offices and stores that have no permanent connection to the structure of a building or utilities. Examples include, but are not limited to, desks, chairs, tables, and bookcases.",
+    "category": "operations"
+  },
+  "FUTURE_MINIMUM_SUBLEASE_RENTALS_SALE_LEASEBACK_TRANSACTIONS": {
+    "description": "Amount of minimum sublease rentals to be received by the seller-lessee for sale-leaseback transactions accounted for using the deposit method or as a financing.",
+    "category": "operations"
+  },
+  "FUTURE_MINIMUM_SUBLEASE_RENTALS_SALE_LEASEBACK_TRANSACTIONS_REMAINDER_OF_FISCAL_YEAR": {
+    "description": "Amount of minimum sublease rentals for sale-leaseback transactions accounted for using the deposit method or as a financing to be received by the seller-lessee in the remainder of the fiscal year following the latest fiscal year. Excludes interim and annual periods when interim periods are reported on a rolling approach, from latest balance sheet date.",
+    "category": "operations"
+  },
+  "FUTURE_MINIMUM_SUBLEASE_RENTALS_SALE_LEASEBACK_TRANSACTIONS_THEREAFTER": {
+    "description": "Amount of minimum sublease rentals for sale-leaseback transactions accounted for using the deposit method or as a financing to be received by the seller-lessee after the fifth fiscal year following the latest fiscal year. Excludes interim and annual periods when interim periods are reported on a rolling approach, from latest balance sheet date.",
+    "category": "operations"
+  },
+  "FUTURE_MINIMUM_SUBLEASE_RENTALS_SALE_LEASEBACK_TRANSACTIONS_WITHIN_FIVE_YEARS": {
+    "description": "Amount of minimum sublease rentals for sale-leaseback transactions accounted for using the deposit method or as a financing to be received by the seller-lessee in the fifth fiscal year following the latest fiscal year. Excludes interim and annual periods when interim periods are reported on a rolling approach, from latest balance sheet date.",
+    "category": "operations"
+  },
+  "FUTURE_MINIMUM_SUBLEASE_RENTALS_SALE_LEASEBACK_TRANSACTIONS_WITHIN_FOUR_YEARS": {
+    "description": "Amount of minimum sublease rentals for sale-leaseback transactions accounted for using the deposit method or as a financing to be received by the seller-lessee in the fourth fiscal year following the latest fiscal year. Excludes interim and annual periods when interim periods are reported on a rolling approach, from latest balance sheet date.",
+    "category": "operations"
+  },
+  "FUTURE_MINIMUM_SUBLEASE_RENTALS_SALE_LEASEBACK_TRANSACTIONS_WITHIN_ONE_YEAR": {
+    "description": "Amount of minimum sublease rentals for sale-leaseback transactions accounted for using the deposit method or as a financing to be received by the seller-lessee in the next fiscal year following the latest fiscal year. Excludes interim and annual periods when interim periods are reported on a rolling approach, from latest balance sheet date.",
+    "category": "operations"
+  },
+  "FUTURE_MINIMUM_SUBLEASE_RENTALS_SALE_LEASEBACK_TRANSACTIONS_WITHIN_THREE_YEARS": {
+    "description": "Amount of minimum sublease rentals for sale-leaseback transactions accounted for using the deposit method or as a financing to be received by the seller-lessee in the third fiscal year following the latest fiscal year. Excludes interim and annual periods when interim periods are reported on a rolling approach, from latest balance sheet date.",
+    "category": "operations"
+  },
+  "FUTURE_MINIMUM_SUBLEASE_RENTALS_SALE_LEASEBACK_TRANSACTIONS_WITHIN_TWO_YEARS": {
+    "description": "Amount of minimum sublease rentals for sale-leaseback transactions accounted for using the deposit method or as a financing to be received by the seller-lessee in the second fiscal year following the latest fiscal year. Excludes interim and annual periods when interim periods are reported on a rolling approach, from latest balance sheet date.",
+    "category": "operations"
+  },
+  "GAIN_LOSS_ON_DISPOSITION_OF_INTANGIBLE_ASSETS": {
+    "description": "Amount of gain (loss) on sale or disposal of intangible assets.",
+    "category": "financial"
+  },
+  "GAIN_LOSS_ON_SALE_OF_PROPERTY_PLANT_EQUIPMENT": {
+    "description": "Amount of gain (loss) on sale or disposal of property, plant and equipment assets, including oil and gas property and timber property.",
+    "category": "operations"
+  },
+  "GAINS_LOSSES_ON_EXTINGUISHMENT_OF_DEBT": {
+    "description": "Difference between the fair value of payments made and the carrying amount of debt which is extinguished prior to maturity.",
+    "category": "financial"
+  },
+  "GOODWILL": {
+    "description": "Amount after accumulated impairment loss of an asset representing future economic benefits arising from other assets acquired in a business combination that are not individually identified and separately recognized.",
+    "category": "labor_and_employment"
+  },
+  "GOODWILL_ACQUIRED_DURING_PERIOD": {
+    "description": "Amount of increase in asset representing future economic benefits arising from other assets acquired in a business combination that are not individually identified and separately recognized resulting from a business combination.",
+    "category": "labor_and_employment"
+  },
+  "GOODWILL_IMPAIRED_ACCUMULATED_IMPAIRMENT_LOSS": {
+    "description": "Amount of accumulated impairment loss for an asset representing future economic benefits arising from other assets acquired in a business combination that are not individually identified and separately recognized.",
+    "category": "labor_and_employment"
+  },
+  "GOODWILL_IMPAIRMENT_LOSS": {
+    "description": "Amount of loss from the write-down of an asset representing the future economic benefits arising from other assets acquired in a business combination that are not individually identified and separately recognized.",
+    "category": "labor_and_employment"
+  },
+  "GOODWILL_PERIOD_INCREASE_DECREASE": {
+    "description": "Amount of increase (decrease) of an asset representing future economic benefits arising from other assets acquired in a business combination that are not individually identified and separately recognized.",
+    "category": "labor_and_employment"
+  },
+  "GOODWILL_PURCHASE_ACCOUNTING_ADJUSTMENTS": {
+    "description": "Amount of increase (decrease) from adjustments after acquisition date under purchase accounting of an asset representing the future economic benefits arising from other assets acquired in a business combination that are not individually identified and separately recognized.",
+    "category": "labor_and_employment"
+  },
+  "GROSS_PROFIT": {
+    "description": "Aggregate revenue less cost of goods and services sold or operating expenses directly attributable to the revenue generation activity.",
+    "category": "operations"
+  },
+  "HEDGING_ASSETS_CURRENT": {
+    "description": "Carrying amount as of the balance sheet date of the asset arising from a financial instrument or a contract used to mitigate a specified risk (hedge), and which are expected to be converted into cash or otherwise disposed of within a year or the normal operating cycle, if longer.",
+    "category": "operations"
+  },
+  "IMPAIRMENT_OF_INTANGIBLE_ASSETS_INDEFINITELIVED_EXCLUDING_GOODWILL": {
+    "description": "Amount of impairment loss resulting from write-down of assets, excluding financial assets and goodwill, lacking physical substance and having a projected indefinite period of benefit to fair value.",
+    "category": "labor_and_employment"
+  },
+  "IMPAIRMENT_OF_LONG_LIVED_ASSETS_HELD_FOR_USE": {
+    "description": "The aggregate amount of write-downs for impairments recognized during the period for long lived assets held for use (including those held for disposal by means other than sale).",
+    "category": "financial"
+  },
+  "IMPAIRMENT_OF_LONG_LIVED_ASSETS_TO_BE_DISPOSED_OF": {
+    "description": "The aggregate amount of write-downs for impairments recognized during the period for long-lived assets held for abandonment, exchange or sale.",
+    "category": "financial"
+  },
+  "INCENTIVE_FROM_LESSOR": {
+    "description": "This item represents the deferred credit for an incentive or inducement received by a lessee from a lessor, in order to motivate the lessee to enter the lease agreement, which incentive or inducement is to be recognized as a reduction of rental expense over the lease term.",
+    "category": "operations"
+  },
+  "INCOME_LOSS_FROM_CONTINUING_operations_BEFORE_INCOME_TAXES_EXTRAORDINARY_ITEMS_NONCONTROLLING_INTEREST": {
+    "description": "Amount of income (loss) from continuing operations, including income (loss) from equity method investments, before deduction of income tax expense (benefit), and income (loss) attributable to noncontrolling interest.",
+    "category": "legal_and_compliance"
+  },
+  "INCOME_TAX_EXPENSE_BENEFIT": {
+    "description": "Amount of current income tax expense (benefit) and deferred income tax expense (benefit) pertaining to continuing operations.",
+    "category": "legal_and_compliance"
+  },
+  "INCOME_TAX_EXPENSE_BENEFIT_CONTINUING_operations_ADJUSTMENT_OF_DEFERRED_TAX_ASSET_LIABILITY": {
+    "description": "Amount of income tax expense (benefit) from continuing operations attributable to an adjustment of a deferred tax liability or asset for enacted changes in tax laws or rates or a change in the tax status of the entity.",
+    "category": "legal_and_compliance"
+  },
+  "INCOME_TAXES_PAID": {
+    "description": "The amount of cash paid during the current period to foreign, federal, state, and local authorities as taxes on income.",
+    "category": "legal_and_compliance"
+  },
+  "INCOME_TAXES_PAID_NET": {
+    "description": "The amount of cash paid during the current period to foreign, federal, state, and local authorities as taxes on income, net of any cash received during the current period as refunds for the overpayment of taxes.",
+    "category": "legal_and_compliance"
+  },
+  "INCOME_TAXES_RECEIVABLE": {
+    "description": "Carrying amount due within one year of the balance sheet date (or one operating cycle, if longer) from tax authorities as of the balance sheet date representing refunds of overpayments or recoveries based on agreed-upon resolutions of disputes.",
+    "category": "legal_and_compliance"
+  },
+  "INCOME_TAX_RECONCILIATION_OTHER_ADJUSTMENTS": {
+    "description": "Amount of the difference between reported income tax expense (benefit) and expected income tax expense (benefit) computed by applying the domestic federal statutory income tax rates to pretax income (loss) from continuing operations attributable to other adjustments.",
+    "category": "legal_and_compliance"
+  },
+  "INCOME_TAX_RECONCILIATION_TAX_CREDITS": {
+    "description": "Amount of the difference between reported income tax expense (benefit) and expected income tax expense (benefit) computed by applying the domestic federal statutory income tax rates to pretax income (loss) from continuing operations attributable to tax credits. Including, but not limited to, research credit, foreign tax credit, investment tax credit, and other tax credits.",
+    "category": "legal_and_compliance"
+  },
+  "INCREASE_DECREASE_IN_ACCOUNTS_PAYABLE": {
+    "description": "The increase (decrease) during the reporting period in the aggregate amount of liabilities incurred (and for which invoices have typically been received) and payable to vendors for goods and services received that are used in an entity's business.",
+    "category": "financial"
+  },
+  "INCREASE_DECREASE_IN_ACCOUNTS_PAYABLE_AND_ACCRUED_LIABILITIES": {
+    "description": "The increase (decrease) during the reporting period in the amounts payable to vendors for goods and services received and the amount of obligations and expenses incurred but not paid.",
+    "category": "financial"
+  },
+  "INCREASE_DECREASE_IN_ACCOUNTS_RECEIVABLE": {
+    "description": "The increase (decrease) during the reporting period in amount due within one year (or one business cycle) from customers for the credit sale of goods and services.",
+    "category": "financial"
+  },
+  "INCREASE_DECREASE_IN_ACCRUED_INCOME_TAXES_PAYABLE": {
+    "description": "The increase (decrease) during the period in the amount due for taxes based on the reporting entity's earnings or attributable to the entity's income earning process (business presence) within a given jurisdiction.",
+    "category": "legal_and_compliance"
+  },
+  "INCREASE_DECREASE_IN_ACCRUED_LIABILITIES": {
+    "description": "The increase (decrease) during the reporting period in the aggregate amount of expenses incurred but not yet paid.",
+    "category": "financial"
+  },
+  "INCREASE_DECREASE_IN_ACCRUED_SALARIES": {
+    "description": "The increase (decrease) during the period in accrued salaries.",
+    "category": "financial"
+  },
+  "INCREASE_DECREASE_IN_INVENTORIES": {
+    "description": "The increase (decrease) during the reporting period in the aggregate value of all inventory held by the reporting entity, associated with underlying transactions that are classified as operating activities.",
+    "category": "operations"
+  },
+  "INCREASE_DECREASE_IN_OTHER_ACCRUED_LIABILITIES": {
+    "description": "The increase (decrease) during the reporting period in other expenses incurred but not yet paid.",
+    "category": "financial"
+  },
+  "INCREASE_DECREASE_IN_OTHER_NONCURRENT_LIABILITIES": {
+    "description": "Amount of increase (decrease) in noncurrent operating liabilities classified as other.",
+    "category": "operations"
+  },
+  "INCREASE_DECREASE_IN_OTHER_OPERATING_ASSETS": {
+    "description": "Amount of increase (decrease) in operating assets classified as other.",
+    "category": "operations"
+  },
+  "INCREASE_DECREASE_IN_PREPAID_DEFERRED_EXPENSE_AND_OTHER_ASSETS": {
+    "description": "Amount of increase (decrease) in prepaid expenses, and assets classified as other.",
+    "category": "financial"
+  },
+  "INCREASE_IN_UNRECOGNIZED_TAX_BENEFITS_IS_REASONABLY_POSSIBLE": {
+    "description": "Amount of increase reasonably possible in the next twelve months for the unrecognized tax benefit.",
+    "category": "legal_and_compliance"
+  },
+  "INCREMENTAL_COMMON_SHARES_ATTRIBUTABLE_TO_CALL_OPTIONS_AND_WARRANTS": {
+    "description": "Additional shares included in the calculation of diluted EPS as a result of the potentially dilutive effect of call options and warrants using the treasury stock method.",
+    "category": "financial"
+  },
+  "INCREMENTAL_COMMON_SHARES_ATTRIBUTABLE_TO_SHARE_BASED_PAYMENT_ARRANGEMENTS": {
+    "description": "Additional shares included in the calculation of diluted EPS as a result of the potentially dilutive effect of share based payment arrangements using the treasury stock method.",
+    "category": "labor_and_employment"
+  },
+  "INSURANCE_SETTLEMENTS_RECEIVABLE_CURRENT": {
+    "description": "Amount due in settlement of a claim for reimbursement from an insurance company when the Company has suffered a loss covered under an insurance policy. For classified balance sheets, represents the current amount receivable, that is amounts expected to be collected within one year or the normal operating cycle, if longer.",
+    "category": "legal_and_compliance"
+  },
+  "INTANGIBLE_ASSETS_GROSS_EXCLUDING_GOODWILL": {
+    "description": "Amount before accumulated amortization of intangible assets, excluding goodwill.",
+    "category": "operations"
+  },
+  "INTANGIBLE_ASSETS_NET_EXCLUDING_GOODWILL": {
+    "description": "Sum of the carrying amounts of all intangible assets, excluding goodwill, as of the balance sheet date, net of accumulated amortization and impairment charges.",
+    "category": "operations"
+  },
+  "INTEREST_EXPENSE": {
+    "description": "Amount of the cost of borrowed funds accounted for as interest expense.",
+    "category": "financial"
+  },
+  "INTEREST_EXPENSE_DEBT": {
+    "description": "Amount of the cost of borrowed funds accounted for as interest expense for debt.",
+    "category": "financial"
+  },
+  "INTEREST_INCOME_EXPENSE_NET": {
+    "description": "The net amount of operating interest income (expense).",
+    "category": "operations"
+  },
+  "INTEREST_PAID_NET": {
+    "description": "Amount of cash paid for interest, excluding capitalized interest, classified as operating activity. Includes, but is not limited to, payment to settle zero-coupon bond for accreted interest of debt discount and debt instrument with insignificant coupon interest rate in relation to effective interest rate of borrowing attributable to accreted interest of debt discount.",
+    "category": "operations"
+  },
+  "INTEREST_PAYABLE_CURRENT": {
+    "description": "Carrying value as of the balance sheet date of [accrued] interest payable on all forms of debt, including trade payables, that has been incurred and is unpaid. Used to reflect the current portion of the liabilities (due within one year or within the normal operating cycle if longer).",
+    "category": "operations"
+  },
+  "INTEREST_PORTION_OF_MINIMUM_LEASE_PAYMENTS_SALE_LEASEBACK_TRANSACTIONS": {
+    "description": "Amount necessary to reduce minimum lease payments to present value for sale-leaseback transactions accounted for using the deposit method or as a financing.",
+    "category": "operations"
+  },
+  "INTEREST_RATE_CASH_FLOW_HEDGE_GAIN_LOSS_TO_BE_RECLASSIFIED_DURING_NEXT12_MONTHS_NET": {
+    "description": "The estimated net amount of unrealized gains or losses on interest rate cash flow hedges as of the balance sheet date expected to be reclassified to earnings within the next twelve months.",
+    "category": "key_metrics"
+  },
+  "INVENTORY_NET": {
+    "description": "Amount after valuation and LIFO reserves of inventory expected to be sold, or consumed within one year or operating cycle, if longer.",
+    "category": "operations"
+  },
+  "INVENTORY_VALUATION_RESERVES": {
+    "description": "Amount of valuation reserve for inventory.",
+    "category": "operations"
+  },
+  "LEASE_AND_RENTAL_EXPENSE": {
+    "description": "Amount of rent expense incurred for leased assets, including but not limited to, furniture and equipment, that is not directly or indirectly associated with the manufacture, sale or creation of a product or product line.",
+    "category": "operations"
+  },
+  "LEASE_COST": {
+    "description": "Amount of lease cost recognized by lessee for lease contract.",
+    "category": "operations"
+  },
+  "LEASEHOLD_IMPROVEMENTS_GROSS": {
+    "description": "Amount before accumulated depreciation of additions or improvements to assets held under a lease arrangement.",
+    "category": "operations"
+  },
+  "LEASE_INCENTIVE_PAYABLE_CURRENT": {
+    "description": "This item represents an incentive or inducement contractually stipulated between parties to a lease whereby the lessor has committed to provide the entity (lessee) with a cash payment as inducement to enter the lease. Used to reflect the current portion of the liabilities (due within one year or within the normal operating cycle if longer).",
+    "category": "operations"
+  },
+  "LEASE_INCENTIVE_RECEIVABLE_CURRENT": {
+    "description": "This item represents the current receivable for an incentive or inducement contractually stipulated between parties to a lease whereby the lessor has committed to provide the entity (lessee) with a cash payment as inducement to enter the lease. The receivable is due within one year. For classified balance sheets, this element represents the current amount receivable, that is amounts expected to be collected within one year or the normal operating cycle, if longer.",
+    "category": "operations"
+  },
+  "LESSEE_OPERATING_LEASE_LIABILITY_PAYMENTS_DUE": {
+    "description": "Amount of lessee's undiscounted obligation for lease payment for operating lease.",
+    "category": "operations"
+  },
+  "LESSEE_OPERATING_LEASE_LIABILITY_PAYMENTS_DUE_AFTER_YEAR_FIVE": {
+    "description": "Amount of lessee's undiscounted obligation for lease payment for operating lease due after fifth fiscal year following current fiscal year. Excludes interim and annual periods when interim periods are reported from current statement of financial position date (rolling approach).",
+    "category": "operations"
+  },
+  "LESSEE_OPERATING_LEASE_LIABILITY_PAYMENTS_DUE_NEXT_TWELVE_MONTHS": {
+    "description": "Amount of lessee's undiscounted obligation for lease payment for operating lease to be paid in next fiscal year following current fiscal year. Excludes interim and annual periods when interim periods are reported from current statement of financial position date (rolling approach).",
+    "category": "operations"
+  },
+  "LESSEE_OPERATING_LEASE_LIABILITY_PAYMENTS_DUE_YEAR_FIVE": {
+    "description": "Amount of lessee's undiscounted obligation for lease payment for operating lease to be paid in fifth fiscal year following current fiscal year. Excludes interim and annual periods when interim periods are reported from current statement of financial position date (rolling approach).",
+    "category": "operations"
+  },
+  "LESSEE_OPERATING_LEASE_LIABILITY_PAYMENTS_DUE_YEAR_FOUR": {
+    "description": "Amount of lessee's undiscounted obligation for lease payment for operating lease to be paid in fourth fiscal year following current fiscal year. Excludes interim and annual periods when interim periods are reported from current statement of financial position date (rolling approach).",
+    "category": "operations"
+  },
+  "LESSEE_OPERATING_LEASE_LIABILITY_PAYMENTS_DUE_YEAR_THREE": {
+    "description": "Amount of lessee's undiscounted obligation for lease payment for operating lease to be paid in third fiscal year following current fiscal year. Excludes interim and annual periods when interim periods are reported from current statement of financial position date (rolling approach).",
+    "category": "operations"
+  },
+  "LESSEE_OPERATING_LEASE_LIABILITY_PAYMENTS_DUE_YEAR_TWO": {
+    "description": "Amount of lessee's undiscounted obligation for lease payment for operating lease to be paid in second fiscal year following current fiscal year. Excludes interim and annual periods when interim periods are reported from current statement of financial position date (rolling approach).",
+    "category": "operations"
+  },
+  "LESSEE_OPERATING_LEASE_LIABILITY_PAYMENTS_REMAINDER_OF_FISCAL_YEAR": {
+    "description": "Amount of lessee's undiscounted obligation for lease payment for operating lease having initial or remaining lease term in excess of one year to be paid in remainder of current fiscal year.",
+    "category": "operations"
+  },
+  "LESSEE_OPERATING_LEASE_LIABILITY_UNDISCOUNTED_EXCESS_AMOUNT": {
+    "description": "Amount of lessee's undiscounted obligation for lease payments in excess of discounted obligation for lease payments for operating lease.",
+    "category": "operations"
+  },
+  "LIABILITIES": {
+    "description": "Sum of the carrying amounts as of the balance sheet date of all liabilities that are recognized. Liabilities are probable future sacrifices of economic benefits arising from present obligations of an entity to transfer assets or provide services to other entities in the future.",
+    "category": "labor_and_employment"
+  },
+  "LIABILITIES_AND_STOCKHOLDERS_EQUITY": {
+    "description": "Amount of liabilities and equity items, including the portion of equity attributable to noncontrolling interests, if any.",
+    "category": "financial"
+  },
+  "LIABILITIES_CURRENT": {
+    "description": "Total obligations incurred as part of normal operations that are expected to be paid during the following twelve months or within one business cycle, if longer.",
+    "category": "financial"
+  },
+  "LINE_OF_CREDIT": {
+    "description": "The carrying value as of the balance sheet date of the current and noncurrent portions of long-term obligations drawn from a line of credit, which is a bank's commitment to make loans up to a specific amount. Examples of items that might be included in the application of this element may consist of letters of credit, standby letters of credit, and revolving credit arrangements, under which borrowings can be made up to a maximum amount as of any point in time conditional on satisfaction of specified terms before, as of and after the date of drawdowns on the line. Includes short-term obligations that would normally be classified as current liabilities but for which (a) postbalance sheet date issuance of a long term obligation to refinance the short term obligation on a long term basis, or (b) the enterprise has entered into a financing agreement that clearly permits the enterprise to refinance the short-term obligation on a long term basis and the following conditions are met (1) the agreement does not expire within 1 year and is not cancelable by the lender except for violation of an objectively determinable provision, (2) no violation exists at the BS date, and (3) the lender has entered into the financing agreement is expected to be financially capable of honoring the agreement.",
+    "category": "financial"
+  },
+  "LINE_OF_CREDIT_FACILITY_COMMITMENT_FEE_PERCENTAGE": {
+    "description": "The fee, expressed as a percentage of the line of credit facility, for the line of credit facility regardless of whether the facility has been used.",
+    "category": "operations"
+  },
+  "LINE_OF_CREDIT_FACILITY_MAXIMUM_BORROWING_CAPACITY": {
+    "description": "Maximum borrowing capacity under the credit facility without consideration of any current restrictions on the amount that could be borrowed or the amounts currently outstanding under the facility.",
+    "category": "operations"
+  },
+  "LINE_OF_CREDIT_FACILITY_PERIODIC_PAYMENT_PRINCIPAL": {
+    "description": "Amount of the required periodic payment applied to principal.",
+    "category": "operations"
+  },
+  "LONG_TERM_DEBT": {
+    "description": "Amount, after unamortized (discount) premium and debt issuance costs, of long-term debt. Includes, but not limited to, notes payable, bonds payable, debentures, mortgage loans and commercial paper. Excludes capital lease obligations.",
+    "category": "operations"
+  },
+  "LONG_TERM_DEBT_CURRENT": {
+    "description": "Amount, after unamortized (discount) premium and debt issuance costs, of long-term debt, classified as current. Includes, but not limited to, notes payable, bonds payable, debentures, mortgage loans and commercial paper. Excludes capital lease obligations.",
+    "category": "operations"
+  },
+  "LONG_TERM_DEBT_MATURITIES_REPAYMENTS_OF_PRINCIPAL_AFTER_YEAR_FIVE": {
+    "description": "Amount of long-term debt payable, sinking fund requirement, and other securities issued that are redeemable by holder at fixed or determinable price and date, maturing after fifth fiscal year following current fiscal year. Excludes interim and annual periods when interim periods are reported from current statement of financial position date (rolling approach).",
+    "category": "financial"
+  },
+  "LONG_TERM_DEBT_MATURITIES_REPAYMENTS_OF_PRINCIPAL_IN_NEXT_TWELVE_MONTHS": {
+    "description": "Amount of long-term debt payable, sinking fund requirement, and other securities issued that are redeemable by holder at fixed or determinable price and date, maturing in next fiscal year following current fiscal year. Excludes interim and annual periods when interim periods are reported from current statement of financial position date (rolling approach).",
+    "category": "financial"
+  },
+  "LONG_TERM_DEBT_MATURITIES_REPAYMENTS_OF_PRINCIPAL_IN_YEAR_FIVE": {
+    "description": "Amount of long-term debt payable, sinking fund requirement, and other securities issued that are redeemable by holder at fixed or determinable price and date, maturing in fifth fiscal year following current fiscal year. Excludes interim and annual periods when interim periods are reported from current statement of financial position date (rolling approach).",
+    "category": "financial"
+  },
+  "LONG_TERM_DEBT_MATURITIES_REPAYMENTS_OF_PRINCIPAL_IN_YEAR_FOUR": {
+    "description": "Amount of long-term debt payable, sinking fund requirement, and other securities issued that are redeemable by holder at fixed or determinable price and date, maturing in fourth fiscal year following current fiscal year. Excludes interim and annual periods when interim periods are reported from current statement of financial position date (rolling approach).",
+    "category": "financial"
+  },
+  "LONG_TERM_DEBT_MATURITIES_REPAYMENTS_OF_PRINCIPAL_IN_YEAR_THREE": {
+    "description": "Amount of long-term debt payable, sinking fund requirement, and other securities issued that are redeemable by holder at fixed or determinable price and date, maturing in third fiscal year following current fiscal year. Excludes interim and annual periods when interim periods are reported from current statement of financial position date (rolling approach).",
+    "category": "financial"
+  },
+  "LONG_TERM_DEBT_MATURITIES_REPAYMENTS_OF_PRINCIPAL_IN_YEAR_TWO": {
+    "description": "Amount of long-term debt payable, sinking fund requirement, and other securities issued that are redeemable by holder at fixed or determinable price and date, maturing in second fiscal year following current fiscal year. Excludes interim and annual periods when interim periods are reported from current statement of financial position date (rolling approach).",
+    "category": "financial"
+  },
+  "LONG_TERM_DEBT_NONCURRENT": {
+    "description": "Amount after unamortized (discount) premium and debt issuance costs of long-term debt classified as noncurrent and excluding amounts to be repaid within one year or the normal operating cycle, if longer. Includes, but not limited to, notes payable, bonds payable, debentures, mortgage loans and commercial paper. Excludes capital lease obligations.",
+    "category": "operations"
+  },
+  "LOSS_CONTINGENCY_CLAIMS_SETTLED_NUMBER": {
+    "description": "Number of claims settled.",
+    "category": "financial"
+  },
+  "MINIMUM_LEASE_PAYMENTS_SALE_LEASEBACK_TRANSACTIONS": {
+    "description": "Amount of minimum lease payments for sale-leaseback transactions accounted for using the deposit method or as a financing.",
+    "category": "operations"
+  },
+  "MINIMUM_LEASE_PAYMENTS_SALE_LEASEBACK_TRANSACTIONS_THEREAFTER": {
+    "description": "Amount of minimum lease payments for sale-leaseback transactions accounted for using the deposit method or as a financing due after the fifth fiscal year following the latest fiscal year. Excludes interim and annual periods when interim periods are reported on a rolling approach, from latest balance sheet date.",
+    "category": "operations"
+  },
+  "MINIMUM_LEASE_PAYMENTS_SALE_LEASEBACK_TRANSACTIONS_WITHIN_FIVE_YEARS": {
+    "description": "Amount of minimum lease payments for sale-leaseback transactions accounted for using the deposit method or as a financing due in the fifth fiscal year following the latest fiscal year. Excludes interim and annual periods when interim periods are reported on a rolling approach, from latest balance sheet date.",
+    "category": "operations"
+  },
+  "MINIMUM_LEASE_PAYMENTS_SALE_LEASEBACK_TRANSACTIONS_WITHIN_FOUR_YEARS": {
+    "description": "Amount of minimum lease payments for sale-leaseback transactions accounted for using the deposit method or as a financing due in the fourth fiscal year following the latest fiscal year. Excludes interim and annual periods when interim periods are reported on a rolling approach, from latest balance sheet date.",
+    "category": "operations"
+  },
+  "MINIMUM_LEASE_PAYMENTS_SALE_LEASEBACK_TRANSACTIONS_WITHIN_ONE_YEAR": {
+    "description": "Amount of minimum lease payments for sale-leaseback transactions accounted for using the deposit method or as a financing due in the next fiscal year following the latest fiscal year. Excludes interim and annual periods when interim periods are reported on a rolling approach, from latest balance sheet date.",
+    "category": "operations"
+  },
+  "MINIMUM_LEASE_PAYMENTS_SALE_LEASEBACK_TRANSACTIONS_WITHIN_THREE_YEARS": {
+    "description": "Amount of minimum lease payments for sale-leaseback transactions accounted for using the deposit method or as a financing due in the third fiscal year following the latest fiscal year. Excludes interim and annual periods when interim periods are reported on a rolling approach, from latest balance sheet date.",
+    "category": "operations"
+  },
+  "MINIMUM_LEASE_PAYMENTS_SALE_LEASEBACK_TRANSACTIONS_WITHIN_TWO_YEARS": {
+    "description": "Amount of minimum lease payments for sale-leaseback transactions accounted for using the deposit method or as a financing due in the second fiscal year following the latest fiscal year. Excludes interim and annual periods when interim periods are reported on a rolling approach, from latest balance sheet date.",
+    "category": "operations"
+  },
+  "NET_CASH_PROVIDED_BY_USED_IN_FINANCING_ACTIVITIES": {
+    "description": "Amount of cash inflow (outflow) from financing activities, including discontinued operations. Financing activity cash flows include obtaining resources from owners and providing them with a return on, and a return of, their investment; borrowing money and repaying amounts borrowed, or settling the obligation; and obtaining and paying for other resources obtained from creditors on long-term credit.",
+    "category": "financial"
+  },
+  "NET_CASH_PROVIDED_BY_USED_IN_FINANCING_ACTIVITIES_CONTINUING_operations": {
+    "description": "Amount of cash inflow (outflow) of financing activities, excluding discontinued operations. Financing activity cash flows include obtaining resources from owners and providing them with a return on, and a return of, their investment; borrowing money and repaying amounts borrowed, or settling the obligation; and obtaining and paying for other resources obtained from creditors on long-term credit.",
+    "category": "financial"
+  },
+  "NET_CASH_PROVIDED_BY_USED_IN_INVESTING_ACTIVITIES": {
+    "description": "Amount of cash inflow (outflow) from investing activities, including discontinued operations. Investing activity cash flows include making and collecting loans and acquiring and disposing of debt or equity instruments and property, plant, and equipment and other productive assets.",
+    "category": "operations"
+  },
+  "NET_CASH_PROVIDED_BY_USED_IN_INVESTING_ACTIVITIES_CONTINUING_operations": {
+    "description": "Amount of cash inflow (outflow) of investing activities, excluding discontinued operations. Investing activity cash flows include making and collecting loans and acquiring and disposing of debt or equity instruments and property, plant, and equipment and other productive assets.",
+    "category": "operations"
+  },
+  "NET_CASH_PROVIDED_BY_USED_IN_OPERATING_ACTIVITIES": {
+    "description": "Amount of cash inflow (outflow) from operating activities, including discontinued operations. Operating activity cash flows include transactions, adjustments, and changes in value not defined as investing or financing activities.",
+    "category": "operations"
+  },
+  "NET_CASH_PROVIDED_BY_USED_IN_OPERATING_ACTIVITIES_CONTINUING_operations": {
+    "description": "Amount of cash inflow (outflow) from operating activities, excluding discontinued operations. Operating activity cash flows include transactions, adjustments, and changes in value not defined as investing or financing activities.",
+    "category": "operations"
+  },
+  "NET_INCOME_LOSS": {
+    "description": "The portion of profit or loss for the period, net of income taxes, which is attributable to the parent.",
+    "category": "legal_and_compliance"
+  },
+  "NONCASH_OR_PART_NONCASH_ACQUISITION_INVESTMENTS_ACQUIRED1": {
+    "description": "\"The amount of investments that an Entity acquires in a noncash (or part noncash) acquisition. Noncash is defined as information about all investing and financing activities of an enterprise during a period that affect recognized assets or liabilities but that do not result in cash receipts or cash payments in the period. \"\"Part noncash\"\" refers to that portion of the transaction not resulting in cash receipts or cash payments in the period.\"",
+    "category": "financial"
+  },
+  "NONCASH_OR_PART_NONCASH_ACQUISITION_OTHER_ASSETS_ACQUIRED1": {
+    "description": "Amount of assets, classified as other, acquired in a noncash or part noncash acquisition.",
+    "category": "financial"
+  },
+  "NONOPERATING_INCOME_EXPENSE": {
+    "description": "The aggregate amount of income or expense from ancillary business-related activities (that is to say, excluding major activities considered part of the normal operations of the business).",
+    "category": "financial"
+  },
+  "NUMBER_OF_OPERATING_SEGMENTS": {
+    "description": "Number of operating segments. An operating segment is a component of an enterprise: (a) that engages in business activities from which it may earn revenues and incur expenses (including revenues and expenses relating to transactions with other components of the same enterprise), (b) whose operating results are regularly reviewed by the enterprise's chief operating decision maker to make decisions about resources to be allocated to the segment and assess its performance, and (c) for which discrete financial information is available. An operating segment may engage in business activities for which it has yet to earn revenues, for example, start-up operations may be operating segments before earning revenues.",
+    "category": "operations"
+  },
+  "NUMBER_OF_REPORTABLE_SEGMENTS": {
+    "description": "Number of segments reported by the entity. A reportable segment is a component of an entity for which there is an accounting requirement to report separate financial information on that component in the entity's financial statements.",
+    "category": "financial"
+  },
+  "NUMBER_OF_STATES_IN_WHICH_ENTITY_OPERATES": {
+    "description": "The number of states the entity operates in as of the balance sheet date.",
+    "category": "financial"
+  },
+  "NUMBER_OF_STORES": {
+    "description": "Represents the number of stores.",
+    "category": "operations",
+    "iscurrencydata": false
+  },
+  "OFF_MARKET_LEASE_UNFAVORABLE": {
+    "description": "This element represents a liability associated with the acquisition of an off-market lease when the terms of the lease are unfavorable to the market terms for the lease at the date of acquisition.",
+    "category": "operations"
+  },
+  "OPERATING_INCOME_LOSS": {
+    "description": "The net result for the period of deducting operating expenses from operating revenues.",
+    "category": "operations"
+  },
+  "OPERATING_LEASE_LIABILITY": {
+    "description": "Present value of lessee's discounted obligation for lease payments from operating lease.",
+    "category": "operations"
+  },
+  "OPERATING_LEASE_LIABILITY_CURRENT": {
+    "description": "Present value of lessee's discounted obligation for lease payments from operating lease, classified as current.",
+    "category": "operations"
+  },
+  "OPERATING_LEASE_LIABILITY_NONCURRENT": {
+    "description": "Present value of lessee's discounted obligation for lease payments from operating lease, classified as noncurrent.",
+    "category": "operations"
+  },
+  "OPERATING_LEASE_PAYMENTS": {
+    "description": "Amount of cash outflow from operating lease, excluding payments to bring another asset to condition and location necessary for its intended use.",
+    "category": "operations"
+  },
+  "OPERATING_LEASE_RIGHT_OF_USE_ASSET": {
+    "description": "Amount of lessee's right to use underlying asset under operating lease.",
+    "category": "operations"
+  },
+  "OPERATING_LEASES_FUTURE_MINIMUM_PAYMENTS_DUE": {
+    "description": "Amount of required minimum rental payments for leases having an initial or remaining non-cancelable letter-terms in excess of one year.",
+    "category": "operations"
+  },
+  "OPERATING_LEASES_FUTURE_MINIMUM_PAYMENTS_DUE_CURRENT": {
+    "description": "Amount of required minimum rental payments for operating leases having an initial or remaining non-cancelable lease term in excess of one year due in the next fiscal year following the latest fiscal year. Excludes interim and annual periods when interim periods are reported on a rolling approach, from latest balance sheet date.",
+    "category": "operations"
+  },
+  "OPERATING_LEASES_FUTURE_MINIMUM_PAYMENTS_DUE_IN_FIVE_YEARS": {
+    "description": "Amount of required minimum rental payments for operating leases having an initial or remaining non-cancelable lease term in excess of one year due in the fifth fiscal year following the latest fiscal year. Excludes interim and annual periods when interim periods are reported on a rolling approach, from latest balance sheet date.",
+    "category": "operations"
+  },
+  "OPERATING_LEASES_FUTURE_MINIMUM_PAYMENTS_DUE_IN_FOUR_YEARS": {
+    "description": "Amount of required minimum rental payments for operating leases having an initial or remaining non-cancelable lease term in excess of one year due in the fourth fiscal year following the latest fiscal year. Excludes interim and annual periods when interim periods are reported on a rolling approach, from latest balance sheet date.",
+    "category": "operations"
+  },
+  "OPERATING_LEASES_FUTURE_MINIMUM_PAYMENTS_DUE_IN_THREE_YEARS": {
+    "description": "Amount of required minimum rental payments for operating leases having an initial or remaining non-cancelable lease term in excess of one year due in the third fiscal year following the latest fiscal year. Excludes interim and annual periods when interim periods are reported on a rolling approach, from latest balance sheet date.",
+    "category": "operations"
+  },
+  "OPERATING_LEASES_FUTURE_MINIMUM_PAYMENTS_DUE_IN_TWO_YEARS": {
+    "description": "Amount of required minimum rental payments for operating leases having an initial or remaining non-cancelable lease term in excess of one year due in the second fiscal year following the latest fiscal year. Excludes interim and annual periods when interim periods are reported on a rolling approach, from latest balance sheet date.",
+    "category": "operations"
+  },
+  "OPERATING_LEASES_FUTURE_MINIMUM_PAYMENTS_DUE_THEREAFTER": {
+    "description": "Amount of required minimum rental payments for operating leases having an initial or remaining non-cancelable lease term in excess of one year due after the fifth fiscal year following the latest fiscal year. Excludes interim and annual periods when interim periods are reported on a rolling approach, from latest balance sheet date.",
+    "category": "operations"
+  },
+  "OPERATING_LEASES_FUTURE_MINIMUM_PAYMENTS_REMAINDER_OF_FISCAL_YEAR": {
+    "description": "Amount of required minimum rental payments for operating leases having an initial or remaining non-cancelable lease term in excess of one year due in the remainder of the fiscal year following the latest fiscal year. Excludes interim and annual periods when interim periods are reported on a rolling approach, from latest balance sheet date.",
+    "category": "operations"
+  },
+  "OPERATING_LEASES_RENT_EXPENSE_CONTINGENT_RENTALS": {
+    "description": "The increases or decreases in lease payments that result from changes occurring after the inception of the lease in the factors (other than the passage of time) on which lease payments are based, except that any escalation of minimum lease payments relating to increases in construction or acquisition cost of the leased property or for increases in some measure of cost or value during the construction or preconstruction period, are excluded from contingent rentals. Contingent rentals also may include amounts for which the triggering events have not yet occurred or the specified targets for which have not yet been achieved (such as sales based percentage rent), but which events are considered probable of occurring or which specified targets are considered probable of being achieved.",
+    "category": "operations"
+  },
+  "OPERATING_LEASE_WEIGHTED_AVERAGE_DISCOUNT_RATE_PERCENT": {
+    "description": "Weighted average discount rate for operating lease calculated at point in time.",
+    "category": "operations"
+  },
+  "OTHER_ACCRUED_LIABILITIES_CURRENT": {
+    "description": "Amount of expenses incurred but not yet paid classified as other, due within one year or the normal operating cycle, if longer.",
+    "category": "operations"
+  },
+  "OTHER_ASSETS_CURRENT": {
+    "description": "Amount of current assets classified as other.",
+    "category": "financial"
+  },
+  "OTHER_ASSETS_MISCELLANEOUS_NONCURRENT": {
+    "description": "Amount of other miscellaneous assets expected to be realized or consumed after one year or normal operating cycle, if longer.",
+    "category": "operations"
+  },
+  "OTHER_ASSETS_NONCURRENT": {
+    "description": "Amount of noncurrent assets classified as other.",
+    "category": "financial"
+  },
+  "OTHER_COMPREHENSIVE_INCOME_LOSS_NET_OF_TAX": {
+    "description": "Amount after tax and reclassification adjustments of other comprehensive income (loss).",
+    "category": "legal_and_compliance"
+  },
+  "OTHER_COMPREHENSIVE_INCOME_LOSS_RECLASSIFICATION_ADJUSTMENT_FROM_A_O_C_I_ON_DERIVATIVES_NET_OF_TAX": {
+    "description": "Amount after tax of reclassification adjustment from accumulated other comprehensive income of accumulated gain (loss) realized from derivative instruments designated and qualifying as the effective portion of cash flow hedges and an entity's share of an equity investee's deferred hedging gain (loss).",
+    "category": "legal_and_compliance"
+  },
+  "OTHER_COMPREHENSIVE_INCOME_LOSS_RECLASSIFICATION_ADJUSTMENT_FROM_A_O_C_I_ON_DERIVATIVES_TAX": {
+    "description": "Amount of tax expense (benefit) of reclassification adjustment from accumulated other comprehensive income of accumulated gain (loss) realized from derivative instruments designated and qualifying as the effective portion of cash flow hedges and an entity's share of an equity investee's deferred hedging gain (loss).",
+    "category": "legal_and_compliance"
+  },
+  "OTHER_COMPREHENSIVE_INCOME_UNREALIZED_GAIN_LOSS_ON_DERIVATIVES_ARISING_DURING_PERIOD_NET_OF_TAX": {
+    "description": "Amount after tax of increase (decrease) in accumulated gain (loss) from derivative instruments designated and qualifying as the effective portion of cash flow hedges and an entity's share of an equity investee's increase (decrease) in deferred hedging gain (loss).",
+    "category": "legal_and_compliance"
+  },
+  "OTHER_COMPREHENSIVE_INCOME_UNREALIZED_GAIN_LOSS_ON_DERIVATIVES_ARISING_DURING_PERIOD_TAX": {
+    "description": "Amount of tax expense (benefit), before reclassification adjustments, related to increase (decrease) in accumulated gain (loss) from derivative instruments designated and qualifying as the effective portion of cash flow hedges and an entity's share of an equity investee's increase (decrease) in deferred hedging gain (loss).",
+    "category": "legal_and_compliance"
+  },
+  "OTHER_EMPLOYEE_RELATED_LIABILITIES_CURRENT": {
+    "description": "Amount of obligations incurred for employer-related costs classified as other, payable within one year or the normal operating cycle, if longer.",
+    "category": "labor_and_employment"
+  },
+  "OTHER_LIABILITIES_NONCURRENT": {
+    "description": "Amount of liabilities classified as other, due after one year or the normal operating cycle, if longer.",
+    "category": "operations"
+  },
+  "OTHER_NONCASH_INCOME_EXPENSE": {
+    "description": "Amount of income (expense) included in net income that results in no cash inflow (outflow), classified as other.",
+    "category": "financial"
+  },
+  "OTHER_NONOPERATING_INCOME_EXPENSE": {
+    "description": "Amount of income (expense) related to nonoperating activities, classified as other.",
+    "category": "operations"
+  },
+  "OTHER_RECEIVABLES_NET_CURRENT": {
+    "description": "Amount, after allowance, of receivables classified as other, due within one year or the operating cycle, if longer.",
+    "category": "operations"
+  },
+  "OTHER_SUNDRY_LIABILITIES_CURRENT": {
+    "description": "Obligations not otherwise itemized or categorized in the footnotes to the financial statements that are due within one year or operating cycle, if longer, from the balance sheet date.",
+    "category": "operations"
+  },
+  "OTHER_SUNDRY_LIABILITIES_NONCURRENT": {
+    "description": "Obligations not otherwise itemized or categorized in the footnotes to the financial statements that are expected to be paid after one year (or the normal operating cycle, if longer), from the balance sheet date.",
+    "category": "operations"
+  },
+  "PAYMENTS_FOR_PROCEEDS_FROM_TENANT_ALLOWANCE": {
+    "description": "Net cash outflow or inflow from monetary allowance granted by the landlord to a tenant to entice tenant to move into landlords building which will enable the tenant to prepare the leased premises for tenants occupancy.",
+    "category": "operations"
+  },
+  "PAYMENTS_FOR_REPURCHASE_OF_COMMON_STOCK": {
+    "description": "The cash outflow to reacquire common stock during the period.",
+    "category": "financial"
+  },
+  "PAYMENTS_FOR_REPURCHASE_OF_EQUITY": {
+    "description": "The cash outflow to reacquire common and preferred stock.",
+    "category": "financial"
+  },
+  "PAYMENTS_FOR_RESTRUCTURING": {
+    "description": "Amount of cash payments made as the result of exit or disposal activities. Excludes payments associated with a discontinued operation or an asset retirement obligation.",
+    "category": "labor_and_employment"
+  },
+  "PAYMENTS_OF_CAPITAL_DISTRIBUTION": {
+    "description": "Cash outflow to owners or shareholders, excluding ordinary dividends. Includes special dividends.",
+    "category": "financial"
+  },
+  "PAYMENTS_OF_FINANCING_COSTS": {
+    "description": "The cash outflow for loan and debt issuance costs.",
+    "category": "financial"
+  },
+  "PAYMENTS_OF_STOCK_ISSUANCE_COSTS": {
+    "description": "The cash outflow for cost incurred directly with the issuance of an equity security.",
+    "category": "financial"
+  },
+  "PAYMENTS_TO_ACQUIRE_BUSINESSES_NET_OF_CASH_ACQUIRED": {
+    "description": "The cash outflow associated with the acquisition of a business, net of the cash acquired from the purchase.",
+    "category": "financial"
+  },
+  "PAYMENTS_TO_ACQUIRE_INTANGIBLE_ASSETS": {
+    "description": "The cash outflow to acquire asset without physical form usually arising from contractual or other legal rights, excluding goodwill.",
+    "category": "legal_and_compliance"
+  },
+  "PAYMENTS_TO_ACQUIRE_LEASES_HELD_FOR_INVESTMENT": {
+    "description": "The cash outflow associated with purchasing leases held for investment purposes during an accounting period.",
+    "category": "operations"
+  },
+  "PAYMENTS_TO_ACQUIRE_PROPERTY_PLANT_AND_EQUIPMENT": {
+    "description": "The cash outflow associated with the acquisition of long-lived, physical assets that are used in the normal conduct of business to produce goods and services and not intended for resale; includes cash outflows to pay for construction of self-constructed assets.",
+    "category": "operations"
+  },
+  "PREFERRED_STOCK_PAR_OR_STATED_VALUE_PER_SHARE": {
+    "description": "Face amount or stated value per share of preferred stock nonredeemable or redeemable solely at the option of the issuer.",
+    "category": "financial"
+  },
+  "PREFERRED_STOCK_SHARES_AUTHORIZED": {
+    "description": "The maximum number of nonredeemable preferred shares (or preferred stock redeemable solely at the option of the issuer) permitted to be issued by an entity's charter and bylaws.",
+    "category": "financial"
+  },
+  "PREFERRED_STOCK_SHARES_ISSUED": {
+    "description": "Total number of nonredeemable preferred shares (or preferred stock redeemable solely at the option of the issuer) issued to shareholders (includes related preferred shares that were issued, repurchased, and remain in the treasury). May be all or portion of the number of preferred shares authorized. Excludes preferred shares that are classified as debt.",
+    "category": "financial"
+  },
+  "PREFERRED_STOCK_SHARES_OUTSTANDING": {
+    "description": "Aggregate share number for all nonredeemable preferred stock (or preferred stock redeemable solely at the option of the issuer) held by stockholders. Does not include preferred shares that have been repurchased.",
+    "category": "financial"
+  },
+  "PREFERRED_STOCK_VALUE": {
+    "description": "Aggregate par or stated value of issued nonredeemable preferred stock (or preferred stock redeemable solely at the option of the issuer). This item includes treasury stock repurchased by the entity. Note: elements for number of nonredeemable preferred shares, par value and other disclosure concepts are in another section within stockholders' equity.",
+    "category": "financial"
+  },
+  "PRE_OPENING_COSTS": {
+    "description": "Expenditures associated with opening new locations which are noncapital in nature and expensed as incurred.",
+    "category": "financial"
+  },
+  "PREPAID_EXPENSE_AND_OTHER_ASSETS_CURRENT": {
+    "description": "Amount of asset related to consideration paid in advance for costs that provide economic benefits in future periods, and amount of other assets that are expected to be realized or consumed within one year or the normal operating cycle, if longer.",
+    "category": "labor_and_employment"
+  },
+  "PREPAID_EXPENSE_CURRENT": {
+    "description": "Amount of asset related to consideration paid in advance for costs that provide economic benefits within a future period of one year or the normal operating cycle, if longer.",
+    "category": "labor_and_employment"
+  },
+  "PREPAID_RENT": {
+    "description": "Amount of asset related to consideration paid in advance for rent that provides economic benefits within a future period of one year or the normal operating cycle, if longer.",
+    "category": "labor_and_employment"
+  },
+  "PRESENT_VALUE_OF_FUTURE_MINIMUM_LEASE_PAYMENTS_SALE_LEASEBACK_TRANSACTIONS": {
+    "description": "Present value of minimum lease payments for sale-leaseback transactions accounted for using the deposit method or as a financing.",
+    "category": "operations"
+  },
+  "PROCEEDS_FROM_INCOME_TAX_REFUNDS": {
+    "description": "The amount of cash received during the period as refunds for the overpayment of taxes.",
+    "category": "legal_and_compliance"
+  },
+  "PROCEEDS_FROM_ISSUANCE_INITIAL_PUBLIC_OFFERING": {
+    "description": "The cash inflow associated with the amount received from entity's first offering of stock to the public.",
+    "category": "financial"
+  },
+  "PROCEEDS_FROM_ISSUANCE_OF_COMMON_STOCK": {
+    "description": "The cash inflow from the additional capital contribution to the entity.",
+    "category": "financial"
+  },
+  "PROCEEDS_FROM_ISSUANCE_OF_SECURED_DEBT": {
+    "description": "The cash inflow from amounts received from issuance of long-term debt that is wholly or partially secured by collateral. Excludes proceeds from tax exempt secured debt.",
+    "category": "legal_and_compliance"
+  },
+  "PROCEEDS_FROM_ISSUANCE_OF_SUBORDINATED_LONG_TERM_DEBT": {
+    "description": "The cash inflow from a borrowing where a lender is placed in a lien position behind debt having a higher priority of repayment (senior) in liquidation of the entity's assets or underlying collateral.",
+    "category": "financial"
+  },
+  "PROCEEDS_FROM_LINES_OF_CREDIT": {
+    "description": "Amount of cash inflow from contractual arrangement with the lender, including but not limited to, letter of credit, standby letter of credit and revolving credit arrangements.",
+    "category": "financial"
+  },
+  "PROCEEDS_FROM_PAYMENTS_FOR_OTHER_FINANCING_ACTIVITIES": {
+    "description": "Amount of cash inflow (outflow) from financing activities classified as other.",
+    "category": "financial"
+  },
+  "PROCEEDS_FROM_REPAYMENTS_OF_DEBT": {
+    "description": "The net cash inflow or outflow in aggregate debt due to repayments and proceeds from additional borrowings.",
+    "category": "financial"
+  },
+  "PROCEEDS_FROM_REPAYMENTS_OF_SECURED_DEBT": {
+    "description": "Amount of cash inflow (outflow) from long-term debt wholly or partially secured by collateral. Excludes tax exempt secured debt.",
+    "category": "legal_and_compliance"
+  },
+  "PROCEEDS_FROM_SALE_OF_INTANGIBLE_ASSETS": {
+    "description": "The cash inflow from disposal of asset without physical form usually arising from contractual or other legal rights, excluding goodwill.",
+    "category": "legal_and_compliance"
+  },
+  "PROCEEDS_FROM_SALE_OF_PROPERTY_PLANT_AND_EQUIPMENT": {
+    "description": "The cash inflow from the sale of long-lived, physical assets that are used in the normal conduct of business to produce goods and services and not intended for resale.",
+    "category": "operations"
+  },
+  "PROCEEDS_FROM_STOCK_OPTIONS_EXERCISED": {
+    "description": "Amount of cash inflow from exercise of option under share-based payment arrangement.",
+    "category": "labor_and_employment"
+  },
+  "PROFIT_LOSS": {
+    "description": "The consolidated profit or loss for the period, net of income taxes, including the portion attributable to the noncontrolling interest.",
+    "category": "legal_and_compliance"
+  },
+  "PROPERTY_PLANT_AND_EQUIPMENT_GROSS": {
+    "description": "Amount before accumulated depreciation, depletion and amortization of physical assets used in the normal conduct of business and not intended for resale. Examples include, but are not limited to, land, buildings, machinery and equipment, office equipment, and furniture and fixtures.",
+    "category": "operations"
+  },
+  "PROPERTY_PLANT_AND_EQUIPMENT_NET": {
+    "description": "Amount after accumulated depreciation, depletion and amortization of physical assets used in the normal conduct of business to produce goods and services and not intended for resale. Examples include, but are not limited to, land, buildings, machinery and equipment, office equipment, and furniture and fixtures.",
+    "category": "operations"
+  },
+  "PURCHASE_OBLIGATION": {
+    "description": "Minimum amount of purchase arrangement in which the entity has agreed to expend funds to procure goods or services from a supplier.",
+    "category": "financial"
+  },
+  "PURCHASE_OBLIGATION_DUE_IN_NEXT_TWELVE_MONTHS": {
+    "description": "Amount of purchase arrangement to be paid in next fiscal year following current fiscal year. Includes, but is not limited to, recorded and unrecorded purchase obligations, long-term purchase commitment, and short-term purchase commitment. Excludes interim and annual periods when interim periods are reported from current statement of financial position date (rolling approach).",
+    "category": "financial"
+  },
+  "PURCHASE_OBLIGATION_DUE_IN_SECOND_YEAR": {
+    "description": "Amount of purchase arrangement to be paid in second fiscal year following current fiscal year. Includes, but is not limited to, recorded and unrecorded purchase obligations, long-term purchase commitment, and short-term purchase commitment. Excludes interim and annual periods when interim periods are reported from current statement of financial position date (rolling approach).",
+    "category": "financial"
+  },
+  "PURCHASE_OBLIGATION_DUE_IN_THIRD_YEAR": {
+    "description": "Amount of purchase arrangement to be paid in third fiscal year following current fiscal year. Includes, but is not limited to, recorded and unrecorded purchase obligations, long-term purchase commitment, and short-term purchase commitment. Excludes interim and annual periods when interim periods are reported from current statement of financial position date (rolling approach).",
+    "category": "financial"
+  },
+  "RECEIVABLES_NET_CURRENT": {
+    "description": "The total amount due to the entity within one year of the balance sheet date (or one operating cycle, if longer) from outside sources, including trade accounts receivable, notes and loans receivable, as well as any other types of receivables, net of allowances established for the purpose of reducing such receivables to an amount that approximates their net realizable value.",
+    "category": "operations"
+  },
+  "REIMBURSEMENT_REVENUE": {
+    "description": "Repayment received or receivable for expenses incurred on behalf of a client or customer, other than those reimbursements received by landlords from tenants.",
+    "category": "financial"
+  },
+  "RELATED_PARTY_TRANSACTION_AMOUNTS_OF_TRANSACTION": {
+    "description": "Amount of transactions with related party during the financial reporting period.",
+    "category": "financial"
+  },
+  "RELATED_PARTY_TRANSACTION_EXPENSES_FROM_TRANSACTIONS_WITH_RELATED_PARTY": {
+    "description": "Expenses recognized resulting from transactions (excluding transactions that are eliminated in consolidated or combined financial statements) with related party.",
+    "category": "financial"
+  },
+  "RELATED_PARTY_TRANSACTION_PURCHASES_FROM_RELATED_PARTY": {
+    "description": "Purchases during the period (excluding transactions that are eliminated in consolidated or combined financial statements) with related party.",
+    "category": "financial"
+  },
+  "REPAYMENTS_OF_DEBT": {
+    "description": "The cash outflow during the period from the repayment of aggregate short-term and long-term debt. Excludes payment of capital lease obligations.",
+    "category": "operations"
+  },
+  "REPAYMENTS_OF_DEBT_AND_CAPITAL_LEASE_OBLIGATIONS": {
+    "description": "Amount of cash outflow for short-term and long-term debt and lease obligation.",
+    "category": "operations"
+  },
+  "REPAYMENTS_OF_LINES_OF_CREDIT": {
+    "description": "Amount of cash outflow for payment of an obligation from a lender, including but not limited to, letter of credit, standby letter of credit and revolving credit arrangements.",
+    "category": "financial"
+  },
+  "REPAYMENTS_OF_SECURED_DEBT": {
+    "description": "The cash outflow to repay long-term debt that is wholly or partially secured by collateral. Excludes repayments of tax exempt secured debt.",
+    "category": "legal_and_compliance"
+  },
+  "REPAYMENTS_OF_SUBORDINATED_DEBT": {
+    "description": "The cash outflow from the repayment of long-term borrowing where a lender is placed in a lien position behind debt having a higher priority of repayment (senior) in case of liquidation of the entity's assets or underlying collateral.",
+    "category": "financial"
+  },
+  "RESTRICTED_CASH_CURRENT": {
+    "description": "Amount of cash restricted as to withdrawal or usage, classified as current. Cash includes, but is not limited to, currency on hand, demand deposits with banks or financial institutions, and other accounts with general characteristics of demand deposits.",
+    "category": "financial"
+  },
+  "RESTRUCTURING_CHARGES": {
+    "description": "Amount of expenses associated with exit or disposal activities pursuant to an authorized plan. Excludes expenses related to a discontinued operation or an asset retirement obligation.",
+    "category": "labor_and_employment"
+  },
+  "RESTRUCTURING_RESERVE": {
+    "description": "Carrying amount (including both current and noncurrent portions of the accrual) as of the balance sheet date pertaining to a specified type of cost associated with exit from or disposal of business activities or restructuring pursuant to a duly authorized plan.",
+    "category": "financial"
+  },
+  "RESTRUCTURING_RESERVE_ACCRUAL_ADJUSTMENT": {
+    "description": "Amount of (expense) reversal of expense related to a previously accrued restructuring cost liability. Excludes adjustments for costs incurred, costs settled, and foreign currency translation adjustments.",
+    "category": "financial"
+  },
+  "RESTRUCTURING_RESERVE_ACCRUAL_ADJUSTMENT1": {
+    "description": "Amount of expense (reversal of expense) which increases (decreases) the restructuring reserve from an adjustment to a previously accrued restructuring liability.",
+    "category": "financial"
+  },
+  "RESTRUCTURING_RESERVE_PERIOD_INCREASE_DECREASE": {
+    "description": "Amount of increase (decrease) in the accrual for restructuring costs.",
+    "category": "financial"
+  },
+  "RESTRUCTURING_RESERVE_TRANSLATION_ADJUSTMENT": {
+    "description": "Amount of foreign currency translation gain (loss) which decreases (increases) the restructuring reserve.",
+    "category": "financial"
+  },
+  "RETAIL_EXPENSES": {
+    "description": "This element represents the cost of generating revenues attributable to a hotel's, or cruise line's, owned retail store operations.",
+    "category": "operations"
+  },
+  "RETAINED_EARNINGS_ACCUMULATED_DEFICIT": {
+    "description": "The cumulative amount of the reporting entity's undistributed earnings or deficit.",
+    "category": "key_metrics"
+  },
+  "REVENUE_FROM_CONTRACT_WITH_CUSTOMER_EXCLUDING_ASSESSED_TAX": {
+    "description": "Amount, excluding tax collected from customer, of revenue from satisfaction of performance obligation by transferring promised good or service to customer. Tax collected from customer is tax assessed by governmental authority that is both imposed on and concurrent with specific revenue-producing transaction, including, but not limited to, sales, use, value added and excise.",
+    "category": "legal_and_compliance"
+  },
+  "REVENUE_RECOGNITION_GIFT_CARDS_BREAKAGE": {
+    "description": "The amount of breakage recognized related to unredeemed gift cards. Breakage occurs when a customer pays in advance of vendor performance and does not demand full performance for various reasons.",
+    "category": "key_metrics"
+  },
+  "RIGHT_OF_USE_ASSET_OBTAINED_IN_EXCHANGE_FOR_FINANCE_LEASE_LIABILITY": {
+    "description": "Amount of increase in right-of-use asset obtained in exchange for finance lease liability.",
+    "category": "operations"
+  },
+  "RIGHT_OF_USE_ASSET_OBTAINED_IN_EXCHANGE_FOR_OPERATING_LEASE_LIABILITY": {
+    "description": "Amount of increase in right-of-use asset obtained in exchange for operating lease liability.",
+    "category": "operations"
+  },
+  "SALES_REVENUE_GOODS_NET": {
+    "description": "Aggregate revenue during the period from the sale of goods in the normal course of business, after deducting returns, allowances and discounts.",
+    "category": "key_metrics"
+  },
+  "SELF_INSURANCE_RESERVE_CURRENT": {
+    "description": "Carrying amount of accrued known and estimated losses incurred as of the balance sheet date for which no insurance coverage exists, and for which a claim has been made or is probable of being asserted, typically arising from workmen's compensation-type of incidents and personal injury to nonemployees from accidents on the entity's property that are expected to be paid within one year (or the normal operating cycle, if longer).",
+    "category": "labor_and_employment"
+  },
+  "SELF_INSURANCE_RESERVE_NONCURRENT": {
+    "description": "Carrying amount of accrued known and estimated losses incurred as of the balance sheet date for which no insurance coverage exists, and for which a claim has been made or is probable of being asserted, typically arising from workmen's compensation-type of incidents and personal injury to nonemployees from accidents on the entity's property that are expected to be paid after one year (or the normal operating cycle, if longer).",
+    "category": "labor_and_employment"
+  },
+  "SELLING_GENERAL_AND_ADMINISTRATIVE_EXPENSE": {
+    "description": "The aggregate total costs related to selling a firm's product and services, as well as all other general and administrative expenses. Direct selling expenses (for example, credit, warranty, and advertising) are expenses that can be directly linked to the sale of specific products. Indirect selling expenses are expenses that cannot be directly linked to the sale of specific products, for example telephone expenses, Internet, and postal charges. General and administrative expenses include salaries of non-sales personnel, rent, utilities, communication, etc.",
+    "category": "labor_and_employment"
+  },
+  "SHARE_BASED_COMPENSATION": {
+    "description": "Amount of noncash expense for share-based payment arrangement.",
+    "category": "labor_and_employment"
+  },
+  "SHARE_BASED_COMPENSATION_ARRANGEMENT_BY_SHARE_BASED_PAYMENT_AWARD_EQUITY_INSTRUMENTS_OTHER_THAN_OPTIONS_NONVESTED_NUMBER": {
+    "description": "The number of non-vested equity-based payment instruments, excluding stock (or unit) options, that validly exist and are outstanding as of the balance sheet date.",
+    "category": "labor_and_employment"
+  },
+  "SHARE_BASED_COMPENSATION_ARRANGEMENT_BY_SHARE_BASED_PAYMENT_AWARD_FAIR_VALUE_ASSUMPTIONS_EXPECTED_DIVIDEND_RATE": {
+    "description": "The estimated dividend rate (a percentage of the share price) to be paid (expected dividends) to holders of the underlying shares over the option's term.",
+    "category": "labor_and_employment"
+  },
+  "SHARE_BASED_COMPENSATION_ARRANGEMENT_BY_SHARE_BASED_PAYMENT_AWARD_FAIR_VALUE_ASSUMPTIONS_EXPECTED_VOLATILITY_RATE": {
+    "description": "The estimated measure of the percentage by which a share price is expected to fluctuate during a period. Volatility also may be defined as a probability-weighted measure of the dispersion of returns about the mean. The volatility of a share price is the standard deviation of the continuously compounded rates of return on the share over a specified period. That is the same as the standard deviation of the differences in the natural logarithms of the stock prices plus dividends, if any, over the period.",
+    "category": "labor_and_employment"
+  },
+  "SHARE_BASED_COMPENSATION_ARRANGEMENT_BY_SHARE_BASED_PAYMENT_AWARD_FAIR_VALUE_ASSUMPTIONS_EXPECTED_VOLATILITY_RATE_MAXIMUM": {
+    "description": "The estimated measure of the maximum percentage by which a share price is expected to fluctuate during a period. Volatility also may be defined as a probability-weighted measure of the dispersion of returns about the mean. The volatility of a share price is the standard deviation of the continuously compounded rates of return on the share over a specified period. That is the same as the standard deviation of the differences in the natural logarithms of the stock prices plus dividends, if any, over the period.",
+    "category": "labor_and_employment"
+  },
+  "SHARE_BASED_COMPENSATION_ARRANGEMENT_BY_SHARE_BASED_PAYMENT_AWARD_FAIR_VALUE_ASSUMPTIONS_EXPECTED_VOLATILITY_RATE_MINIMUM": {
+    "description": "The estimated measure of the minimum percentage by which a share price is expected to fluctuate during a period. Volatility also may be defined as a probability-weighted measure of the dispersion of returns about the mean. The volatility of a share price is the standard deviation of the continuously compounded rates of return on the share over a specified period. That is the same as the standard deviation of the differences in the natural logarithms of the stock prices plus dividends, if any, over the period.",
+    "category": "labor_and_employment"
+  },
+  "SHARE_BASED_COMPENSATION_ARRANGEMENT_BY_SHARE_BASED_PAYMENT_AWARD_FAIR_VALUE_ASSUMPTIONS_RISK_FREE_INTEREST_RATE": {
+    "description": "The risk-free interest rate assumption that is used in valuing an option on its own shares.",
+    "category": "labor_and_employment"
+  },
+  "SHARE_BASED_COMPENSATION_ARRANGEMENT_BY_SHARE_BASED_PAYMENT_AWARD_FAIR_VALUE_ASSUMPTIONS_RISK_FREE_INTEREST_RATE_MAXIMUM": {
+    "description": "The maximum risk-free interest rate assumption that is used in valuing an option on its own shares.",
+    "category": "labor_and_employment"
+  },
+  "SHARE_BASED_COMPENSATION_ARRANGEMENT_BY_SHARE_BASED_PAYMENT_AWARD_FAIR_VALUE_ASSUMPTIONS_RISK_FREE_INTEREST_RATE_MINIMUM": {
+    "description": "The minimum risk-free interest rate assumption that is used in valuing an option on its own shares.",
+    "category": "labor_and_employment"
+  },
+  "SHARE_BASED_COMPENSATION_ARRANGEMENT_BY_SHARE_BASED_PAYMENT_AWARD_NUMBER_OF_SHARES_AUTHORIZED": {
+    "description": "Number of shares authorized for issuance under share-based payment arrangement.",
+    "category": "labor_and_employment"
+  },
+  "SHARE_BASED_COMPENSATION_ARRANGEMENT_BY_SHARE_BASED_PAYMENT_AWARD_NUMBER_OF_SHARES_AVAILABLE_FOR_GRANT": {
+    "description": "The difference between the maximum number of shares (or other type of equity) authorized for issuance under the plan (including the effects of amendments and adjustments), and the sum of: 1) the number of shares (or other type of equity) already issued upon exercise of options or other equity-based awards under the plan; and 2) shares (or other type of equity) reserved for issuance on granting of outstanding awards, net of cancellations and forfeitures, if applicable.",
+    "category": "labor_and_employment"
+  },
+  "SHARE_BASED_COMPENSATION_ARRANGEMENT_BY_SHARE_BASED_PAYMENT_AWARD_OPTIONS_EXERCISABLE_NUMBER": {
+    "description": "The number of shares into which fully or partially vested stock options outstanding as of the balance sheet date can be currently converted under the option plan.",
+    "category": "labor_and_employment"
+  },
+  "SHARE_BASED_COMPENSATION_ARRANGEMENT_BY_SHARE_BASED_PAYMENT_AWARD_OPTIONS_EXERCISABLE_WEIGHTED_AVERAGE_EXERCISE_PRICE": {
+    "description": "The weighted-average price as of the balance sheet date at which grantees can acquire the shares reserved for issuance on vested portions of options outstanding and currently exercisable under the stock option plan.",
+    "category": "labor_and_employment"
+  },
+  "SHARE_BASED_COMPENSATION_ARRANGEMENT_BY_SHARE_BASED_PAYMENT_AWARD_OPTIONS_EXERCISES_IN_PERIOD_TOTAL_INTRINSIC_VALUE": {
+    "description": "Amount of accumulated difference between fair value of underlying shares on dates of exercise and exercise price on options exercised (or share units converted) into shares.",
+    "category": "labor_and_employment"
+  },
+  "SHARE_BASED_COMPENSATION_ARRANGEMENT_BY_SHARE_BASED_PAYMENT_AWARD_OPTIONS_FORFEITURES_IN_PERIOD": {
+    "description": "The number of shares under options that were cancelled during the reporting period as a result of occurrence of a terminating event specified in contractual agreements pertaining to the stock option plan.",
+    "category": "labor_and_employment"
+  },
+  "SHARE_BASED_COMPENSATION_ARRANGEMENT_BY_SHARE_BASED_PAYMENT_AWARD_OPTIONS_GRANTS_IN_PERIOD": {
+    "description": "Net number of share options (or share units) granted during the period.",
+    "category": "labor_and_employment"
+  },
+  "SHARE_BASED_COMPENSATION_ARRANGEMENT_BY_SHARE_BASED_PAYMENT_AWARD_OPTIONS_GRANTS_IN_PERIOD_GROSS": {
+    "description": "Gross number of share options (or share units) granted during the period.",
+    "category": "labor_and_employment"
+  },
+  "SHARE_BASED_COMPENSATION_ARRANGEMENT_BY_SHARE_BASED_PAYMENT_AWARD_OPTIONS_GRANTS_IN_PERIOD_WEIGHTED_AVERAGE_GRANT_DATE_FAIR_VALUE": {
+    "description": "The weighted average grant-date fair value of options granted during the reporting period as calculated by applying the disclosed option pricing methodology.",
+    "category": "labor_and_employment"
+  },
+  "SHARE_BASED_COMPENSATION_ARRANGEMENT_BY_SHARE_BASED_PAYMENT_AWARD_OPTIONS_OUTSTANDING_INTRINSIC_VALUE": {
+    "description": "Amount by which the current fair value of the underlying stock exceeds the exercise price of options outstanding.",
+    "category": "labor_and_employment"
+  },
+  "SHARE_BASED_COMPENSATION_ARRANGEMENT_BY_SHARE_BASED_PAYMENT_AWARD_OPTIONS_OUTSTANDING_NUMBER": {
+    "description": "Number of options outstanding, including both vested and non-vested options.",
+    "category": "labor_and_employment"
+  },
+  "SHARE_BASED_COMPENSATION_ARRANGEMENT_BY_SHARE_BASED_PAYMENT_AWARD_OPTIONS_OUTSTANDING_WEIGHTED_AVERAGE_EXERCISE_PRICE": {
+    "description": "Weighted average price at which grantees can acquire the shares reserved for issuance under the stock option plan.",
+    "category": "labor_and_employment"
+  },
+  "SHARE_BASED_COMPENSATION_ARRANGEMENT_BY_SHARE_BASED_PAYMENT_AWARD_OPTIONS_VESTED_AND_EXPECTED_TO_VEST_OUTSTANDING_AGGREGATE_INTRINSIC_VALUE": {
+    "description": "Amount by which current fair value of underlying stock exceeds exercise price of fully vested and expected to vest options outstanding. Includes, but is not limited to, unvested options for which requisite service period has not been rendered but that are expected to vest based on achievement of performance condition, if forfeitures are recognized when they occur.",
+    "category": "labor_and_employment"
+  },
+  "SHARE_BASED_COMPENSATION_ARRANGEMENT_BY_SHARE_BASED_PAYMENT_AWARD_OPTIONS_VESTED_AND_EXPECTED_TO_VEST_OUTSTANDING_NUMBER": {
+    "description": "Number of fully vested and expected to vest options outstanding that can be converted into shares under option plan. Includes, but is not limited to, unvested options for which requisite service period has not been rendered but that are expected to vest based on achievement of performance condition, if forfeitures are recognized when they occur.",
+    "category": "labor_and_employment"
+  },
+  "SHARE_BASED_COMPENSATION_ARRANGEMENT_BY_SHARE_BASED_PAYMENT_AWARD_OPTIONS_VESTED_AND_EXPECTED_TO_VEST_OUTSTANDING_WEIGHTED_AVERAGE_EXERCISE_PRICE": {
+    "description": "Weighted-average exercise price, at which grantee can acquire shares reserved for issuance, for fully vested and expected to vest options outstanding. Includes, but is not limited to, unvested options for which requisite service period has not been rendered but that are expected to vest based on achievement of performance condition, if forfeitures are recognized when they occur.",
+    "category": "labor_and_employment"
+  },
+  "SHARE_BASED_COMPENSATION_ARRANGEMENT_BY_SHARE_BASED_PAYMENT_AWARD_SHARES_ISSUED_IN_PERIOD": {
+    "description": "Number of shares issued under share-based payment arrangement.",
+    "category": "labor_and_employment"
+  },
+  "SHARE_BASED_COMPENSATION_ARRANGEMENTS_BY_SHARE_BASED_PAYMENT_AWARD_OPTIONS_EXERCISES_IN_PERIOD_WEIGHTED_AVERAGE_EXERCISE_PRICE": {
+    "description": "Weighted average price at which option holders acquired shares when converting their stock options into shares.",
+    "category": "labor_and_employment"
+  },
+  "SHARE_BASED_COMPENSATION_ARRANGEMENTS_BY_SHARE_BASED_PAYMENT_AWARD_OPTIONS_FORFEITURES_IN_PERIOD_WEIGHTED_AVERAGE_EXERCISE_PRICE": {
+    "description": "Weighted average price at which grantees could have acquired the underlying shares with respect to stock options that were terminated.",
+    "category": "labor_and_employment"
+  },
+  "SHARE_BASED_COMPENSATION_ARRANGEMENTS_BY_SHARE_BASED_PAYMENT_AWARD_OPTIONS_GRANTS_IN_PERIOD_WEIGHTED_AVERAGE_EXERCISE_PRICE": {
+    "description": "Weighted average per share amount at which grantees can acquire shares of common stock by exercise of options.",
+    "category": "labor_and_employment"
+  },
+  "SHAREBASED_COMPENSATION_ARRANGEMENT_BY_SHAREBASED_PAYMENT_AWARD_OPTIONS_EXERCISABLE_INTRINSIC_VALUE1": {
+    "description": "Amount of difference between fair value of the underlying shares reserved for issuance and exercise price of vested portions of options outstanding and currently exercisable.",
+    "category": "labor_and_employment"
+  },
+  "SHAREBASED_COMPENSATION_ARRANGEMENT_BY_SHAREBASED_PAYMENT_AWARD_OPTIONS_NONVESTED_NUMBER_OF_SHARES": {
+    "description": "Number of non-vested options outstanding.",
+    "category": "labor_and_employment"
+  },
+  "SHAREBASED_COMPENSATION_ARRANGEMENT_BY_SHAREBASED_PAYMENT_AWARD_OPTIONS_NONVESTED_WEIGHTED_AVERAGE_GRANT_DATE_FAIR_VALUE": {
+    "description": "Weighted average grant-date fair value of non-vested options outstanding.",
+    "category": "labor_and_employment"
+  },
+  "SHARES_ISSUED_PRICE_PER_SHARE": {
+    "description": "Per share or per unit amount of equity securities issued.",
+    "category": "financial"
+  },
+  "SIGNIFICANT_CHANGE_IN_UNRECOGNIZED_TAX_BENEFITS_IS_REASONABLY_POSSIBLE_ESTIMATED_RANGE_OF_CHANGE_UPPER_BOUND": {
+    "description": "Amount of (increase) decrease reasonably possible in the estimated upper bound of the unrecognized tax benefit for a tax position taken or expected to be taken.",
+    "category": "legal_and_compliance"
+  },
+  "STATE_AND_LOCAL_INCOME_TAX_EXPENSE_BENEFIT_CONTINUING_operations": {
+    "description": "Amount of state and local current and deferred income tax expense (benefit) attributable to continuing operations.",
+    "category": "legal_and_compliance"
+  },
+  "STOCKHOLDERS_EQUITY": {
+    "description": "Total of all stockholders' equity (deficit) items, net of receivables from officers, directors, owners, and affiliates of the entity which are attributable to the parent. The amount of the economic entity's stockholders' equity attributable to the parent excludes the amount of stockholders' equity which is allocable to that ownership interest in subsidiary equity which is not attributable to the parent (noncontrolling interest, minority interest). This excludes temporary equity and is sometimes called permanent equity.",
+    "category": "financial"
+  },
+  "STOCK_ISSUED_DURING_PERIOD_SHARES_NEW_ISSUES": {
+    "description": "Number of new stock issued during the period.",
+    "category": "financial"
+  },
+  "STOCK_ISSUED_DURING_PERIOD_SHARES_OTHER": {
+    "description": "Number of shares of stock issued attributable to transactions classified as other.",
+    "category": "financial"
+  },
+  "STOCK_ISSUED_DURING_PERIOD_SHARES_STOCK_OPTIONS_EXERCISED": {
+    "description": "Number of share options (or share units) exercised during the current period.",
+    "category": "financial"
+  },
+  "STOCK_ISSUED_DURING_PERIOD_VALUE_ACQUISITIONS": {
+    "description": "Value of stock issued pursuant to acquisitions during the period.",
+    "category": "financial"
+  },
+  "STOCK_ISSUED_DURING_PERIOD_VALUE_NEW_ISSUES": {
+    "description": "Equity impact of the value of new stock issued during the period. Includes shares issued in an initial public offering or a secondary public offering.",
+    "category": "financial"
+  },
+  "STOCK_ISSUED_DURING_PERIOD_VALUE_SHARE_BASED_COMPENSATION": {
+    "description": "Value, after forfeiture, of shares issued under share-based payment arrangement. Excludes employee stock ownership plan (ESOP).",
+    "category": "labor_and_employment"
+  },
+  "STOCK_ISSUED_DURING_PERIOD_VALUE_STOCK_OPTIONS_EXERCISED": {
+    "description": "Value of stock issued as a result of the exercise of stock options.",
+    "category": "labor_and_employment"
+  },
+  "STOCK_REPURCHASED_AND_RETIRED_DURING_PERIOD_SHARES": {
+    "description": "Number of shares that have been repurchased and retired during the period.",
+    "category": "financial"
+  },
+  "STOCK_REPURCHASED_AND_RETIRED_DURING_PERIOD_VALUE": {
+    "description": "Equity impact of the value of stock that has been repurchased and retired during the period. The excess of the purchase price over par value can be charged against retained earnings (once the excess is fully allocated to additional paid in capital).",
+    "category": "key_metrics"
+  },
+  "STOCK_REPURCHASED_DURING_PERIOD_SHARES": {
+    "description": "Number of shares that have been repurchased during the period and have not been retired and are not held in treasury. Some state laws may govern the circumstances under which an entity may acquire its own stock and prescribe the accounting treatment therefore. This element is used when state law does not recognize treasury stock.",
+    "category": "financial"
+  },
+  "STOCK_REPURCHASED_DURING_PERIOD_VALUE": {
+    "description": "Equity impact of the value of stock that has been repurchased during the period and has not been retired and is not held in treasury. Some state laws may mandate the circumstances under which an entity may acquire its own stock and prescribe the accounting treatment therefore. This element is used when state law does not recognize treasury stock.",
+    "category": "financial"
+  },
+  "STOCK_REPURCHASE_PROGRAM_AUTHORIZED_AMOUNT1": {
+    "description": "Amount of stock repurchase plan authorized.",
+    "category": "financial"
+  },
+  "STOCK_REPURCHASE_PROGRAM_NUMBER_OF_SHARES_AUTHORIZED_TO_BE_REPURCHASED": {
+    "description": "The number of shares authorized to be repurchased by an entity's Board of Directors under a stock repurchase plan.",
+    "category": "financial"
+  },
+  "TAX_ADJUSTMENTS_SETTLEMENTS_AND_UNUSUAL_PROVISIONS": {
+    "description": "Amount of increase (decrease) to previously recorded tax expense. Includes, but is not limited to, significant settlements of income tax disputes, and unusual tax positions or infrequent actions taken by the entity, including tax assessment reversal, and IRS tax settlement.",
+    "category": "legal_and_compliance"
+  },
+  "TAXES_PAYABLE_CURRENT": {
+    "description": "Carrying value as of the balance sheet date of obligations incurred and payable for statutory income, sales, use, payroll, excise, real, property and other taxes. Used to reflect the current portion of the liabilities (due within one year or within the normal operating cycle if longer).",
+    "category": "legal_and_compliance"
+  },
+  "UNRECOGNIZED_TAX_BENEFITS": {
+    "description": "Amount of unrecognized tax benefits.",
+    "category": "legal_and_compliance"
+  },
+  "UNRECOGNIZED_TAX_BENEFITS_DECREASES_RESULTING_FROM_PRIOR_PERIOD_TAX_POSITIONS": {
+    "description": "Amount of decrease in unrecognized tax benefits resulting from tax positions taken in prior period tax returns.",
+    "category": "legal_and_compliance"
+  },
+  "UNRECOGNIZED_TAX_BENEFITS_INCREASES_RESULTING_FROM_CURRENT_PERIOD_TAX_POSITIONS": {
+    "description": "Amount of increase in unrecognized tax benefits resulting from tax positions that have been or will be taken in current period tax return.",
+    "category": "legal_and_compliance"
+  },
+  "UNRECOGNIZED_TAX_BENEFITS_INCREASES_RESULTING_FROM_PRIOR_PERIOD_TAX_POSITIONS": {
+    "description": "Amount of increase in unrecognized tax benefits resulting from tax positions taken in prior period tax returns.",
+    "category": "legal_and_compliance"
+  },
+  "UNRECOGNIZED_TAX_BENEFITS_THAT_WOULD_IMPACT_EFFECTIVE_TAX_RATE": {
+    "description": "The total amount of unrecognized tax benefits that, if recognized, would affect the effective tax rate.",
+    "category": "legal_and_compliance"
+  },
+  "WEIGHTED_AVERAGE_NUMBER_DILUTED_SHARES_OUTSTANDING_ADJUSTMENT": {
+    "description": "The sum of dilutive potential common shares or units used in the calculation of the diluted per-share or per-unit computation.",
+    "category": "financial"
+  },
+  "WEIGHTED_AVERAGE_NUMBER_OF_DILUTED_SHARES_OUTSTANDING": {
+    "description": "The average number of shares or units issued and outstanding that are used in calculating diluted EPS or earnings per unit (EPU), determined based on the timing of issuance of shares or units in the period.",
+    "category": "key_metrics"
+  },
+  "WEIGHTED_AVERAGE_NUMBER_OF_SHARES_OUTSTANDING_BASIC": {
+    "description": "Number of [basic] shares or units, after adjustment for contingently issuable shares or units and other shares or units not deemed outstanding, determined by relating the portion of time within a reporting period that common shares or units have been outstanding to the total time in that period.",
+    "category": "financial"
+  },
+  "ASSET_RETIREMENT_OBLIGATION_CURRENT": {
+    "description": "Current portion of the carrying amount of a liability for an asset retirement obligation. An asset retirement obligation is a legal obligation associated with the disposal or retirement of a tangible long-lived asset that results from the acquisition, construction or development, or the normal operations of a long-lived asset, except for certain obligations of lessees.",
+    "category": "legal_and_compliance"
+  },
+  "INDEFINITE_LIVED_INTANGIBLE_ASSETS_EXCLUDING_GOODWILL": {
+    "description": "Amount of assets, excluding financial assets and goodwill, lacking physical substance and having a projected indefinite period of benefit.",
+    "category": "labor_and_employment"
+  },
+  "OTHER_COMPREHENSIVE_INCOME_LOSS_CASH_FLOW_HEDGE_GAIN_LOSS_BEFORE_RECLASSIFICATION_AFTER_TAX": {
+    "description": "Amount, after tax and before reclassification, of gain (loss) from derivative instrument designated and qualifying as cash flow hedge included in assessment of hedge effectiveness.",
+    "category": "legal_and_compliance"
+  },
+  "OTHER_COMPREHENSIVE_INCOME_LOSS_CASH_FLOW_HEDGE_GAIN_LOSS_RECLASSIFICATION_AFTER_TAX": {
+    "description": "Amount, after tax, of reclassification of gain (loss) from accumulated other comprehensive income (AOCI) for derivative instrument designated and qualifying as cash flow hedge included in assessment of hedge effectiveness.",
+    "category": "legal_and_compliance"
+  },
+  "OTHER_COMPREHENSIVE_INCOME_LOSS_CASH_FLOW_HEDGE_GAIN_LOSS_RECLASSIFICATION_TAX": {
+    "description": "Amount of tax expense (benefit) for reclassification of gain (loss) from accumulated other comprehensive income (AOCI) for derivative instrument designated and qualifying as cash flow hedge included in assessment of hedge effectiveness.",
+    "category": "legal_and_compliance"
+  },
+  "OPERATING_LEASE_RIGHT_OF_USE_ASSET_AMORTIZATION_EXPENSE": {
+    "description": "Amount of amortization expense for right-of-use asset from operating lease.",
+    "category": "operations"
+  },
+  "STOCK_ISSUED_DURING_PERIOD_SHARES_ACQUISITIONS": {
+    "description": "Number of shares of stock issued during the period pursuant to acquisitions.",
+    "category": "financial"
+  },
+  "DERIVATIVE_GAIN_LOSS_ON_DERIVATIVE_NET": {
+    "description": "Amount of increase (decrease) in the fair value of derivatives recognized in the income statement.",
+    "category": "key_metrics"
+  },
+  "CONTRACT_WITH_CUSTOMER_LIABILITY_REVENUE_RECOGNIZED": {
+    "description": "Amount of revenue recognized that was previously included in balance of obligation to transfer good or service to customer for which consideration from customer has been received or is due.",
+    "category": "key_metrics"
+  },
+  "DEFERRED_TAX_ASSETS_NET": {
+    "description": "Amount after allocation of valuation allowances of deferred tax asset attributable to deductible temporary differences and carryforwards.",
+    "category": "legal_and_compliance"
+  },
+  "DEFERRED_TAX_ASSETS_VALUATION_ALLOWANCE": {
+    "description": "Amount of deferred tax assets for which it is more likely than not that a tax benefit will not be realized.",
+    "category": "legal_and_compliance"
+  },
+  "DERIVATIVE_LIABILITIES": {
+    "description": "Fair value, after the effects of master netting arrangements, of a financial liability or contract with one or more underlyings, notional amount or payment provision or both, and the contract can be net settled by means outside the contract or delivery of an asset. Includes liabilities not subject to a master netting arrangement and not elected to be offset.",
+    "category": "financial"
+  },
+  "INCREASE_DECREASE_IN_OPERATING_LEASE_LIABILITY": {
+    "description": "",
+    "category": "operations"
+  },
+  "INCREASE_DECREASE_IN_SELF_INSURANCE_RESERVE": {
+    "description": "The increase (decrease) during the period in the carrying amount of accrued known and estimated losses incurred for which no insurance coverage exists, and for which a claim has been made or is probable of being asserted, typically arising from workmen's' compensation-type of incidents and personal injury to nonemployees from accidents on the entity's property.",
+    "category": "labor_and_employment"
+  },
+  "INDEFINITE_LIVED_INTANGIBLE_ASSETS_TRANSLATION_AND_PURCHASE_ACCOUNTING_ADJUSTMENTS": {
+    "description": "Amount of increase (decrease) of assets, excluding financial assets and goodwill, lacking physical substance and having a projected indefinite period of benefit, from foreign currency translation and purchase accounting adjustments.",
+    "category": "labor_and_employment"
+  },
+  "SELF_INSURANCE_RESERVE": {
+    "description": "Carrying amount (including both current and noncurrent portions) of accrued known and estimated losses incurred as of the balance sheet date for which no insurance coverage exists, and for which a claim has been made or is probable of being asserted, typically arising from workmen's compensation-type of incidents and personal injury to nonemployees from accidents on the entity's property.",
+    "category": "labor_and_employment"
+  },
+  "UNRECOGNIZED_TAX_BENEFITS_DECREASES_RESULTING_FROM_SETTLEMENTS_WITH_TAXING_AUTHORITIES": {
+    "description": "Amount of decrease in unrecognized tax benefits resulting from settlements with taxing authorities.",
+    "category": "legal_and_compliance"
+  },
+  "LINE_OF_CREDIT_FACILITY_INCREASE_DECREASE_FOR_PERIOD_NET": {
+    "description": "Amount of increase (decrease) of the credit facility.",
+    "category": "operations"
+  },
+  "OTHER_ASSET_IMPAIRMENT_CHARGES": {
+    "description": "The charge against earnings resulting from the write down of long lived assets other than goodwill due to the difference between the carrying value and lower fair value.",
+    "category": "key_metrics"
+  },
+  "OTHER_DEPRECIATION_AND_AMORTIZATION": {
+    "description": "Amount of expense charged against earnings to allocate the cost of tangible and intangible assets over their remaining economic lives, classified as other.",
+    "category": "financial"
+  },
+  "SEVERANCE_COSTS1": {
+    "description": "Amount of expenses for special or contractual termination benefits provided to current employees involuntarily terminated under a benefit arrangement associated exit or disposal activities pursuant to an authorized plan. Excludes expenses related to one-time termination benefits, a discontinued operation or an asset retirement obligation.",
+    "category": "labor_and_employment"
+  },
+  "UNRECOGNIZED_TAX_BENEFITS_REDUCTIONS_RESULTING_FROM_LAPSE_OF_APPLICABLE_STATUTE_OF_LIMITATIONS": {
+    "description": "Amount of decrease in unrecognized tax benefits resulting from lapses of applicable statutes of limitations.",
+    "category": "legal_and_compliance"
+  },
+  "INCREASE_DECREASE_IN_ACCRUED_TAXES_PAYABLE": {
+    "description": "The increase (decrease) during the reporting period of all taxes owed but not paid, including income, property and other taxes.",
+    "category": "legal_and_compliance"
+  },
+  "RESTRUCTURING_RESERVE_ACCELERATED_DEPRECIATION": {
+    "description": "Amount of accelerated depreciation charged against earnings associated with exit from or disposal of business activities or restructuring plan.",
+    "category": "operations"
+  },
+  "INTEREST_INCOME_EXPENSE_NONOPERATING_NET": {
+    "description": "The net amount of nonoperating interest income (expense).",
+    "category": "operations"
+  }
+}

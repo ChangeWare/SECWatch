@@ -10,6 +10,7 @@ export default function CompanyContextBar(props: CompanyContextBarProps) {
     const navItems = [
         { label: 'Overview', path: 'overview' },
         { label: 'Filings', path: 'filings' },
+        { label: 'Concepts', path: 'concepts' },
         { label: 'Analysis', path: 'analysis' },
         { label: 'Alerts', path: 'alerts' }
     ];

@@ -3,11 +3,11 @@ using SECWatch.Domain.Features.Companies.Models;
 
 namespace SECWatch.Application.Features.Companies.DTOs;
 
-public record CompanyFinancialMetricDto
+public record CompanyConceptDto
 {
     public string Cik { get; init; }
     
-    public FinancialMetricType MetricType { get; init; }
+    public string ConceptType { get; init; }
     
     public decimal LastValue { get; init; }
     
@@ -15,7 +15,13 @@ public record CompanyFinancialMetricDto
     
     public DateTime LastReported { get; init; }
     
-    public required IReadOnlyList<MetricDataPoint> DataPoints { get; init; }
+    public string Category { get; init; }
+    
+    public string Description { get; init; }
+    
+    public bool IsCurrencyData { get; init; }
+    
+    public required IReadOnlyList<ConceptDataPoint> DataPoints { get; init; }
     
     public required IReadOnlyList<string> CurrencyTypes { get; init; }
 }

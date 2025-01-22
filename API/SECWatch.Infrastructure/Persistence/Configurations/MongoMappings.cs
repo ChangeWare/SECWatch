@@ -10,27 +10,34 @@ public static class MongoMappings
 {
     public static void RegisterMappings()
     {
-        if (!BsonClassMap.IsClassMapRegistered(typeof(CompanyFinancialMetric)))
+        if (!BsonClassMap.IsClassMapRegistered(typeof(CompanyConcept)))
         {
-            BsonClassMap.RegisterClassMap<CompanyFinancialMetric>(cm =>
+            BsonClassMap.RegisterClassMap<CompanyConcept>(cm =>
             {
                 cm.AutoMap();
                 cm.MapIdProperty(c => c.Id).SetSerializer(new StringSerializer(BsonType.ObjectId));
-                cm.MapMember(c => c.MetricType).SetSerializer(new EnumSerializer<FinancialMetricType>(BsonType.String));
             });
         }
 
-        if (!BsonClassMap.IsClassMapRegistered(typeof(MetricDataPoint)))
+        if (!BsonClassMap.IsClassMapRegistered(typeof(ConceptDataPoint)))
         {
-            BsonClassMap.RegisterClassMap<MetricDataPoint>(cm =>
+            BsonClassMap.RegisterClassMap<ConceptDataPoint>(cm =>
             {
                 cm.AutoMap();
             });
         }
 
-        if (!BsonClassMap.IsClassMapRegistered(typeof(FinancialMetricMetadata)))
+        if (!BsonClassMap.IsClassMapRegistered(typeof(CompanyConceptMetadata)))
         {
-            BsonClassMap.RegisterClassMap<FinancialMetricMetadata>(cm =>
+            BsonClassMap.RegisterClassMap<CompanyConceptMetadata>(cm =>
+            {
+                cm.AutoMap();
+            });
+        }
+        
+        if (!BsonClassMap.IsClassMapRegistered(typeof(CompanyConceptsMetadata)))
+        {
+            BsonClassMap.RegisterClassMap<CompanyConceptsMetadata>(cm =>
             {
                 cm.AutoMap();
             });

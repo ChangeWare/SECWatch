@@ -96,7 +96,7 @@ public static class DependencyInjection
         services.AddTransient<ISystemEventRepository, SystemEventRepository>();
         services.AddTransient<IUserRepository, UserRepository>();
         services.AddTransient<ICompanyRepository, CompanyRepository>();
-        services.AddTransient<ICompanyFinancialMetricsRepository, CompanyFinancialMetricsRepository>();
+        services.AddTransient<ICompanyConceptRepository, CompanyConceptRepository>();
         services.AddTransient<INoteRepository, NoteRepository>();
         services.AddTransient<ITrackedCompanyRepository, TrackedCompanyRepository>();
         

@@ -1,18 +1,8 @@
 import {CompanyFiling} from "@features/filings/types.ts";
 
-export interface CompanyDetailsResponse {
-    company: CompanyDetails;
-}
 
-export interface TrackedCompaniesResponse {
-    trackedCompanies: TrackedCompanyDetails[];
-}
 
-export interface CompanyFinancialMetricResponse {
-    metric: CompanyFinancialMetric;
-}
-
-export interface MetricDataPoint {
+export interface ConceptDataPoint {
     endDate: Date;
     value: number;
     fiscalYear: number;
@@ -20,14 +10,14 @@ export interface MetricDataPoint {
     formType: string;
     filingDate: Date;
     frame: string;
-    currencyType: string;
+    unitType: string;
 }
 
 export interface CurrencyGroupedData {
-    [currency: string]: ProcessedDataPoint[];
+    [currency: string]: ProcessedFinancialDataPoint[];
 }
 
-export interface ProcessedDataPoint {
+export interface ProcessedFinancialDataPoint {
     date: Date;
     fiscalYear: number;
     fiscalPeriod: string;
@@ -37,7 +27,7 @@ export interface ProcessedDataPoint {
     hasMultipleFilings: boolean;
     currencyType: string;
     details: {
-        underlyingData: MetricDataPoint[];
+        underlyingData: ConceptDataPoint[];
         valueRange?: {
             min: number;
             max: number;
@@ -50,21 +40,18 @@ export enum MetricType {
     AccountsPayable = 0,
 }
 
-
-export enum PeriodType {
-    Yearly = 0,
-    Quarterly = 1,
-}
-
-export interface CompanyFinancialMetric {
+export interface CompanyConcept {
     cik: string;
-    metricType: number;
     lastValue: number;
     lastUpdated: Date;
     lastReported: Date;
+    description: string;
+    category: string;
+    isCurrencyData: boolean;
 
-    currencyTypes: string[];
-    dataPoints: MetricDataPoint[];
+    unitTypes: string[];
+    conceptType: string;
+    dataPoints: ConceptDataPoint[];
 }
 
 export interface CompanyDetails {

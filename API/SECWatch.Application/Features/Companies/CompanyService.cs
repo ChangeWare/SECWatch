@@ -8,9 +8,10 @@ namespace SECWatch.Application.Features.Companies;
 
 public class CompanyService(
     ICompanyRepository companyRepository,
-    ICompanyFinancialMetricsRepository companyFinancialMetricsRepository,
+    ICompanyConceptRepository companyFinancialMetricsRepository,
     ITrackedCompanyRepository trackedCompanyRepository,
-    IMapper mapper
+    IMapper mapper,
+    IConceptCategoriesService categoriesService
     ) : ICompanyService
 {
     public async Task<Result<IEnumerable<CompanySearchResult>>> SearchCompaniesAsync(CompanySearchRequest req)
@@ -39,13 +40,40 @@ public class CompanyService(
         return Result.Ok(companyDetails);
     }
 
-    public async Task<Result<CompanyFinancialMetricDto>> GetCompanyFinancialMetricAsync(string cik, FinancialMetricType metricType)
+    public async Task<Result<IReadOnlyList<string>>> GetCompanyConceptTypesAsync(string cik)
     {
-        var metric = await companyFinancialMetricsRepository.GetCompanyFinancialMetricAsync(cik, metricType);
+        var conceptTypes = await companyFinancialMetricsRepository.GetCompanyConceptTypesAsync(cik);
         
-        var metroDto = mapper.Map<CompanyFinancialMetricDto>(metric);
+        return Result.Ok(conceptTypes);
+    }
+
+    public async Task<Result<CompanyConceptDto>> GetCompanyConceptAsync(string cik, string conceptType)
+    {
+        var concept = await companyFinancialMetricsRepository.GetCompanyConceptAsync(cik, conceptType);
+        
+        var metroDto = mapper.Map<CompanyConceptDto>(concept);
         
         return Result.Ok(metroDto);
+    }
+
+    public async Task<Result<IReadOnlyList<CompanyConceptDto>>> GetCompanyConceptsAsync(string cik)
+    {
+        var concepts = await companyFinancialMetricsRepository.GetCompanyConceptsAsync(cik);
+        
+        var conceptsDto = mapper.Map<IReadOnlyList<CompanyConceptDto>>(concepts);
+        
+        conceptsDto = conceptsDto.Select(dto =>
+        {
+            var categoryInfo = categoriesService.GetCategory(dto.ConceptType);
+            return dto with 
+            { 
+                Category = categoryInfo?.Category ?? "Misc",
+                Description = categoryInfo?.Description ?? "",
+                IsCurrencyData = categoryInfo?.IsCurrencyData ?? true
+            };
+        }).ToList();
+        
+        return Result.Ok(conceptsDto);
     }
 
     public async Task<Result<CompanyFilingHistoryDto>> GetCompanyFilingHistoryAsync(string cik)

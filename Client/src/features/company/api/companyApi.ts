@@ -1,9 +1,11 @@
 import { apiClient } from "@common/api/apiClient";
 import {
+    CompanyConceptResponse,
+    CompanyConceptsResponse,
+    CompanyConceptTypesResponse,
     CompanyDetailsResponse,
-    CompanyFinancialMetricResponse,
-    MetricType, TrackedCompaniesResponse
-} from "@features/company/types.ts";
+    TrackedCompaniesResponse
+} from "@features/company/api/types.ts";
 
 
 /**
@@ -17,9 +19,8 @@ export const companyApi = {
         const response = await apiClient.get<CompanyDetailsResponse>(`/companies/${companyId}/details/`);
         return response.data;
     },
-
-    getCompanyAccountsPayableByFY: async (companyId: string): Promise<CompanyFinancialMetricResponse> => {
-        const response = await apiClient.get<CompanyFinancialMetricResponse>(`/financials/companies/${companyId}/metrics/${MetricType.AccountsPayable}`);
+    getCompanyConcepts: async (companyId: string): Promise<CompanyConceptsResponse> => {
+        const response = await apiClient.get<CompanyConceptsResponse>(`/concepts/company/${companyId}`);
         return response.data;
     },
     postTrackCompany: async (companyId: string): Promise<CompanyDetailsResponse> => {

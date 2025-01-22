@@ -5,6 +5,7 @@ using SECWatch.Application.Features.Authentication.Services;
 using SECWatch.Application.Features.Companies;
 using SECWatch.Application.Features.Notes;
 using SECWatch.Application.Features.Users.Services;
+using SECWatch.Domain.Features.Companies;
 using SECWatch.Domain.Features.Users.Services;
 
 namespace SECWatch.Application;
@@ -15,8 +16,6 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddSingleton<IMetricMetadataFactory, MetricMetadataFactory>();
-        
         services.AddTransient<ISystemEventService, SystemEventService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IUserDomainService, UserDomainService>();
@@ -25,6 +24,7 @@ public static class DependencyInjection
         services.AddScoped<ICompanyService, CompanyService>();
         services.AddScoped<INoteService, NoteService>();
         services.AddScoped<ICompanyTrackingService, CompanyTrackingService>();
+        services.AddSingleton<IConceptCategoriesService, ConceptCategoryService>();
 
         return services;
     }
