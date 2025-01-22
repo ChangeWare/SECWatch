@@ -8,8 +8,9 @@ import {
     getChangeOverPriorYear, getChangePercentClassName,
     getPercentChangeOverPriorYear
 } from "@features/company/utils.tsx";
-import {useMemo} from "react";
+import {useMemo, useState} from "react";
 import {cn} from "@common/lib/utils.ts";
+import {toast} from "react-toastify";
 
 interface ConceptCardProps {
     concept: CompanyConcept;
@@ -19,6 +20,8 @@ function ConceptCard(props: ConceptCardProps) {
     const {
         concept
     } = props;
+
+    const [showInfo, setShowInfo] = useState(false);
 
     const formattedValue = useMemo(() => {
         if (concept.isCurrencyData) {
@@ -38,9 +41,7 @@ function ConceptCard(props: ConceptCardProps) {
 
     const formattedChangeValue = useMemo(() => {
 
-        let value = getChangeOverPriorYear(concept.dataPoints);
-
-        console.log(value);
+        let value = changeOverPriorYear;
 
         if (value == 0) return 'No change over prior year';
 
@@ -51,26 +52,38 @@ function ConceptCard(props: ConceptCardProps) {
             return `↓ ${concept.isCurrencyData ? formatCurrency(value) : value.toLocaleString()}  from prior year`;
         }
 
-    }, [concept]);
+    }, [changeOverPriorYear]);
+
+    const onInfoClick = () => {
+        navigator.clipboard.writeText(concept.description).then(() => {
+            toast.success('Description copied to clipboard');
+        });
+    }
 
     return (
         <Card variant="elevated">
             <CardContent className="p-6">
-                <div className="flex justify-between items-start">
-                    <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                            <h3 className="font-medium text-foreground">{formatConceptType(concept.conceptType)}</h3>
-                            <Button variant="foreground" size="icon">
-                                <Info className="h-4 w-4" />
-                            </Button>
-                        </div>
-                        <p className="text-sm text-secondary">
+                <div className="flex flex-row items-center gap-2">
+                    <h3 className="font-medium text-foreground">{formatConceptType(concept.conceptType)}</h3>
+                    <div
+                        className="relative "
+                    >
+                        <Info
+                            onMouseEnter={() => setShowInfo(true)}
+                            onMouseLeave={() => setShowInfo(false)}
+                            onClick={onInfoClick}
+                            className="h-4 w-4"
+                        />
+
+                        <p
+                            className={cn(
+                                "text-sm w-64 text-secondary absolute top-full left-0 mt-2 p-2 bg-surface rounded-lg border border-border shadow-lg",
+                                showInfo ? "block" : "hidden"
+                            )}
+                        >
                             {concept.description}
                         </p>
                     </div>
-                    <Button variant="foreground" size="icon">
-                        <Pin className="h-4 w-4" />
-                    </Button>
                 </div>
 
                 {/* Metric Preview */}

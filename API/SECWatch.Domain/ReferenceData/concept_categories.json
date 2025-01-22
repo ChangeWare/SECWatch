@@ -1077,7 +1077,7 @@
   },
   "NET_INCOME_LOSS": {
     "description": "The portion of profit or loss for the period, net of income taxes, which is attributable to the parent.",
-    "category": "legal_and_compliance"
+    "category": "financial"
   },
   "NONCASH_OR_PART_NONCASH_ACQUISITION_INVESTMENTS_ACQUIRED1": {
     "description": "\"The amount of investments that an Entity acquires in a noncash (or part noncash) acquisition. Noncash is defined as information about all investing and financing activities of an enterprise during a period that affect recognized assets or liabilities but that do not result in cash receipts or cash payments in the period. \"\"Part noncash\"\" refers to that portion of the transaction not resulting in cash receipts or cash payments in the period.\"",

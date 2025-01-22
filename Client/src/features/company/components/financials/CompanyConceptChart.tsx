@@ -1,25 +1,26 @@
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { Card, CardHeader, CardTitle, CardContent } from '@common/components/Card.tsx';
-import {MetricType, ProcessedDataPoint} from '../../types.ts';
-import {getMetricTypeDisplayName, processData} from "@features/company/utils.tsx";
+import {MetricType, ProcessedFinancialDataPoint} from '../../types.ts';
+import {getMetricTypeDisplayName} from "@features/company/utils.tsx";
 import FinancialMetricsChartTooltip from "@features/company/components/financials/FinancialMetricsChartTooltip.tsx";
 
-interface FinancialMetricsChartProps {
-    data: ProcessedDataPoint[];
+interface CompanyConceptChartProps {
+    data: ProcessedFinancialDataPoint[];
     metricType: MetricType;
     valueFormatter: (value: number) => string;
     dateFormatter?: (date: Date) => string;
-    handleDataPointSelected?: (processedDataPoint: ProcessedDataPoint) => void;
+    handleDataPointSelected?: (processedDataPoint: ProcessedFinancialDataPoint) => void;
 }
 
-const FinancialMetricsChart = ({
-                                   data,
-                                   metricType,
-                                   valueFormatter,
-                                   dateFormatter = (date: Date) => date.toLocaleDateString(),
-                                   handleDataPointSelected
-                               }: FinancialMetricsChartProps) => {
+function CompanyConceptChart(props: CompanyConceptChartProps) {
+    const {
+        data,
+        metricType,
+        valueFormatter,
+        dateFormatter = (date: Date) => date.toLocaleDateString(),
+        handleDataPointSelected
+    } = props;
 
     const onDataPointSelected = (index: number) => {
         handleDataPointSelected?.(data[index]);
@@ -111,4 +112,4 @@ const FinancialMetricsChart = ({
     );
 };
 
-export default FinancialMetricsChart;
+export default CompanyConceptChart;

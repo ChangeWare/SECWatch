@@ -24,6 +24,7 @@ public static class DependencyInjection
         services.AddScoped<ICompanyService, CompanyService>();
         services.AddScoped<INoteService, NoteService>();
         services.AddScoped<ICompanyTrackingService, CompanyTrackingService>();
+        services.AddScoped<ICompanyUserDashboardPreferencesService, CompanyUserDashboardPreferencesService>();
         services.AddSingleton<IConceptCategoriesService, ConceptCategoryService>();
 
         return services;

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, {useState, useMemo, useEffect} from 'react';
 import { Search, Pin, PinOff, Info } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@common/components/Card';
 import Button from '@common/components/Button';
@@ -52,6 +52,18 @@ const CompanyConceptsView = () => {
         return groups;
     }, [filteredConcepts]);
 
+    useEffect(() => {
+        if (searchTerm) {
+            const currentTabHasMatches = groupedConcepts[activeTab]?.length > 0;
+            if (!currentTabHasMatches) {
+                const firstTabWithMatches = categories.find(category => groupedConcepts[category.id]?.length > 0);
+                if (firstTabWithMatches) {
+                    setActiveTab(firstTabWithMatches.id);
+                }
+            }
+        }
+    }, [searchTerm, groupedConcepts, activeTab, categories]);
+
     // Count total matches
     const totalMatches = filteredConcepts.length;
 
@@ -59,15 +71,6 @@ const CompanyConceptsView = () => {
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setSearchTerm(value);
-
-        // If we have search results and they're all in a different category,
-        // automatically switch to that category
-        if (value && filteredConcepts.length > 0) {
-            const firstMatchCategory = filteredConcepts[0].category;
-            if (filteredConcepts.every(c => c.category === firstMatchCategory)) {
-                setActiveTab(firstMatchCategory);
-            }
-        }
     };
 
     return (
@@ -106,7 +109,7 @@ const CompanyConceptsView = () => {
             {/* Categories and Concepts */}
             <Card>
                 <CardContent className="p-6">
-                    <Tabs defaultValue={activeTab} onValueChange={setActiveTab}>
+                    <Tabs value={activeTab} onValueChange={setActiveTab}>
                         <TabsList className="w-full justify-start mb-6">
                             {categories.map(category => (
                                 <TabsTrigger

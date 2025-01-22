@@ -1,4 +1,4 @@
-import AccountsPayableSection from "@features/company/components/AccountsPayableSection.tsx";
+import AccountsPayableSection from "@features/company/components/PinnedCompanyConceptSection.tsx";
 import {useParams} from "react-router-dom";
 import useCompany from "@features/company/hooks/useCompany.tsx";
 import {useMemo, useState} from "react";
