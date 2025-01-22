@@ -1,6 +1,6 @@
 import {useQuery} from "@tanstack/react-query";
 import {companyApi} from "@features/company/api/companyApi.ts";
-import {TrackedCompaniesResponse} from "@features/company/types.ts";
+import {TrackedCompaniesResponse} from "@features/company/api/types.ts";
 import {useMemo} from "react";
 
 export const useTrackedCompanies = () => {

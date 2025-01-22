@@ -1,8 +1,8 @@
 import CompanyContextBar from "./components/CompanyContextBar.tsx";
-import {Outlet, useNavigate, useParams} from "react-router-dom";
+import {Outlet, useParams} from "react-router-dom";
 import useCompany from "./hooks/useCompany.tsx";
 
-export default function CompanyDashboardLayout() {
+export default function CompanyLayout() {
     const { companyId } = useParams();
 
     const { company } = useCompany(companyId);

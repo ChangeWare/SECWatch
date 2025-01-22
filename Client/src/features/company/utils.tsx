@@ -1,9 +1,4 @@
-import {CurrencyGroupedData, ConceptDataPoint, MetricType, ProcessedFinancialDataPoint} from "@features/company/types.ts";
-
-export function getMetricTypeDisplayName(metricType: number): string {
-    const metricTypeName = MetricType[metricType];
-    return metricTypeName ? metricTypeName.replace(/([a-z])([A-Z])/g, '$1 $2') : 'Unknown Metric Type';
-}
+import { ConceptDataPoint, GroupedConceptDataPoints } from "@features/company/types.ts";
 
 export function getChangeOverPriorYear(data: ConceptDataPoint[]): number {
     const mostRecent = data[0];
@@ -99,65 +94,94 @@ export function formatCurrency (value: number): string {
     }).format(value);
 }
 
+export function isValidCurrencyUnitType(unitType: string): boolean {
+    return ['USD', 'EUR', 'GBP', 'JPY', 'CNY'].includes(unitType);
+}
 
-export function processData(data: ConceptDataPoint[]): CurrencyGroupedData {
-    // First, group by currency type
-    const groupedByCurrency = data.reduce((acc, curr) => {
+export function sanitizeUnitType(unitType: string): string {
+    if (unitType === 'USD/SHARES') return 'USD';
+
+    return unitType;
+}
+
+export function groupByCurrency(data: GroupedConceptDataPoints[]): Record<string, GroupedConceptDataPoints[]> {
+    return data.reduce((acc, curr) => {
         if (!acc[curr.unitType]) {
             acc[curr.unitType] = [];
         }
         acc[curr.unitType].push(curr);
         return acc;
+    }, {} as Record<string, GroupedConceptDataPoints[]>);
+}
+
+export function downloadCSV (csvString: string, filename: string) {
+    const blob = new Blob([csvString], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+}
+
+export function convertConceptDataPointsToCSV (dataPoints: ConceptDataPoint[]): string {
+    const headers = Object.keys(dataPoints[0]).join(',') + '\n';
+    const rows = dataPoints.map(dataPoint =>
+        Object.values(dataPoint).map(value =>
+            typeof value === 'string' ? `"${value}"` : value
+        ).join(',')
+    ).join('\n');
+
+    return headers + rows;
+};
+
+
+export function processData(data: ConceptDataPoint[]): GroupedConceptDataPoints[] {
+    // Group by end date + fiscal period
+    const groupedByDate = data.reduce((acc, curr) => {
+        const dateStr = curr.endDate.toISOString() + curr.fiscalPeriod;
+        if (!acc[dateStr]) {
+            acc[dateStr] = [];
+        }
+        acc[dateStr].push(curr);
+        return acc;
     }, {} as Record<string, ConceptDataPoint[]>);
 
-    // Process each currency group separately
-    return Object.entries(groupedByCurrency).reduce((acc, [currency, currencyData]) => {
-        // Group by end date + fiscal period within each currency group
-        const groupedByDate = currencyData.reduce((acc, curr) => {
-            const dateStr = curr.endDate.toISOString() + curr.fiscalPeriod;
-            if (!acc[dateStr]) {
-                acc[dateStr] = [];
+    // Process each date group
+    return Object.entries(groupedByDate).map<GroupedConceptDataPoints>(([_, points]) => {
+        // Sort by filings date to get most recent (descending)
+        const sorted = [...points].sort((a, b) =>
+            b.filingDate.getTime() - a.filingDate.getTime()
+        );
+
+        const uniqueValues = new Set(points.map(p => p.value));
+        const hasDiscrepancy = uniqueValues.size > 1;
+        const hasMultipleFilings = points.length > 1;
+        const mostRecent = sorted[0];
+
+        // Calculate value range if there are discrepancies
+        const valueRange = hasDiscrepancy ? {
+            min: Math.min(...points.map(p => p.value)),
+            max: Math.max(...points.map(p => p.value)),
+            diff: Math.max(...points.map(p => p.value)) - Math.min(...points.map(p => p.value))
+        } : undefined;
+
+        return {
+            date: mostRecent.endDate,
+            fiscalYear: mostRecent.fiscalYear,
+            fiscalPeriod: mostRecent.fiscalPeriod,
+            fiscalLabel: formatFiscalPeriod(mostRecent),
+            unitType: mostRecent.unitType,
+            value: mostRecent.value,
+            hasDiscrepancy,
+            hasMultipleFilings,
+            details: {
+                underlyingData: points,
+                valueRange
             }
-            acc[dateStr].push(curr);
-            return acc;
-        }, {} as Record<string, ConceptDataPoint[]>);
-
-        // Process each date group within the currency group
-        const processedData = Object.entries(groupedByDate).map(([_, points]) => {
-            // Sort by filings date to get most recent (descending)
-            const sorted = [...points].sort((a, b) =>
-                b.filingDate.getTime() - a.filingDate.getTime()
-            );
-
-            const uniqueValues = new Set(points.map(p => p.value));
-            const hasDiscrepancy = uniqueValues.size > 1;
-            const hasMultipleFilings = points.length > 1;
-            const mostRecent = sorted[0];
-
-            // Calculate value range if there are discrepancies
-            const valueRange = hasDiscrepancy ? {
-                min: Math.min(...points.map(p => p.value)),
-                max: Math.max(...points.map(p => p.value)),
-                diff: Math.max(...points.map(p => p.value)) - Math.min(...points.map(p => p.value))
-            } : undefined;
-
-            return {
-                date: mostRecent.endDate,
-                fiscalYear: mostRecent.fiscalYear,
-                fiscalPeriod: mostRecent.fiscalPeriod,
-                fiscalLabel: formatFiscalPeriod(mostRecent),
-                currencyType: mostRecent.unitType,
-                value: mostRecent.value,
-                hasDiscrepancy,
-                hasMultipleFilings,
-                details: {
-                    underlyingData: points,
-                    valueRange
-                }
-            };
-        }).sort((a, b) => a.date.getTime() - b.date.getTime());
-
-        acc[currency] = processedData;
-        return acc;
-    }, {} as CurrencyGroupedData);
+        };
+    }).sort((a, b) =>
+        a.date.getTime() - b.date.getTime());
 }

@@ -1,39 +1,40 @@
-import React from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { Card, CardHeader, CardTitle, CardContent } from '@common/components/Card.tsx';
-import {MetricType, ProcessedFinancialDataPoint} from '../../types.ts';
-import {getMetricTypeDisplayName} from "@features/company/utils.tsx";
-import FinancialMetricsChartTooltip from "@features/company/components/financials/FinancialMetricsChartTooltip.tsx";
+import {GroupedConceptDataPoints} from '../../types.ts';
+import {useEffect} from "react";
+import CompanyConceptChartTooltip from "./CompanyConceptChartTooltipChartTooltip.tsx";
 
 interface CompanyConceptChartProps {
-    data: ProcessedFinancialDataPoint[];
-    metricType: MetricType;
+    data: GroupedConceptDataPoints[];
     valueFormatter: (value: number) => string;
     dateFormatter?: (date: Date) => string;
-    handleDataPointSelected?: (processedDataPoint: ProcessedFinancialDataPoint) => void;
+    handleDataPointSelected?: (processedDataPoint: GroupedConceptDataPoints) => void;
 }
 
 function CompanyConceptChart(props: CompanyConceptChartProps) {
     const {
         data,
-        metricType,
         valueFormatter,
         dateFormatter = (date: Date) => date.toLocaleDateString(),
-        handleDataPointSelected
+        handleDataPointSelected,
     } = props;
 
     const onDataPointSelected = (index: number) => {
         handleDataPointSelected?.(data[index]);
     }
 
+    useEffect(() => {
+        console.log(data);
+    }, [data]);
+
     return (
         <Card variant="subtle" className="w-full">
             <CardHeader>
-                <CardTitle>{getMetricTypeDisplayName(metricType)} Over Time</CardTitle>
+                <CardTitle>Time Chart</CardTitle>
             </CardHeader>
             <CardContent>
                 <div className="h-96">
-                    <ResponsiveContainer width="100%" height="100%">
+                    <ResponsiveContainer>
                         <LineChart
                             data={data}
                             margin={{ left: 15, right: 10, top: 5, bottom: 15 }}
@@ -74,7 +75,7 @@ function CompanyConceptChart(props: CompanyConceptChartProps) {
                                 tickFormatter={valueFormatter}
                                 stroke="hsl(var(--foreground))"
                             />
-                            <Tooltip content={<FinancialMetricsChartTooltip valueFormatter={valueFormatter} dateFormatter={dateFormatter} />} />
+                            <Tooltip content={<CompanyConceptChartTooltip valueFormatter={valueFormatter} dateFormatter={dateFormatter} />} />
                             <Line
                                 type="monotone"
                                 dataKey="value"

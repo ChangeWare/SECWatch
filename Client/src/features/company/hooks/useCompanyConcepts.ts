@@ -3,6 +3,7 @@ import { CompanyConceptsResponse} from "@features/company/api/types.ts";
 import {companyApi} from "@features/company/api/companyApi.ts";
 import {useMemo} from "react";
 import {CompanyConcept} from "@features/company/types.ts";
+import {sanitizeUnitType} from "@features/company/utils.tsx";
 
 
 const useCompanyConcepts = (companyId?: string) => {
@@ -23,7 +24,9 @@ const useCompanyConcepts = (companyId?: string) => {
                 ...point,
                 endDate: new Date(point.endDate),
                 filingDate: new Date(point.filingDate),
-            }))
+                unitType: sanitizeUnitType(point.unitType),
+            })),
+            lastUpdated: new Date(concept.lastUpdated),
         }));
 
 

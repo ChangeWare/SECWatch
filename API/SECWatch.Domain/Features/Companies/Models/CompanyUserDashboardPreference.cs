@@ -25,13 +25,27 @@ public class CompanyUserDashboardPreferences : AggregateRoot
         return userCompanyDashboardPreferences;
     }
     
-    public void AddPinnedConcept(string concept)
+    public bool AddPinnedConcept(string concept)
     {
         if (PinnedConcepts.Contains(concept))
         {
-            return;
+            return false;
         }
         
         PinnedConcepts.Add(concept);
+
+        return true;
+    }
+    
+    public bool RemovePinnedConcept(string concept)
+    {
+        if (!PinnedConcepts.Contains(concept))
+        {
+            return false;
+        }
+        
+        PinnedConcepts.Remove(concept);
+
+        return true;
     }
 }

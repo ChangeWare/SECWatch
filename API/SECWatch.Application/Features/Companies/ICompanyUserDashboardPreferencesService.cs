@@ -6,6 +6,8 @@ namespace SECWatch.Application.Features.Companies;
 public interface ICompanyUserDashboardPreferencesService
 {
     Task<Result<CompanyUserDashboardPreferencesDto>> AddConceptToDashboard(string cik, Guid userId, string conceptType);
+    
+    Task<Result<CompanyUserDashboardPreferencesDto>> RemoveConceptFromDashboard(string cik, Guid userId, string conceptType);
 
     Task<Result<CompanyUserDashboardPreferencesDto>> GetCompanyDashboardPreferencesForUser(string cik, Guid userId);
 }

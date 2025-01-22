@@ -2,7 +2,7 @@ import {useMutation} from "@tanstack/react-query";
 import {companyApi} from "@features/company/api/companyApi.ts";
 import queryClient from "@common/api/queryClient.ts";
 import {toast} from "react-toastify";
-import {CompanyDetailsResponse} from "@features/company/types.ts";
+import {CompanyDetailsResponse} from "@features/company/api/types.ts";
 
 const useCompanyTracking = () => {
     const trackCompanyMutation = useMutation({

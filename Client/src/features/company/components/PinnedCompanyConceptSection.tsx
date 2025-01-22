@@ -1,60 +1,52 @@
-import React, {useState, useEffect, useMemo} from 'react';
-import {TrendingUp, TrendingDown, TableIcon} from 'lucide-react';
+import React, {useState, useMemo, useEffect} from 'react';
+import {TrendingUp, TrendingDown, TableIcon, PinOff} from 'lucide-react';
 import {Card, CardContent, CardHeader, CardTitle} from "@common/components/Card.tsx";
-import {
-    CompanyConcept,
-    CurrencyGroupedData,
-    ConceptDataPoint,
-    MetricType,
-    ProcessedFinancialDataPoint
-} from "@features/company/types.ts";
+import { CompanyConcept, ConceptDataPoint, GroupedConceptDataPoints } from "@features/company/types.ts";
 import LoadingScreen from "@common/components/LoadingIndicator.tsx";
-import MetricDataTableModal from "@features/company/components/financials/FinancialMetricDataTableModal.tsx";
-import CompanyConceptChart from "@features/company/components/financials/CompanyConceptChart.tsx";
-import {formatConceptType, formatCurrency, getChangePercentClassName, processData} from "@features/company/utils.tsx";
+import CompanyConceptChart from "@features/company/components/chart/CompanyConceptChart.tsx";
+import {
+    formatConceptType,
+    formatCurrency, getChangeOverPriorYear,
+    getChangePercentClassName, getPercentChangeOverPriorYear,
+    groupByCurrency,
+    processData
+} from "@features/company/utils.tsx";
 import Button from "@common/components/Button.tsx";
+import CurrencyTypeSelector from "@features/company/components/chart/CurrencyTypeSelector.tsx";
+import CompanyConceptDataTableModal from '@features/company/components/chart/CompanyConceptDataTableModal.tsx';
 
 interface CompanyConceptContentProps {
     companyConcept: CompanyConcept;
-    selectedCurrencyType: string;
-    onDataPointSelected?: (dataPoint: ProcessedFinancialDataPoint) => void;
+    data: GroupedConceptDataPoints[];
+    onDataPointSelected?: (dataPoint: GroupedConceptDataPoints) => void;
 }
 
 function CompanyConceptContent(props: CompanyConceptContentProps) {
 
-    const { dataPoints: data } = props.companyConcept;
+    const {
+        companyConcept,
+        data
+    } = props;
 
-    const processedData = useMemo<CurrencyGroupedData>(() => {
-        return processData(data)
-    }, [data]);
 
     const currentPeriodYoYChange = useMemo(() => {
 
-        const calculateChange = (data: ConceptDataPoint[]) => {
-            if (data.length < 2) return { value: 0, percentage: 0 };
+        if (companyConcept.dataPoints?.length <= 0) return { value: 0, percentage: 0 };
 
-            const currentValue = data[data.length - 1].value;
+        const percentChange = getPercentChangeOverPriorYear(companyConcept.dataPoints);
+        const valueChange = getChangeOverPriorYear(companyConcept.dataPoints);
 
-            const previousValue = data.find((point) =>
-                (point.fiscalYear === data[data.length - 1].fiscalYear - 1) &&
-                (point.fiscalPeriod === data[data.length - 1].fiscalPeriod))?.value ?? 0;
-
-            const change = currentValue - previousValue;
-            const percentage = (change / previousValue) * 100;
-            return { value: change, percentage };
-        };
-
-        if (data?.length <= 0) return { value: 0, percentage: 0 };
-
-        return calculateChange(props.companyConcept.dataPoints);
+        return { value: valueChange, percentage: percentChange };
 
     }, [props.companyConcept]);
 
-    const handleDataPointSelected = (dataPoint: ProcessedFinancialDataPoint) => {
+    const handleDataPointSelected = (dataPoint: GroupedConceptDataPoints) => {
         props.onDataPointSelected?.(dataPoint);
     }
 
-    return (data?.length ?? 0) > 0 ? (
+    const valueFormatter = companyConcept.isCurrencyData ? formatCurrency : (value: number) => value.toLocaleString();
+
+    return (companyConcept.dataPoints?.length ?? 0) > 0 ? (
         <>
             {/* Key Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -62,7 +54,11 @@ function CompanyConceptContent(props: CompanyConceptContentProps) {
                     <CardContent className="pt-6">
                         <div className="text-sm text-primary-light">Current Amount</div>
                         <div className="text-2xl font-bold mt-2 text-white">
-                            {formatCurrency(props.companyConcept.lastValue)}
+                            {companyConcept.isCurrencyData ? (
+                                formatCurrency(props.companyConcept.lastValue)
+                            ) : (
+                                props.companyConcept.lastValue.toLocaleString()
+                            )}
                         </div>
                         <div className="flex items-center mt-2">
                             {currentPeriodYoYChange.percentage > 0 ? (
@@ -73,8 +69,9 @@ function CompanyConceptContent(props: CompanyConceptContentProps) {
                             <span className={`text-sm font-medium mr-1 ${
                                 currentPeriodYoYChange.percentage > 0 ? "text-metrics-stable" : "text-metrics-decline"
                             }`}>
-                  {currentPeriodYoYChange.percentage.toFixed(1)}%
-                </span><span className="text-sm text-secondary">vs previous year</span>
+                                {currentPeriodYoYChange.percentage.toFixed(1)}%
+                            </span>
+                            <span className="text-sm text-secondary">vs previous year</span>
                         </div>
                     </CardContent>
                 </Card>
@@ -83,7 +80,11 @@ function CompanyConceptContent(props: CompanyConceptContentProps) {
                     <CardContent className="pt-6">
                         <div className="text-sm text-primary-light">Year-over-Year Change</div>
                         <div className="text-2xl font-bold mt-2 text-foreground">
-                            {formatCurrency(Math.abs(currentPeriodYoYChange.value))}
+                            {companyConcept.isCurrencyData ? (
+                                formatCurrency(currentPeriodYoYChange.value)
+                            ) : (
+                                currentPeriodYoYChange.value.toLocaleString()
+                            )}
                         </div>
                         <div className="text-sm text-muted-foreground mt-2">
                             <a className={getChangePercentClassName(currentPeriodYoYChange.percentage)}>{currentPeriodYoYChange.value > 0 ? 'Increase' : 'Decrease'}</a> from previous year
@@ -94,9 +95,8 @@ function CompanyConceptContent(props: CompanyConceptContentProps) {
 
             {/* Chart */}
             <CompanyConceptChart
-                data={processedData[props.selectedCurrencyType]}
-                metricType={MetricType.AccountsPayable}
-                valueFormatter={formatCurrency}
+                data={data}
+                valueFormatter={valueFormatter}
                 handleDataPointSelected={handleDataPointSelected}
             />
 
@@ -107,51 +107,110 @@ function CompanyConceptContent(props: CompanyConceptContentProps) {
     ) : null;
 }
 
+interface DataGroupedByUnit {
+    [unitType: string]: GroupedConceptDataPoints[];
+}
+
 interface PinnedCompanyConceptSectionProps {
     companyConcept?: CompanyConcept;
-    selectedCurrencyType: string;
+    className?: string;
+    onUnpin: (concept: CompanyConcept) => void;
 }
 
 function PinnedCompanyConceptSection(props: PinnedCompanyConceptSectionProps) {
+    const {
+        companyConcept
+    } = props;
+
     const [ focusedDataPointDate, setFocusedDataPointDate] = useState<Date | undefined>();
-
     const [dataTableModalOpen, setDataTableModalOpen] = useState<boolean>(false);
+    const [selectedCurrency, setSelectedCurrency] = useState<string>('ALL');
 
-    const handleDataPointSelected = (dataPoint: ProcessedFinancialDataPoint) => {
+    const processedData = useMemo<DataGroupedByUnit>(() => {
+        if (!companyConcept) return {};
+
+        const data = processData(companyConcept.dataPoints);
+
+        // If underlying grouped data is currency data, group by currency
+        // otherwise, we'll just lump everything into a single group
+        if (companyConcept.isCurrencyData) {
+            return groupByCurrency(data);
+        } else {
+            return { ["ALL"]: data };
+        }
+
+    }, [companyConcept]);
+
+
+    const availableCurrencies = useMemo(() => {
+        return Object.keys(processedData);
+    }, [processedData]);
+
+    useEffect(() => {
+        if (companyConcept?.isCurrencyData) {
+            setSelectedCurrency(availableCurrencies[0]);
+        }
+
+    }, [companyConcept, availableCurrencies]);
+
+    const handleDataPointSelected = (dataPoint: GroupedConceptDataPoints) => {
         setFocusedDataPointDate(dataPoint.date);
         setDataTableModalOpen(true);
     }
 
+    const handleUnpinClick = () => {
+        props.onUnpin(props.companyConcept!);
+    }
+
     return (
-        <Card>
+        <Card
+            className={props.className}
+        >
             <LoadingScreen isLoading={props.companyConcept == null}>
                 <>
                     <CardHeader>
-                        <CardTitle>{formatConceptType(props.companyConcept!.conceptType)}</CardTitle>
-                        <p className="text-sm text-secondary mt-1">
-                            {props.companyConcept?.description}
-                        </p>
-                        <div>
-                            <Button
-                                variant="foreground"
-                                size="sm"
-                                onClick={() => setDataTableModalOpen(true)}
-                            >
-                                <TableIcon className="h-4 w-4 mr-2"/>
-                                View Data
-                            </Button>
-                            <MetricDataTableModal
-                                metric={props.companyConcept}
-                                formatValue={formatCurrency}
-                                initialFocusDate={focusedDataPointDate}
-                                isOpen={dataTableModalOpen}
-                                onClose={() => setDataTableModalOpen(false)}
-                            />
+                        <div className="flex flex-col">
+                            <div className="flex justify-between">
+                                <CardTitle>{formatConceptType(props.companyConcept!.conceptType)}</CardTitle>
+                                <Button onClick={handleUnpinClick} variant="danger">
+                                    <PinOff className="h-4 w-4"/>
+                                </Button>
+                            </div>
+                            <div>
+                                <p className="text-sm text-secondary mt-1">
+                                    {props.companyConcept?.description}
+                                </p>
+                            </div>
+                            <div className="flex mt-4 justify-between">
+                                <Button
+                                    variant="foreground"
+                                    size="sm"
+                                    onClick={() => setDataTableModalOpen(true)}
+                                >
+                                    <TableIcon className="h-4 w-4 mr-2"/>
+                                    View Data
+                                </Button>
+                                {props.companyConcept?.isCurrencyData && (
+                                    <CurrencyTypeSelector
+                                        availableCurrencies={availableCurrencies}
+                                        selectedCurrency={selectedCurrency}
+                                        onCurrencyChange={(currency) => setSelectedCurrency(currency)}
+                                    />
+                                )}
+                                <CompanyConceptDataTableModal
+                                    concept={props.companyConcept!}
+                                    formatValue={formatCurrency}
+                                    initialFocusDate={focusedDataPointDate}
+                                    isOpen={dataTableModalOpen}
+                                    onClose={() => setDataTableModalOpen(false)}
+                                />
+                            </div>
+
                         </div>
                     </CardHeader>
                     <CardContent className="p-6 space-y-6">
                         <CompanyConceptContent
-                            selectedCurrencyType={props.selectedCurrencyType}
+                            data={processedData[selectedCurrency]}
                             onDataPointSelected={handleDataPointSelected}
                             companyConcept={props.companyConcept!}
                         />

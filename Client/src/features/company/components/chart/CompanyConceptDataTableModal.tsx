@@ -4,14 +4,13 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@common/components/ui/dialog.tsx";
-import { TableIcon, ArrowUpDown, ChevronRight, ChevronDown } from 'lucide-react';
-import { CompanyFinancialMetric, MetricDataPoint } from "@features/company/types.ts";
-import Button from "@common/components/Button.tsx";
+import {ChevronRight, ChevronDown, TableIcon, DownloadIcon} from 'lucide-react';
+import { CompanyConcept, ConceptDataPoint } from "@features/company/types.ts";
 import {
-    getInvertedChangePercentClassName,
-    getMetricTypeDisplayName
+    convertConceptDataPointsToCSV, downloadCSV,
+    formatConceptType,
+    getInvertedChangePercentClassName
 } from "@features/company/utils.tsx";
 import {
     flexRender,
@@ -25,28 +24,37 @@ import {
     GroupingState,
     ExpandedState,
 } from '@tanstack/react-table';
+import Button from "@common/components/Button.tsx";
 
-interface FinancialMetricDataTableModalProps {
-    metric: CompanyFinancialMetric;
+interface CompanyConceptDataTableModalProps {
+    concept: CompanyConcept;
     formatValue: (value: number) => string;
     initialFocusDate?: Date;
     isOpen: boolean;
     onClose: () => void;
 }
 
-const columnHelper = createColumnHelper<MetricDataPoint>();
+const columnHelper = createColumnHelper<ConceptDataPoint>();
 
-const FinancialMetricDataTableModal = ({ metric, formatValue, initialFocusDate, isOpen, onClose}: FinancialMetricDataTableModalProps) => {
+function CompanyConceptDataTableModal (props: CompanyConceptDataTableModalProps) {
+
+    const { concept, formatValue, initialFocusDate, isOpen, onClose} = props;
+
     const [sorting, setSorting] = useState<SortingState>([]);
     const [grouping] = useState<GroupingState>(['fiscalYear']);
     const [expanded, setExpanded] = useState<ExpandedState>({});
 
     const tableRef = useRef<HTMLDivElement>(null);
 
+    const handleDownloadData = () => {
+        const csvData = convertConceptDataPointsToCSV(concept.dataPoints);
+        downloadCSV(csvData, `${concept.conceptType}-${concept.lastUpdated.toLocaleDateString()}-data.csv`);
+    }
+
     useEffect(() => {
-        if (initialFocusDate && metric.dataPoints) {
+        if (initialFocusDate && concept.dataPoints) {
             // Find the fiscal year for the focus date
-            const focusPoint = metric.dataPoints.find(point => {
+            const focusPoint = concept.dataPoints.find(point => {
                 const pointDate = new Date(point.endDate);
                 return pointDate.getTime() === initialFocusDate.getTime();
             });
@@ -68,32 +76,32 @@ const FinancialMetricDataTableModal = ({ metric, formatValue, initialFocusDate, 
                 }, 100);
             }
         }
-    }, [initialFocusDate, metric.dataPoints]);
+    }, [initialFocusDate, concept]);
 
 
     // Map fiscal year to its FY period data
     const yearEndDataMap = useMemo(() => {
-        const map = new Map<number, MetricDataPoint>();
-        metric.dataPoints.forEach(point => {
+        const map = new Map<number, ConceptDataPoint>();
+        concept.dataPoints.forEach(point => {
             if (point.fiscalPeriod === 'FY') {
                 map.set(point.fiscalYear, point);
             }
         });
         return map;
-    }, [metric.dataPoints]);
+    }, [concept]);
 
     // Pre-calculate previous year values for performance
     const previousYearValues = useMemo(() => {
         return new Map(
-            metric.dataPoints.map(point => [
+            concept.dataPoints.map(point => [
                 `${point.fiscalYear}-${point.fiscalPeriod}`,
-                metric.dataPoints.find(p =>
+                concept.dataPoints.find(p =>
                     p.fiscalYear === point.fiscalYear - 1 &&
                     p.fiscalPeriod === point.fiscalPeriod
                 )?.value
             ])
         );
-    }, [metric.dataPoints]);
+    }, [concept.dataPoints]);
 
     const columns = [
         columnHelper.accessor('fiscalYear', {
@@ -219,7 +227,7 @@ const FinancialMetricDataTableModal = ({ metric, formatValue, initialFocusDate, 
     ];
 
     const table = useReactTable({
-        data: metric.dataPoints,
+        data: concept.dataPoints,
         columns,
         state: {
             sorting,
@@ -240,10 +248,17 @@ const FinancialMetricDataTableModal = ({ metric, formatValue, initialFocusDate, 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
             <DialogContent className="max-w-5xl h-[80vh] bg-background border border-white/10">
-                <DialogHeader>
-                    <DialogTitle className="text-lg font-bold text-foreground">
-                        Historical Data - {getMetricTypeDisplayName(metric.metricType)}
-                    </DialogTitle>
+                <DialogHeader className="mt-8">
+                    <div className="flex justify-between">
+                        <DialogTitle className="text-lg font-bold text-foreground">
+                            Historical Data - {formatConceptType(concept.conceptType)}
+                        </DialogTitle>
+                        <Button variant="foreground" size="sm" onClick={handleDownloadData}>
+                            <DownloadIcon className="h-4 w-4 mr-2"/>
+                            Download
+                        </Button>
+                    </div>
+
                 </DialogHeader>
                 <div ref={tableRef} className="mt-4 h-[calc(80vh-6rem)] overflow-y-auto relative">
                     <table className="w-full">
@@ -292,6 +307,6 @@ const FinancialMetricDataTableModal = ({ metric, formatValue, initialFocusDate, 
             </DialogContent>
         </Dialog>
     );
-};
+}
 
-export default FinancialMetricDataTableModal;
+export default CompanyConceptDataTableModal;

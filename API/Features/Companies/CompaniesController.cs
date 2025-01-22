@@ -182,6 +182,26 @@ public class CompaniesController(
         return Ok(response);
     }
     
+    [HttpPost("{cik}/dashboard/unpin-concept")]
+    [ProducesResponseType(typeof(CompanyUserDashboardPreferencesResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UnPinConceptToDashboard(string cik, [FromBody] UnpinConceptFromCompanyDashboardRequest request)
+    {
+        var userId = User.GetUserId();
+        var result = await userCompanyDashboardPreferencesService.RemoveConceptFromDashboard(cik, userId, request.ConceptType);
+        if (result.IsFailed)
+        {
+            return BadRequest(result.Errors);
+        }
+        
+        var response = new CompanyUserDashboardPreferencesResponse()
+        {
+            Preferences = result.Value
+        };
+
+        return Ok(response);
+    }
+    
     [HttpGet("search")]
     [ProducesResponseType(typeof(List<CompanySearchResult>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

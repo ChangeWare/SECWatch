@@ -1,6 +1,7 @@
 import {Card, CardContent, CardHeader, CardTitle} from "@common/components/Card.tsx";
-import {ProcessedDataPoint} from "@features/company/types.ts";
+import {GroupedConceptDataPoints} from "@features/company/types.ts";
 import React from "react";
+import {isValidCurrencyUnitType} from "@features/company/utils.tsx";
 
 interface FinancialMetricsChartTooltipProps {
     valueFormatter: (value: number) => string;
@@ -9,10 +10,10 @@ interface FinancialMetricsChartTooltipProps {
     payload?: any;
 }
 
-function FinancialMetricsChartTooltip({ active, payload, dateFormatter, valueFormatter }: FinancialMetricsChartTooltipProps) {
+function CompanyConceptChartTooltip({ active, payload, dateFormatter, valueFormatter }: FinancialMetricsChartTooltipProps) {
     if (!active || !payload || !payload[0]) return null;
 
-    const dataPoint = payload[0].payload as ProcessedDataPoint;
+    const dataPoint = payload[0].payload as GroupedConceptDataPoints;
 
     return (
         <Card className="bg-surface p-4">
@@ -24,7 +25,7 @@ function FinancialMetricsChartTooltip({ active, payload, dateFormatter, valueFor
             <CardContent className="p-0">
                 <div className="text-sm">
                     <div className="font-medium">
-                        {valueFormatter(dataPoint.value)} ({dataPoint.currencyType})
+                        {valueFormatter(dataPoint.value)} {isValidCurrencyUnitType(dataPoint.unitType) ? `(${dataPoint.unitType})` : null}
                         {dataPoint.hasMultipleFilings && !dataPoint.hasDiscrepancy && (
                             <span className="text-xs text-secondary ml-2">
                                     (Reported consistently across {dataPoint.details.underlyingData.length} filings)
@@ -64,4 +65,4 @@ function FinancialMetricsChartTooltip({ active, payload, dateFormatter, valueFor
     );
 }
 
-export default FinancialMetricsChartTooltip;
+export default CompanyConceptChartTooltip;
