@@ -15,6 +15,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Company> Companies => Set<Company>();
     
     public DbSet<TrackedCompany> TrackedCompanies => Set<TrackedCompany>();
+    
+    public DbSet<CompanyUserDashboardPreferences> CompanyUserDashboardPreferences => Set<CompanyUserDashboardPreferences>();
 
     public DbSet<Note> Notes => Set<Note>();
     

@@ -17,6 +17,7 @@ using SECWatch.Infrastructure.Features.Authentication;
 using SECWatch.Infrastructure.Features.Authentication.Utils;
 using SECWatch.Infrastructure.Features.Communication.Email;
 using SECWatch.Infrastructure.Features.Companies;
+using SECWatch.Infrastructure.Features.Companies.Repositories;
 using SECWatch.Infrastructure.Features.Notes;
 using SECWatch.Infrastructure.Features.Users;
 using SECWatch.Infrastructure.Persistence;
@@ -99,6 +100,7 @@ public static class DependencyInjection
         services.AddTransient<ICompanyConceptRepository, CompanyConceptRepository>();
         services.AddTransient<INoteRepository, NoteRepository>();
         services.AddTransient<ITrackedCompanyRepository, TrackedCompanyRepository>();
+        services.AddTransient<ICompanyUserDashboardPreferencesRepository, CompanyUserDashboardPreferencesRepository>();
         
         return services;
     }

@@ -1,33 +1,28 @@
 import React, {useState, useEffect, useMemo} from 'react';
 import {TrendingUp, TrendingDown, TableIcon} from 'lucide-react';
-import {Card, CardContent} from "@common/components/Card.tsx";
+import {Card, CardContent, CardHeader, CardTitle} from "@common/components/Card.tsx";
 import {
-    CompanyFinancialMetric,
+    CompanyConcept,
     CurrencyGroupedData,
-    MetricDataPoint,
+    ConceptDataPoint,
     MetricType,
-    ProcessedDataPoint
+    ProcessedFinancialDataPoint
 } from "@features/company/types.ts";
 import LoadingScreen from "@common/components/LoadingIndicator.tsx";
 import MetricDataTableModal from "@features/company/components/financials/FinancialMetricDataTableModal.tsx";
-import FinancialMetricsChart from "@features/company/components/financials/FinancialMetricsChart.tsx";
-import {formatCurrency, getChangePercentClassName, processData} from "@features/company/utils.tsx";
+import CompanyConceptChart from "@features/company/components/financials/CompanyConceptChart.tsx";
+import {formatConceptType, formatCurrency, getChangePercentClassName, processData} from "@features/company/utils.tsx";
 import Button from "@common/components/Button.tsx";
-import {DialogTrigger} from "@common/components/ui/dialog.tsx";
 
-interface AccountsPayableContentProps {
-    accountsPayableMetric: CompanyFinancialMetric;
+interface CompanyConceptContentProps {
+    companyConcept: CompanyConcept;
     selectedCurrencyType: string;
+    onDataPointSelected?: (dataPoint: ProcessedFinancialDataPoint) => void;
 }
 
+function CompanyConceptContent(props: CompanyConceptContentProps) {
 
-function AccountsPayableContent(props: AccountsPayableContentProps) {
-
-    const { dataPoints: data } = props.accountsPayableMetric;
-    const [ focusedDataPointDate, setFocusedDataPointDate] = useState<Date | undefined>();
-
-    const [dataTableModalOpen, setDataTableModalOpen] = useState<boolean>(false);
-
+    const { dataPoints: data } = props.companyConcept;
 
     const processedData = useMemo<CurrencyGroupedData>(() => {
         return processData(data)
@@ -35,7 +30,7 @@ function AccountsPayableContent(props: AccountsPayableContentProps) {
 
     const currentPeriodYoYChange = useMemo(() => {
 
-        const calculateChange = (data: MetricDataPoint[]) => {
+        const calculateChange = (data: ConceptDataPoint[]) => {
             if (data.length < 2) return { value: 0, percentage: 0 };
 
             const currentValue = data[data.length - 1].value;
@@ -51,50 +46,23 @@ function AccountsPayableContent(props: AccountsPayableContentProps) {
 
         if (data?.length <= 0) return { value: 0, percentage: 0 };
 
-        return calculateChange(props.accountsPayableMetric.dataPoints);
+        return calculateChange(props.companyConcept.dataPoints);
 
-    }, [props.accountsPayableMetric]);
+    }, [props.companyConcept]);
 
-    const handleDataPointSelected = (dataPoint: ProcessedDataPoint) => {
-        setFocusedDataPointDate(dataPoint.date);
-        setDataTableModalOpen(true);
+    const handleDataPointSelected = (dataPoint: ProcessedFinancialDataPoint) => {
+        props.onDataPointSelected?.(dataPoint);
     }
 
     return (data?.length ?? 0) > 0 ? (
         <>
-            {/* Section Header */}
-            <div className="flex justify-between items-center">
-                <div>
-                    <h2 className="text-lg font-bold text-foreground">Accounts Payable</h2>
-                    <p className="text-sm text-secondary">Historical accounts payable data and trends</p>
-                </div>
-                <div>
-                    <Button
-                        variant="foreground"
-                        size="sm"
-                        onClick={() => setDataTableModalOpen(true)}
-                    >
-                        <TableIcon className="h-4 w-4 mr-2" />
-                        View Data
-                    </Button>
-                    <MetricDataTableModal
-                        metric={props.accountsPayableMetric}
-                        formatValue={formatCurrency}
-                        initialFocusDate={focusedDataPointDate}
-                        isOpen={dataTableModalOpen}
-                        onClose={() => setDataTableModalOpen(false)}
-                    />
-                </div>
-
-            </div>
-
             {/* Key Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card variant="elevated">
                     <CardContent className="pt-6">
                         <div className="text-sm text-primary-light">Current Amount</div>
                         <div className="text-2xl font-bold mt-2 text-white">
-                            {formatCurrency(props.accountsPayableMetric.lastValue)}
+                            {formatCurrency(props.companyConcept.lastValue)}
                         </div>
                         <div className="flex items-center mt-2">
                             {currentPeriodYoYChange.percentage > 0 ? (
@@ -125,7 +93,7 @@ function AccountsPayableContent(props: AccountsPayableContentProps) {
             </div>
 
             {/* Chart */}
-            <FinancialMetricsChart
+            <CompanyConceptChart
                 data={processedData[props.selectedCurrencyType]}
                 metricType={MetricType.AccountsPayable}
                 valueFormatter={formatCurrency}
@@ -133,28 +101,65 @@ function AccountsPayableContent(props: AccountsPayableContentProps) {
             />
 
             <div className="text-sm text-muted-foreground">
-                Last updated: {props.accountsPayableMetric.lastUpdated?.toLocaleDateString() ?? 'N/A'}
+                Last updated: {props.companyConcept.lastUpdated?.toLocaleDateString() ?? 'N/A'}
             </div>
         </>
     ) : null;
 }
 
-interface AccountsPayableSectionProps {
-    accountsPayableMetric?: CompanyFinancialMetric;
+interface PinnedCompanyConceptSectionProps {
+    companyConcept?: CompanyConcept;
     selectedCurrencyType: string;
 }
 
-function AccountsPayableSection(props: AccountsPayableSectionProps) {
+function PinnedCompanyConceptSection(props: PinnedCompanyConceptSectionProps) {
+    const [ focusedDataPointDate, setFocusedDataPointDate] = useState<Date | undefined>();
+
+    const [dataTableModalOpen, setDataTableModalOpen] = useState<boolean>(false);
+
+    const handleDataPointSelected = (dataPoint: ProcessedFinancialDataPoint) => {
+        setFocusedDataPointDate(dataPoint.date);
+        setDataTableModalOpen(true);
+    }
 
     return (
         <Card>
-            <CardContent className="p-6 space-y-6">
-                <LoadingScreen isLoading={props.accountsPayableMetric == null}>
-                    <AccountsPayableContent selectedCurrencyType={props.selectedCurrencyType} accountsPayableMetric={props.accountsPayableMetric!} />
-                </LoadingScreen>
-            </CardContent>
+            <LoadingScreen isLoading={props.companyConcept == null}>
+                <>
+                    <CardHeader>
+                        <CardTitle>{formatConceptType(props.companyConcept!.conceptType)}</CardTitle>
+                        <p className="text-sm text-secondary mt-1">
+                            {props.companyConcept?.description}
+                        </p>
+                        <div>
+                            <Button
+                                variant="foreground"
+                                size="sm"
+                                onClick={() => setDataTableModalOpen(true)}
+                            >
+                                <TableIcon className="h-4 w-4 mr-2"/>
+                                View Data
+                            </Button>
+                            <MetricDataTableModal
+                                metric={props.companyConcept}
+                                formatValue={formatCurrency}
+                                initialFocusDate={focusedDataPointDate}
+                                isOpen={dataTableModalOpen}
+                                onClose={() => setDataTableModalOpen(false)}
+                            />
+                        </div>
+                    </CardHeader>
+                    <CardContent className="p-6 space-y-6">
+                        <CompanyConceptContent
+                            selectedCurrencyType={props.selectedCurrencyType}
+                            onDataPointSelected={handleDataPointSelected}
+                            companyConcept={props.companyConcept!}
+                        />
+                    </CardContent>
+                </>
+            </LoadingScreen>
         </Card>
     );
 }
 
-export default AccountsPayableSection;
+export default PinnedCompanyConceptSection;

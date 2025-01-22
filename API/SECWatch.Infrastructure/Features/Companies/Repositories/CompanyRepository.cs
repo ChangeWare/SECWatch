@@ -1,4 +1,3 @@
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using SECWatch.Domain.Features.Companies.Models;
@@ -6,7 +5,7 @@ using SECWatch.Domain.Features.Companies.Queries;
 using SECWatch.Domain.Features.Companies.Repositories;
 using SECWatch.Infrastructure.Persistence;
 
-namespace SECWatch.Infrastructure.Features.Companies;
+namespace SECWatch.Infrastructure.Features.Companies.Repositories;
 
 public class CompanyRepository(
     ApplicationDbContext context,

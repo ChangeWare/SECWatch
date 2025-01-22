@@ -1,10 +1,9 @@
-using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using SECWatch.Domain.Features.Companies.Models;
 using SECWatch.Domain.Features.Companies.Repositories;
 using SECWatch.Infrastructure.Persistence;
 
-namespace SECWatch.Infrastructure.Features.Companies;
+namespace SECWatch.Infrastructure.Features.Companies.Repositories;
 
 public class CompanyConceptRepository(
     IMongoDbContext mongoDbContext) : ICompanyConceptRepository

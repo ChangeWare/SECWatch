@@ -14,6 +14,7 @@ namespace SECWatch.API.Features.Companies;
 public class CompaniesController(
     ICompanyService companyService,
     ICompanyTrackingService companyTrackingService,
+    ICompanyUserDashboardPreferencesService userCompanyDashboardPreferencesService,
     ILogger<CompaniesController> logger) : ControllerBase
 {
     
@@ -135,7 +136,51 @@ public class CompaniesController(
         }
     }
     
+    [HttpGet("{cik}/dashboard/preferences")]
+    [ProducesResponseType(typeof(CompanyUserDashboardPreferencesResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetDashboardPreferences(string cik)
+    {
+        var userId = User.GetUserId();
+        var result = await userCompanyDashboardPreferencesService.GetCompanyDashboardPreferencesForUser(cik, userId);
+        if (result.IsFailed)
+        {
+            return BadRequest(result.Errors);
+        }
+        
+        if (result.Value == null)
+        {
+            return NotFound();
+        }
+        
+        var response = new CompanyUserDashboardPreferencesResponse()
+        {
+            Preferences = result.Value
+        };
+
+        return Ok(response);
+    }
     
+    [HttpPost("{cik}/dashboard/pin-concept")]
+    [ProducesResponseType(typeof(CompanyUserDashboardPreferencesResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> PinConceptToDashboard(string cik, [FromBody] PinConceptToCompanyDashboardRequest request)
+    {
+        var userId = User.GetUserId();
+        var result = await userCompanyDashboardPreferencesService.AddConceptToDashboard(cik, userId, request.ConceptType);
+        if (result.IsFailed)
+        {
+            return BadRequest(result.Errors);
+        }
+        
+        var response = new CompanyUserDashboardPreferencesResponse()
+        {
+            Preferences = result.Value
+        };
+
+        return Ok(response);
+    }
     
     [HttpGet("search")]
     [ProducesResponseType(typeof(List<CompanySearchResult>), StatusCodes.Status200OK)]
