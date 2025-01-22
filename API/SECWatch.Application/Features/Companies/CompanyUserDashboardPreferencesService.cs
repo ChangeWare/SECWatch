@@ -37,6 +37,31 @@ public class CompanyUserDashboardPreferencesService(
         return Result.Ok(preferencesDto);
     }
 
+    public async Task<Result<CompanyUserDashboardPreferencesDto>> RemoveConceptFromDashboard(string cik, Guid userId, string conceptType)
+    {
+        // Get the user's existing preferences
+        var existingPreferences = await repository.GetCompanyDashboardPreferencesForUser(userId, cik);
+
+        if (existingPreferences == null)
+        {
+            return Result.Fail("User company dashboard preferences not found");
+        }
+        
+        // Remove the concept from the user's preferences
+        existingPreferences.RemovePinnedConcept(conceptType);
+
+        var result = await repository.UpsertAsync(existingPreferences);
+        
+        if (result == null)
+        {
+            return Result.Fail("Failed to remove concept from dashboard");
+        }
+        
+        var preferencesDto = mapper.Map<CompanyUserDashboardPreferencesDto>(existingPreferences);
+        
+        return Result.Ok(preferencesDto);
+    }
+
     public async Task<Result<CompanyUserDashboardPreferencesDto>> GetCompanyDashboardPreferencesForUser(string cik, Guid userId)
     {
         var preferences = await repository.GetCompanyDashboardPreferencesForUser(userId, cik);

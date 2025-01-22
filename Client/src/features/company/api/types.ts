@@ -1,4 +1,9 @@
-import {CompanyDetails, CompanyConcept, TrackedCompanyDetails} from "@features/company/types.ts";
+import {
+    CompanyDetails,
+    CompanyConcept,
+    TrackedCompanyDetails,
+    CompanyUserDashboardPreferences
+} from "@features/company/types.ts";
 
 export interface CompanyConceptTypesResponse {
     conceptTypes: string[];
@@ -18,4 +23,8 @@ export interface CompanyDetailsResponse {
 
 export interface TrackedCompaniesResponse {
     trackedCompanies: TrackedCompanyDetails[];
+}
+
+export interface CompanyUserDashboardPreferencesResponse {
+    preferences: CompanyUserDashboardPreferences;
 }

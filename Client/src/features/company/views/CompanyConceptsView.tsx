@@ -1,5 +1,5 @@
-import React, {useState, useMemo, useEffect} from 'react';
-import { Search, Pin, PinOff, Info } from 'lucide-react';
+import React, { useState, useMemo, useEffect} from 'react';
+import { Search } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@common/components/Card';
 import Button from '@common/components/Button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@common/components/Tabs';
@@ -8,6 +8,8 @@ import ConceptCard from "@features/company/components/ConceptCard.tsx";
 import useCompanyConcepts from "@features/company/hooks/useCompanyConcepts.ts";
 import {CompanyConcept} from "@features/company/types.ts";
 import {useParams} from "react-router-dom";
+import useCompanyDashboard from "@features/company/hooks/useCompanyDashboard.tsx";
+import LoadingIndicator from "@common/components/LoadingIndicator.tsx";
 
 const CompanyConceptsView = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -16,6 +18,13 @@ const CompanyConceptsView = () => {
     const { companyId } = useParams();
 
     const { concepts } = useCompanyConcepts(companyId);
+
+    const {
+        addConceptToDashboard,
+        dashboardPreferences,
+        dashboardPreferencesIsLoading,
+        removeConceptFromDashboard
+    } = useCompanyDashboard(companyId);
 
     const categories = [
         { id: 'key_metrics', label: 'Key Metrics' },
@@ -73,78 +82,87 @@ const CompanyConceptsView = () => {
         setSearchTerm(value);
     };
 
+    const handleAddToDashboard = (concept: CompanyConcept) => {
+        addConceptToDashboard(concept.conceptType);
+    }
+
+    const handleRemoveFromDashboard = (concept: CompanyConcept) => {
+        removeConceptFromDashboard(concept.conceptType);
+    }
+
     return (
         <div className="space-y-6">
-            {/* Header Section */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>Concepts</CardTitle>
-                    <p className="text-sm text-secondary mt-1">
-                        Explore and analyze company metrics and data points
-                    </p>
-                </CardHeader>
-                <CardContent>
-                    <div className="flex items-center gap-4">
-                        <div className="relative flex-1 max-w-md">
-                            <Search className="absolute left-3 top-2.5 h-4 w-4 text-secondary" />
-                            <Input
-                                placeholder="Search concepts..."
-                                className="pl-9"
-                                value={searchTerm}
-                                onChange={handleSearch}
-                            />
-                        </div>
-                        {searchTerm && (
-                            <div className="text-sm text-secondary">
-                                {totalMatches} {totalMatches === 1 ? 'match' : 'matches'}
-                            </div>
-                        )}
-                        <Button variant="foreground" size="md">
-                            Filters
-                        </Button>
-                    </div>
-                </CardContent>
-            </Card>
-
             {/* Categories and Concepts */}
             <Card>
+                <CardHeader>
+                    <div className="flex-col">
+                        <CardTitle>Concepts</CardTitle>
+                        <p className="text-sm text-secondary mt-2">
+                            Explore and analyze company metrics and data points
+                        </p>
+                        <div className="flex items-center gap-4 mt-4">
+                            <div className="relative flex-1 max-w-md">
+                                <Search className="absolute left-3 top-2.5 h-4 w-4 text-secondary"/>
+                                <Input
+                                    placeholder="Search concepts..."
+                                    className="pl-9"
+                                    value={searchTerm}
+                                    onChange={handleSearch}
+                                />
+                            </div>
+                            {searchTerm && (
+                                <div className="text-sm text-secondary">
+                                    {totalMatches} {totalMatches === 1 ? 'match' : 'matches'}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </CardHeader>
                 <CardContent className="p-6">
-                    <Tabs value={activeTab} onValueChange={setActiveTab}>
-                        <TabsList className="w-full justify-start mb-6">
-                            {categories.map(category => (
-                                <TabsTrigger
-                                    key={category.id}
-                                    value={category.id}
-                                    disabled={searchTerm !== '' && groupedConcepts[category.id].length === 0}
-                                >
-                                    {category.label}
-                                    {searchTerm && groupedConcepts[category.id].length > 0 && (
-                                        <span className="ml-2 text-xs bg-surface-foreground px-2 py-0.5 rounded-full">
+                    <LoadingIndicator isLoading={!concepts || dashboardPreferencesIsLoading}>
+                        <Tabs value={activeTab} onValueChange={setActiveTab}>
+                            <TabsList className="w-full justify-start mb-6">
+                                {categories.map(category => (
+                                    <TabsTrigger
+                                        key={category.id}
+                                        value={category.id}
+                                        disabled={searchTerm !== '' && groupedConcepts[category.id].length === 0}
+                                    >
+                                        {category.label}
+                                        {searchTerm && groupedConcepts[category.id].length > 0 && (
+                                            <span className="ml-2 text-xs bg-surface-foreground px-2 py-0.5 rounded-full">
                                             {groupedConcepts[category.id].length}
                                         </span>
-                                    )}
-                                </TabsTrigger>
-                            ))}
-                        </TabsList>
+                                        )}
+                                    </TabsTrigger>
+                                ))}
+                            </TabsList>
 
-                        {categories.map(category => (
-                            <TabsContent key={category.id} value={category.id}>
-                                {groupedConcepts[category.id].length > 0 ? (
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        {groupedConcepts[category.id].map(concept => (
-                                            <ConceptCard concept={concept} key={concept.cik + concept.conceptType} />
-                                        ))}
-                                    </div>
-                                ) : (
-                                    searchTerm && (
-                                        <div className="text-center py-8 text-secondary">
-                                            No matching concepts in this category
+                            {categories.map(category => (
+                                <TabsContent key={category.id} value={category.id}>
+                                    {groupedConcepts[category.id].length > 0 ? (
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            {groupedConcepts[category.id].map(concept => (
+                                                <ConceptCard
+                                                    concept={concept}
+                                                    key={concept.cik + concept.conceptType}
+                                                    onAddToDashboard={handleAddToDashboard}
+                                                    onRemoveFromDashboard={handleRemoveFromDashboard}
+                                                    onDashboard={dashboardPreferences!.pinnedConcepts.includes(concept.conceptType)}
+                                                />
+                                            ))}
                                         </div>
-                                    )
-                                )}
-                            </TabsContent>
-                        ))}
-                    </Tabs>
+                                    ) : (
+                                        searchTerm && (
+                                            <div className="text-center py-8 text-secondary">
+                                                No matching concepts in this category
+                                            </div>
+                                        )
+                                    )}
+                                </TabsContent>
+                            ))}
+                        </Tabs>
+                    </LoadingIndicator>
                 </CardContent>
             </Card>
         </div>

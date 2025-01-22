@@ -11,9 +11,13 @@ import {
 import {useMemo, useState} from "react";
 import {cn} from "@common/lib/utils.ts";
 import {toast} from "react-toastify";
+import useCompanyDashboard from "@features/company/hooks/useCompanyDashboard.tsx";
 
 interface ConceptCardProps {
+    onDashboard: boolean;
     concept: CompanyConcept;
+    onAddToDashboard: (concept: CompanyConcept) => void;
+    onRemoveFromDashboard: (concept: CompanyConcept) => void;
 }
 
 function ConceptCard(props: ConceptCardProps) {
@@ -22,6 +26,8 @@ function ConceptCard(props: ConceptCardProps) {
     } = props;
 
     const [showInfo, setShowInfo] = useState(false);
+
+    const {} = useCompanyDashboard();
 
     const formattedValue = useMemo(() => {
         if (concept.isCurrencyData) {
@@ -60,6 +66,14 @@ function ConceptCard(props: ConceptCardProps) {
         });
     }
 
+    const handleAddToDashboardClick = () => {
+        props.onAddToDashboard(concept);
+    }
+
+    const handleRemoveFromDashboardClick = () => {
+        props.onRemoveFromDashboard(concept);
+    }
+
     return (
         <Card variant="elevated">
             <CardContent className="p-6">
@@ -96,7 +110,13 @@ function ConceptCard(props: ConceptCardProps) {
                 {/* Actions */}
                 <div className="flex justify-between items-center mt-4">
                     <Button variant="foreground" size="sm">View Details</Button>
-                    <Button variant="primary" size="sm">Add to Dashboard</Button>
+                    {!props.onDashboard ? (
+                            <Button onClick={handleAddToDashboardClick} variant="primary" size="sm">Add to Dashboard</Button>
+                        ) : (
+                            <Button onClick={handleRemoveFromDashboardClick} variant="danger" size="sm">Remove from Dashboard</Button>
+                        )
+                    }
+
                 </div>
             </CardContent>
         </Card>

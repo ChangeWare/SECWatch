@@ -1,23 +1,10 @@
 import {CompanyFiling} from "@features/filings/types.ts";
 
-
-
-export interface ConceptDataPoint {
-    endDate: Date;
-    value: number;
-    fiscalYear: number;
-    fiscalPeriod: string;
-    formType: string;
-    filingDate: Date;
-    frame: string;
-    unitType: string;
+export interface CompanyUserDashboardPreferences {
+    pinnedConcepts: string[];
 }
 
-export interface CurrencyGroupedData {
-    [currency: string]: ProcessedFinancialDataPoint[];
-}
-
-export interface ProcessedFinancialDataPoint {
+export interface GroupedConceptDataPoints {
     date: Date;
     fiscalYear: number;
     fiscalPeriod: string;
@@ -25,7 +12,7 @@ export interface ProcessedFinancialDataPoint {
     value: number;
     hasDiscrepancy: boolean;
     hasMultipleFilings: boolean;
-    currencyType: string;
+    unitType: string;
     details: {
         underlyingData: ConceptDataPoint[];
         valueRange?: {
@@ -36,8 +23,15 @@ export interface ProcessedFinancialDataPoint {
     };
 }
 
-export enum MetricType {
-    AccountsPayable = 0,
+export interface ConceptDataPoint {
+    endDate: Date;
+    value: number;
+    fiscalYear: number;
+    fiscalPeriod: string;
+    formType: string;
+    filingDate: Date;
+    frame: string;
+    unitType: string;
 }
 
 export interface CompanyConcept {

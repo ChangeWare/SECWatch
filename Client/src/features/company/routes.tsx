@@ -1,7 +1,7 @@
 import { Navigate, RouteObject } from "react-router-dom";
 import companyPaths from "@features/company/paths.ts";
-import CompanyDashboardLayout from "./CompanyDashboardLayout.tsx";
-import { CompanyOverview } from "@features/company/views/CompanyOverview.tsx";
+import CompanyLayout from "./CompanyLayout.tsx";
+import { CompanyDashboardView } from "@features/company/views/CompanyDashboardView.tsx";
 import {CompanyFilingsView} from "@features/company/views/CompanyFilingsView.tsx";
 import CompanyAnalysisView from "@features/company/views/CompanyAnalysisView.tsx";
 import {CompanyFilingView} from "@features/company/views/CompanyFilingView.tsx";
@@ -12,7 +12,7 @@ import CompanyConceptsView from "@features/company/views/CompanyConceptsView.tsx
 export const companyRoutes: RouteObject[] = [
     {
         path: companyPaths.dashboard.default,  // Define the parent path
-        element: <CompanyDashboardLayout />,
+        element: <CompanyLayout />,
         children: [
             {
                 index: true,  // This makes it the default route
@@ -20,7 +20,7 @@ export const companyRoutes: RouteObject[] = [
             },
             {
                 path: companyPaths.dashboard.overview,  // Now relative to parent
-                element: <CompanyOverview />
+                element: <CompanyDashboardView />
             },
             {
                 path: companyPaths.dashboard.filings,

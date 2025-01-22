@@ -3,7 +3,7 @@ import {
     CompanyConceptResponse,
     CompanyConceptsResponse,
     CompanyConceptTypesResponse,
-    CompanyDetailsResponse,
+    CompanyDetailsResponse, CompanyUserDashboardPreferencesResponse,
     TrackedCompaniesResponse
 } from "@features/company/api/types.ts";
 
@@ -17,6 +17,26 @@ export const companyApi = {
      */
     getCompanyDetails: async (companyId: string): Promise<CompanyDetailsResponse> => {
         const response = await apiClient.get<CompanyDetailsResponse>(`/companies/${companyId}/details/`);
+        return response.data;
+    },
+    getCompanyUserDashboardPreferences: async (companyId: string): Promise<CompanyUserDashboardPreferencesResponse> => {
+        const response = await apiClient.get<CompanyUserDashboardPreferencesResponse>(`/companies/${companyId}/dashboard/preferences`);
+        return response.data;
+    },
+    postAddConceptToDashboard: async (companyId: string, conceptType: string): Promise<CompanyConceptsResponse> => {
+        const response = await apiClient.post<CompanyConceptsResponse>(`/companies/${companyId}/dashboard/pin-concept`,
+            {
+                'conceptType': conceptType
+            }
+        );
+        return response.data;
+    },
+    postRemoveConceptFromDashboard: async (companyId: string, conceptType: string): Promise<CompanyConceptsResponse> => {
+        const response = await apiClient.post<CompanyConceptsResponse>(`/companies/${companyId}/dashboard/unpin-concept`,
+            {
+                'conceptType': conceptType
+            }
+        );
         return response.data;
     },
     getCompanyConcepts: async (companyId: string): Promise<CompanyConceptsResponse> => {
