@@ -96,6 +96,7 @@ class CompanyFilingHistoryDocument(BaseModel):
     """Complete filing history for a company"""
     cik: str
     filings: List[SECFiling]
+    most_recent_filing: SECFiling
     metadata: FilingHistoryMetadata
 
 

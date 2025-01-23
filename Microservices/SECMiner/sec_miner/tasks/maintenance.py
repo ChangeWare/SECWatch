@@ -12,7 +12,7 @@ logger = get_logger(__name__)
 
 
 @celery_app.task(
-    name='tasks.index.process_index_updates',
+    name='tasks.maintenance.process_index_updates',
     acks_late=True,
     max_retries=3,
     autoretry_for=(redis.RedisError, httpx.TimeoutException),

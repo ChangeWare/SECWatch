@@ -56,6 +56,8 @@ def create_celery_app():
         beat_schedule=beat_schedule
     )
 
+    app.conf.timezone = 'America/New_York'
+
     return app
 
 

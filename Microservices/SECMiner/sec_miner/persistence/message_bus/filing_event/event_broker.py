@@ -18,7 +18,7 @@ class FilingEventBroker:
             )
         )
         self.channel = self.connection.channel()
-        self.channel.queue_declare(queue='filing_event')
+        self.channel.queue_declare(queue='filing_event', durable=True)
 
     def queue_filings_events(self, filing_events: List[FilingEvent]):
         data = json.dumps([event.to_json() for event in filing_events], default=str)

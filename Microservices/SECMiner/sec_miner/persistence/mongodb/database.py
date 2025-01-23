@@ -48,10 +48,6 @@ class MongoDbContext:
             self._ensure_index_exists(self.db.filing_history, [("metadata.last_filed", 1)])
             self._ensure_index_exists(self.db.filing_history, [("filings.accession_number", 1)])
 
-            # Processing collection indexes
-            self._ensure_index_exists(self.db.failed_filings, [("accession_number", 1)])
-            self._ensure_index_exists(self.db.failed_new_companies, [("cik", 1)])
-
             logger.info("Successfully ensured all database indexes")
 
         except Exception as e:

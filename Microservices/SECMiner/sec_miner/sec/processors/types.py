@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from hashlib import sha256
 from typing import Optional, List, Set
 
@@ -91,12 +91,14 @@ class ProcessIndexResult:
         self.total_new_filings = total_new_filings
         self.new_indexes = new_indexes
         self.message = message
+        self.processed_at = datetime.now(timezone.utc)
 
     def to_json(self):
         return {
             'total_new_filings': self.total_new_filings,
             'new_indexes': self.new_indexes,
             'message': self.message,
+            'processed_at': str(self.processed_at),
         }
 
 
@@ -108,6 +110,7 @@ class ProcessNewCompaniesResult:
         self.total_companies_processed = total_companies_processed
         self.total_failed_companies = total_failed_companies
         self.message = message
+        self.processed_at = datetime.now(timezone.utc)
 
     def to_json(self):
         return {
@@ -115,6 +118,7 @@ class ProcessNewCompaniesResult:
             'total_companies_processed': self.total_companies_processed,
             'total_failed_companies': self.total_failed_companies,
             'message': self.message,
+            'processed_at': str(self.processed_at),
         }
 
 
@@ -128,7 +132,7 @@ class ProcessNewFilingsResult:
         self.total_failed_filings = total_failed_filings
         self.total_companies_discovered = total_companies_discovered
         self.total_companies_identified_to_update = total_companies_identified_to_update
-        self.processed_at = datetime.now()
+        self.processed_at = datetime.now(timezone.utc)
         self.message = message
 
     def to_json(self):

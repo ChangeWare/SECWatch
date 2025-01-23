@@ -233,6 +233,7 @@ class SECClient:
                 filing_history = CompanyFilingHistoryDocument(
                     cik=cik,
                     filings=filings,
+                    most_recent_filing=filings[-1],
                     metadata=FilingHistoryMetadata(
                         first_filed=filings[0].filing_date,
                         last_filed=filings[-1].filing_date,
