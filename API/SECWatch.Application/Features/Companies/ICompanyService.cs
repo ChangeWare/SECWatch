@@ -13,7 +13,9 @@ public interface ICompanyService
     
     Task<Result<CompanyConceptDto>> GetCompanyConceptAsync(string cik, string conceptType);
     
-    Task<Result<IReadOnlyList<CompanyConceptDto>>> GetCompanyConceptsAsync(string cik);
+    Task<Result<IReadOnlyList<CompanyConceptDto>>> GetCompanyConceptsAsync(string cik, List<string> conceptTypes);
+    
+    Task<Result<IReadOnlyList<CompanyConceptDto>>> GetCompanyAllConceptsAsync(string cik);
     
     Task<Result<CompanyFilingHistoryDto>> GetCompanyFilingHistoryAsync(string cik);
 }

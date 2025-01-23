@@ -3,15 +3,13 @@ import Button from "@common/components/Button.tsx";
 import {Info, Pin} from "lucide-react";
 import {CompanyConcept} from "@features/company/types.ts";
 import {
-    formatConceptType,
-    formatCurrency,
-    getChangeOverPriorYear, getChangePercentClassName,
-    getPercentChangeOverPriorYear
+    formatConceptType
 } from "@features/company/utils.tsx";
 import {useMemo, useState} from "react";
 import {cn} from "@common/lib/utils.ts";
 import {toast} from "react-toastify";
 import useCompanyDashboard from "@features/company/hooks/useCompanyDashboard.tsx";
+import ConceptPreview from "@features/company/components/ConceptPreview.tsx";
 
 interface ConceptCardProps {
     onDashboard: boolean;
@@ -29,36 +27,6 @@ function ConceptCard(props: ConceptCardProps) {
 
     const {} = useCompanyDashboard();
 
-    const formattedValue = useMemo(() => {
-        if (concept.isCurrencyData) {
-            return formatCurrency(concept.lastValue);
-        }
-
-        return concept.lastValue.toLocaleString();
-    }, [concept]);
-
-    const changeOverPriorYear = useMemo(() => {
-        return getChangeOverPriorYear(concept.dataPoints);
-    }, [concept]);
-
-    const percentageChangeOverPriorYear = useMemo(() => {
-        return getPercentChangeOverPriorYear(concept.dataPoints);
-    }, [concept]);
-
-    const formattedChangeValue = useMemo(() => {
-
-        let value = changeOverPriorYear;
-
-        if (value == 0) return 'No change over prior year';
-
-        if (value > 0) {
-            return `↑ ${concept.isCurrencyData ? formatCurrency(value) : value.toLocaleString()} from prior year`;
-        } else {
-            value = Math.abs(value);
-            return `↓ ${concept.isCurrencyData ? formatCurrency(value) : value.toLocaleString()}  from prior year`;
-        }
-
-    }, [changeOverPriorYear]);
 
     const onInfoClick = () => {
         navigator.clipboard.writeText(concept.description).then(() => {
@@ -100,12 +68,7 @@ function ConceptCard(props: ConceptCardProps) {
                     </div>
                 </div>
 
-                {/* Metric Preview */}
-                <div className="mt-4 p-4 bg-surface rounded-lg border border-border">
-                    <div className="text-sm text-secondary">Current Value</div>
-                    <div className="text-lg font-medium mt-1 text-foreground">{formattedValue}</div>
-                    <div className={cn("text-sm mt-1", getChangePercentClassName(percentageChangeOverPriorYear))}>{formattedChangeValue}</div>
-                </div>
+                <ConceptPreview concept={concept} />
 
                 {/* Actions */}
                 <div className="flex justify-between items-center mt-4">

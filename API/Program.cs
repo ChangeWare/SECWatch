@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using SECWatch.API.Common;
 using SECWatch.Application;
 using SECWatch.Domain.Common;
 using SECWatch.Domain.Features.Users.Models.Infrastructure;
@@ -27,7 +28,10 @@ builder.Services.Configure<RouteOptions>(options =>
     options.LowercaseUrls = true;
 });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.ModelBinderProviders.Insert(0, new CsvListModelBinderProvider());
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -38,6 +42,7 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 // Add application & domain services
 builder.Services.AddApplicationServices(builder.Configuration);
+
 
 var app = builder.Build();
 

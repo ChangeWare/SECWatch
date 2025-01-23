@@ -10,6 +10,7 @@ import {CompanyConcept} from "@features/company/types.ts";
 import {useParams} from "react-router-dom";
 import useCompanyDashboard from "@features/company/hooks/useCompanyDashboard.tsx";
 import LoadingIndicator from "@common/components/LoadingIndicator.tsx";
+import useAllCompanyConcepts from "@features/company/hooks/useAllCompanyConcepts.tsx";
 
 const CompanyConceptsView = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -17,7 +18,7 @@ const CompanyConceptsView = () => {
 
     const { companyId } = useParams();
 
-    const { concepts } = useCompanyConcepts(companyId);
+    const { concepts } = useAllCompanyConcepts(companyId);
 
     const {
         addConceptToDashboard,
@@ -96,7 +97,7 @@ const CompanyConceptsView = () => {
             <Card>
                 <CardHeader>
                     <div className="flex-col">
-                        <CardTitle>Concepts</CardTitle>
+                        <CardTitle>Metrics</CardTitle>
                         <p className="text-sm text-secondary mt-2">
                             Explore and analyze company metrics and data points
                         </p>

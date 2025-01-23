@@ -41,7 +41,7 @@ public class CompanyFilingHistory
     
     public CompanyFilingsHistoryMetadata Metadata { get; set; }
     
-    public CompanyFiling? RecentFiling { get; set; }
+    public CompanyFiling? MostRecentFiling { get; set; }
     
     public IReadOnlyList<CompanyFiling> Filings { get; set; }
 }

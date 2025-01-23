@@ -29,7 +29,7 @@ export function CompanyDashboardView() {
         removeConceptFromDashboard
     } = useCompanyDashboard(companyId);
 
-    const { concepts } = useCompanyConcepts(companyId);
+    const { concepts, conceptDataLoading } = useCompanyConcepts(companyId, dashboardPreferences?.pinnedConcepts);
 
     const handleToggleTrackCompany = () => {
         if (!company) return;
@@ -57,7 +57,7 @@ export function CompanyDashboardView() {
                 </div>
 
                 <LoadingIndicator
-                    isLoading={companyDetailsLoading || dashboardPreferencesIsLoading}
+                    isLoading={companyDetailsLoading || dashboardPreferencesIsLoading || conceptDataLoading}
                 >
                     {dashboardPreferences?.pinnedConcepts.map((conceptType) => {
                         const dashConcept = concepts.find((c) =>
@@ -76,14 +76,22 @@ export function CompanyDashboardView() {
                             }
                         }
                     )}
-                    {dashboardPreferences?.pinnedConcepts.length === 0 && (
+                    {dashboardPreferences?.pinnedConcepts.length === 0 ? (
                         <Card>
                             <div className="flex flex-col space-y-6 justify-center items-center h-64">
                                 <p className="text-foreground">No concepts pinned to dashboard</p>
                                 <p className="text-foreground">Explore the <Link className="text-info" to={`../${companyPaths.dashboard.concepts}`}>concepts</Link> section to begin pinning information here.</p>
                             </div>
                         </Card>
+                    ) : concepts.length === 0 && (
+                        <Card>
+                            <div className="flex flex-col space-y-6 justify-center items-center h-64">
+                                <p className="text-foreground">Concepts related to preferences for company not found.</p>
+                                <p className="text-foreground">This is likely an error. Please contact an administrator.</p>
+                            </div>
+                        </Card>
                     )}
+
                 </LoadingIndicator>
 
             </div>

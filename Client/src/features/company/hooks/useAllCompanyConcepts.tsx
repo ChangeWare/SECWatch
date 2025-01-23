@@ -6,12 +6,12 @@ import {CompanyConcept} from "@features/company/types.ts";
 import {sanitizeUnitType} from "@features/company/utils.tsx";
 
 
-const useCompanyConcepts = (companyId?: string, specificConceptTypes?: string[]) => {
+const useCompanyConcepts = (companyId?: string) => {
 
     const { data: conceptData, isLoading: conceptDataLoading, error: conceptDataError } = useQuery<CompanyConceptsResponse>({
-        queryKey: ['concepts', companyId, specificConceptTypes],
-        queryFn: () => companyApi.getCompanyConcepts(companyId!, specificConceptTypes!),
-        enabled: !!companyId && !!specificConceptTypes,
+        queryKey: ['allConcepts', companyId],
+        queryFn: () => companyApi.getAllCompanyConcepts(companyId!),
+        enabled: !!companyId,
         staleTime: 1000 * 60 * 5, // 5 minutes
     });
 
