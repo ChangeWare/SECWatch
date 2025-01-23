@@ -44,10 +44,10 @@ public class CompanyRepository(
         var filingHistory = await mongoDbContext
             .GetCollection<CompanyFilingHistory>("filing_history")
             .Find(x => x.Cik == cik)
-            .Project<CompanyFilingHistory>(Builders<CompanyFilingHistory>.Projection.Include(x => x.RecentFiling))
+            .Project<CompanyFilingHistory>(Builders<CompanyFilingHistory>.Projection.Include(x => x.MostRecentFiling))
             .FirstOrDefaultAsync();
         
-        return filingHistory?.RecentFiling;
+        return filingHistory?.MostRecentFiling;
     }
     
     /// <summary>
@@ -64,12 +64,12 @@ public class CompanyRepository(
             .Find(filter)
             .Project<CompanyFilingHistory>(Builders<CompanyFilingHistory>.Projection
                 .Include(x => x.Cik)
-                .Include(x => x.RecentFiling))
+                .Include(x => x.MostRecentFiling))
             .ToListAsync();
 
         return filings.ToDictionary(
             f => f.Cik,
-            f => f.RecentFiling
+            f => f.MostRecentFiling
         );
     }
 }

@@ -56,9 +56,34 @@ public class CompanyService(
         return Result.Ok(metroDto);
     }
 
-    public async Task<Result<IReadOnlyList<CompanyConceptDto>>> GetCompanyConceptsAsync(string cik)
+    public async Task<Result<IReadOnlyList<CompanyConceptDto>>> GetCompanyAllConceptsAsync(string cik)
     {
-        var concepts = await companyFinancialMetricsRepository.GetCompanyConceptsAsync(cik);
+        var concepts = await companyFinancialMetricsRepository.GetAllCompanyConceptsAsync(cik);
+        
+        var conceptsDto = mapper.Map<IReadOnlyList<CompanyConceptDto>>(concepts);
+        
+        conceptsDto = conceptsDto.Select(dto =>
+        {
+            var categoryInfo = categoriesService.GetCategory(dto.ConceptType);
+            return dto with 
+            { 
+                Category = categoryInfo?.Category ?? "Misc",
+                Description = categoryInfo?.Description ?? "",
+                IsCurrencyData = categoryInfo?.IsCurrencyData ?? true
+            };
+        }).ToList();
+        
+        return Result.Ok(conceptsDto);
+    }
+
+    public async Task<Result<IReadOnlyList<CompanyConceptDto>>> GetCompanyConceptsAsync(string cik, List<string> conceptTypes)
+    {
+        if (conceptTypes.Count <= 0)
+        {
+            return Result.Fail<IReadOnlyList<CompanyConceptDto>>("No concept types provided");
+        }
+        
+        var concepts = await companyFinancialMetricsRepository.GetCompanyConceptsAsync(cik, conceptTypes);
         
         var conceptsDto = mapper.Map<IReadOnlyList<CompanyConceptDto>>(concepts);
         

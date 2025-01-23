@@ -44,7 +44,7 @@ function CompanyConceptContent(props: CompanyConceptContentProps) {
         props.onDataPointSelected?.(dataPoint);
     }
 
-    const valueFormatter = companyConcept.isCurrencyData ? formatCurrency : (value: number) => value.toLocaleString();
+    const formatValue = companyConcept.isCurrencyData ? formatCurrency : (value: number) => value.toLocaleString();
 
     return (companyConcept.dataPoints?.length ?? 0) > 0 ? (
         <>
@@ -54,11 +54,7 @@ function CompanyConceptContent(props: CompanyConceptContentProps) {
                     <CardContent className="pt-6">
                         <div className="text-sm text-primary-light">Current Amount</div>
                         <div className="text-2xl font-bold mt-2 text-white">
-                            {companyConcept.isCurrencyData ? (
-                                formatCurrency(props.companyConcept.lastValue)
-                            ) : (
-                                props.companyConcept.lastValue.toLocaleString()
-                            )}
+                            {formatValue(props.companyConcept.lastValue)}
                         </div>
                         <div className="flex items-center mt-2">
                             {currentPeriodYoYChange.percentage > 0 ? (
@@ -80,11 +76,7 @@ function CompanyConceptContent(props: CompanyConceptContentProps) {
                     <CardContent className="pt-6">
                         <div className="text-sm text-primary-light">Year-over-Year Change</div>
                         <div className="text-2xl font-bold mt-2 text-foreground">
-                            {companyConcept.isCurrencyData ? (
-                                formatCurrency(currentPeriodYoYChange.value)
-                            ) : (
-                                currentPeriodYoYChange.value.toLocaleString()
-                            )}
+                            {formatValue(currentPeriodYoYChange.value)}
                         </div>
                         <div className="text-sm text-muted-foreground mt-2">
                             <a className={getChangePercentClassName(currentPeriodYoYChange.percentage)}>{currentPeriodYoYChange.value > 0 ? 'Increase' : 'Decrease'}</a> from previous year
@@ -96,7 +88,7 @@ function CompanyConceptContent(props: CompanyConceptContentProps) {
             {/* Chart */}
             <CompanyConceptChart
                 data={data}
-                valueFormatter={valueFormatter}
+                valueFormatter={formatValue}
                 handleDataPointSelected={handleDataPointSelected}
             />
 
@@ -162,6 +154,8 @@ function PinnedCompanyConceptSection(props: PinnedCompanyConceptSectionProps) {
         props.onUnpin(props.companyConcept!);
     }
 
+    const formatValue = companyConcept?.isCurrencyData ? formatCurrency : (value: number) => value.toLocaleString();
+
     return (
         <Card
             className={props.className}
@@ -199,7 +193,7 @@ function PinnedCompanyConceptSection(props: PinnedCompanyConceptSectionProps) {
                                 )}
                                 <CompanyConceptDataTableModal
                                     concept={props.companyConcept!}
-                                    formatValue={formatCurrency}
+                                    formatValue={formatValue}
                                     initialFocusDate={focusedDataPointDate}
                                     isOpen={dataTableModalOpen}
                                     onClose={() => setDataTableModalOpen(false)}

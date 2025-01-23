@@ -39,8 +39,13 @@ export const companyApi = {
         );
         return response.data;
     },
-    getCompanyConcepts: async (companyId: string): Promise<CompanyConceptsResponse> => {
-        const response = await apiClient.get<CompanyConceptsResponse>(`/concepts/company/${companyId}`);
+    getCompanyConcepts: async (companyId: string, specificConceptTypes: string[]): Promise<CompanyConceptsResponse> => {
+        const url =`/concepts/company/${companyId}?conceptTypes=${specificConceptTypes.join(',')}`
+        const response = await apiClient.get<CompanyConceptsResponse>(url);
+        return response.data;
+    },
+    getAllCompanyConcepts: async (companyId: string): Promise<CompanyConceptsResponse> => {
+        const response = await apiClient.get<CompanyConceptsResponse>(`/concepts/company/${companyId}/all`);
         return response.data;
     },
     postTrackCompany: async (companyId: string): Promise<CompanyDetailsResponse> => {
