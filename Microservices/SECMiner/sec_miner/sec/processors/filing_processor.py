@@ -1,7 +1,7 @@
 from itertools import groupby
 from redis import Redis
 from typing import List, Dict, Set
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from sec_miner.config.loader import config
 from sec_miner.persistence.message_bus.filing_event.event_broker import FilingEventBroker
 from sec_miner.persistence.message_bus.filing_event.types import FilingEvent, FilingEventData
@@ -15,6 +15,8 @@ from sec_miner.sec.utils import normalize_cik
 from sec_miner.utils.logger_factory import get_logger
 import uuid
 import json
+
+from sec_miner.utils.time import parse_datetime
 
 logger = get_logger(__name__)
 
@@ -60,11 +62,11 @@ class FilingProcessor:
         for filing in filings:
             filing.retry_count += 1
             filing.last_error = error
-            filing.last_attempt = datetime.utcnow()
+            filing.last_attempt = datetime.now(timezone.utc)
 
             if filing.retry_count <= self.MAX_RETRIES:
                 # Add to delayed retry queue
-                retry_at = datetime.utcnow() + timedelta(seconds=self.RETRY_DELAY)
+                retry_at = datetime.now(timezone.utc) + timedelta(seconds=self.RETRY_DELAY)
                 filing.retry_at = retry_at
 
                 pipeline.rpush(
@@ -150,10 +152,10 @@ class FilingProcessor:
 
             date_filed = datetime.strptime(data['date_filed'], '%Y-%m-%d %H:%M:%S')
 
-            last_attempt = datetime.strptime(data['last_attempt'], '%Y-%m-%d %H:%M:%S.%f') \
+            last_attempt = parse_datetime(data['last_attempt'], '%Y-%m-%d %H:%M:%S.%f') \
                 if data['last_attempt'] else None
 
-            retry_at = datetime.strptime(data['retry_at'], '%Y-%m-%d %H:%M:%S.%f') \
+            retry_at = parse_datetime(data['retry_at'], '%Y-%m-%d %H:%M:%S.%f') \
                 if data['retry_at'] else None
 
             filing = UnprocessedFiling(
@@ -277,9 +279,9 @@ class FilingProcessor:
                 break
 
             filing = json.loads(failed_filing)
-            retry_at = datetime.strptime(filing['retry_at'], '%Y-%m-%d %H:%M:%S.%f')
+            retry_at = parse_datetime(filing['retry_at'], '%Y-%m-%d %H:%M:%S.%f')
 
-            if datetime.utcnow() >= retry_at:
+            if datetime.now(timezone.utc) >= retry_at:
                 logger.info(f"Retrying failed filing {filing['entry_hash']}")
                 self.redis_client.rpush(
                     self.FILING_QUEUE,

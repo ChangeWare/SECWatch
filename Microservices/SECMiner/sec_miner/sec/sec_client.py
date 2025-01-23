@@ -15,6 +15,8 @@ from sec_miner.utils.logger_factory import get_logger
 import json
 import httpx
 
+from sec_miner.utils.time import parse_datetime
+
 logger = get_logger(__name__)
 
 
@@ -34,7 +36,7 @@ class SECClient:
         company_tickers_cache_data = self.redis_client.get('sec:company_tickers_cache')
         company_tickers_cache = json.loads(company_tickers_cache_data) if company_tickers_cache_data else None
 
-        last_updated = datetime.strptime(company_tickers_cache['last_updated'], '%Y-%m-%d %H:%M:%S.%f') \
+        last_updated = parse_datetime(company_tickers_cache['last_updated'], '%Y-%m-%d %H:%M:%S.%f') \
             if company_tickers_cache else None
 
         if last_updated and last_updated > datetime.now(timezone.utc) - timedelta(hours=12):
