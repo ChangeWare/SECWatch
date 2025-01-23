@@ -1,6 +1,6 @@
 import json
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import List, Dict, Optional, Set
 from redis import Redis
 from sec_miner.config.loader import config
@@ -12,6 +12,7 @@ from sec_miner.sec.processors.types import UnprocessedFiling, DiscoverCompaniesF
 from sec_miner.sec.sec_client import SECClient
 from sec_miner.sec.utils import normalize_cik
 from sec_miner.utils.logger_factory import get_logger
+from sec_miner.utils.time import parse_datetime
 
 logger = get_logger(__name__)
 
@@ -47,11 +48,11 @@ class CompanyProcessor:
         for company in companies:
             company.retry_count += 1
             company.last_error = error
-            company.last_attempt = datetime.utcnow()
+            company.last_attempt = datetime.now(timezone.utc)
 
             if company.retry_count <= self.NEW_COMPANY_MAX_RETRIES:
                 # Add to delayed retry queue with exponential backoff
-                retry_at = datetime.utcnow() + timedelta(seconds=self.NEW_COMPANY_MAX_RETRIES)
+                retry_at = datetime.now(timezone.utc) + timedelta(seconds=self.NEW_COMPANY_MAX_RETRIES)
                 company.retry_at = retry_at
 
                 pipeline.rpush(
@@ -80,10 +81,10 @@ class CompanyProcessor:
 
             source_filing_date = datetime.strptime(data['source_filing_date'], '%Y-%m-%d %H:%M:%S')
 
-            last_attempt = datetime.strptime(data['last_attempt'], '%Y-%m-%d %H:%M:%S.%f') \
+            last_attempt = parse_datetime(data['last_attempt'], '%Y-%m-%d %H:%M:%S.%f') \
                 if data['last_attempt'] else None
 
-            retry_at = datetime.strptime(data['retry_at'], '%Y-%m-%d %H:%M:%S.%f') \
+            retry_at = parse_datetime(data['retry_at'], '%Y-%m-%d %H:%M:%S.%f') \
                 if data['retry_at'] else None
 
             company = QueuedNewCompanyInfo(
