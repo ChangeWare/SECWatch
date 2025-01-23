@@ -90,9 +90,7 @@
         "process_index": {
             "task": "tasks.maintenance.process_index_updates",
             "schedule": {
-                "minute": "*/30",
-                "hour": "9-16",
-                "day_of_week": "1-5"
+                "minute": "*/30"
             }
         },
         "check-new-filings": {

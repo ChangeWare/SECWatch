@@ -25,6 +25,6 @@ def check_company_updates():
     new_company_queue_length = _redis_client.llen(config.NEW_COMPANY_QUEUE)
     companies_to_update_queue_length = _redis_client.llen(config.UPDATE_COMPANY_QUEUE)
 
-    if new_company_queue_length > 0 or companies_to_update_queue_length > 0:
+    if new_company_queue_length > 0:
         process_new_companies.delay()
-        logger.info(f"Triggered processing of companies.")
+        logger.info(f"Triggered processing of new companies.")

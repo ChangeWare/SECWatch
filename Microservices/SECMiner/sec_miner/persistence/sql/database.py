@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List
 from sqlalchemy import text, create_engine, QueuePool
 from sqlalchemy.orm import sessionmaker
@@ -66,7 +66,7 @@ class DbContext:
     def upsert_companies(self, companies: List[Company]):
         with self.session() as session:
             for company in companies:
-                company.last_updated = datetime.utcnow()
+                company.last_updated = datetime.now(timezone.utc)
                 session.merge(company)
             session.commit()
 
@@ -74,5 +74,5 @@ class DbContext:
         with self.session() as session:
             company = session.query(Company).filter(Company.cik == cik).first()
             company.last_known_filing_date = date
-            company.last_updated = datetime.utcnow()
+            company.last_updated = datetime.now(timezone.utc)
             session.commit()
