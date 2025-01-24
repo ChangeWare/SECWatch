@@ -8,7 +8,7 @@ public interface IConceptCategoriesService
     CompanyConceptCategory? GetCategory(string conceptType);
 }
 
-public class ConceptCategoryService(IWebHostEnvironment environment) : IConceptCategoriesService
+public class ConceptCategoryService : IConceptCategoriesService
 {
     private static Dictionary<string, CompanyConceptCategory> _categories;
 

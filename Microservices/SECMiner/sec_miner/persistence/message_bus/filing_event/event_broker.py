@@ -22,4 +22,11 @@ class FilingEventBroker:
 
     def queue_filings_events(self, filing_events: List[FilingEvent]):
         data = json.dumps([event.to_json() for event in filing_events], default=str)
-        self.channel.basic_publish(exchange='', routing_key='filing_event', body=data)
+        self.channel.basic_publish(
+            exchange='',
+            routing_key='filing_event',
+            body=data, 
+            properties=pika.BasicProperties(
+                content_type='application/json'
+            )
+        )

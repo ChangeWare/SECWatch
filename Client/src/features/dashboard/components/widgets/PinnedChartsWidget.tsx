@@ -8,16 +8,18 @@ import useCompanyDashboard from "@features/company/hooks/useCompanyDashboard.tsx
 import {cn} from "@common/lib/utils.ts";
 import {formatConceptType, formatCurrency, getChangePercentClassName} from "@features/company/utils.tsx";
 import ConceptPreview from "@features/company/components/ConceptPreview.tsx";
+import LoadingIndicator from "@common/components/LoadingIndicator.tsx";
 
 interface TrackedCompanyConceptCardProps {
     trackedCompany: TrackedCompanyDetails;
 }
 function TrackedCompanyConceptCard(props: TrackedCompanyConceptCardProps) {
     const { trackedCompany } = props;
-    const { dashboardPreferences } = useCompanyDashboard(trackedCompany.company.cik);
+    const { dashboardPreferences, dashboardPreferencesIsLoading } = useCompanyDashboard(trackedCompany.company.cik);
 
-    const { concepts } = useCompanyConcepts(trackedCompany.company.cik, dashboardPreferences?.pinnedConcepts);
+    const { concepts, conceptDataLoading } = useCompanyConcepts(trackedCompany.company.cik, dashboardPreferences?.pinnedConcepts);
 
+    const isLoading = !concepts || dashboardPreferencesIsLoading || conceptDataLoading;
 
     const selectedConcept = useMemo<CompanyConcept | null>(() => {
         // Only grab 1, being the one that is most recently updated
@@ -31,23 +33,25 @@ function TrackedCompanyConceptCard(props: TrackedCompanyConceptCardProps) {
 
     return (
         <Card variant="elevated" key={trackedCompany.ticker} className="p-4">
-            {selectedConcept && (
-                <>
-                    <div className="flex flex-col">
-                        <h3 className="text-white font-medium mb-1">{trackedCompany.company.name}</h3>
-                        <a className="text-gray-400 text-sm">{trackedCompany.company.ticker}</a>
-                    </div>
+            <LoadingIndicator isLoading={isLoading}>
+                {selectedConcept && (
+                    <>
+                        <div className="flex flex-col">
+                            <h3 className="text-white font-medium mb-1">{trackedCompany.company.name}</h3>
+                            <a className="text-gray-400 text-sm">{trackedCompany.company.ticker}</a>
+                        </div>
 
-                    <ConceptPreview concept={selectedConcept} header={formatConceptType(selectedConcept!.conceptType)}/>
-                </>
-            )}
+                        <ConceptPreview concept={selectedConcept} header={formatConceptType(selectedConcept!.conceptType)}/>
+                    </>
+                )}
+            </LoadingIndicator>
         </Card>
     )
 }
 
 
 export function PinnedChartsWidget() {
-    const {trackedCompanies} = useTrackedCompanies();
+    const {trackedCompanies, trackedCompaniesLoading } = useTrackedCompanies();
 
     const recentTrackedCompanies = useMemo(() => {
         if (!trackedCompanies) return [];
@@ -59,14 +63,17 @@ export function PinnedChartsWidget() {
         ).slice(0, 3);
     }, [trackedCompanies]);
 
+    const isLoading = !trackedCompanies || trackedCompaniesLoading;
+
     return (
         <WidgetContainer title="Tracked Company Pinned Metrics">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {recentTrackedCompanies.map(tc => (
-                    <TrackedCompanyConceptCard key={tc.company.ticker} trackedCompany={tc} />
-                ))}
-            </div>
-
+            <LoadingIndicator isLoading={isLoading}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {recentTrackedCompanies.map(tc => (
+                        <TrackedCompanyConceptCard key={tc.company.ticker} trackedCompany={tc}/>
+                    ))}
+                </div>
+            </LoadingIndicator>
         </WidgetContainer>
     );
 }

@@ -105,5 +105,7 @@
                 "minute": "*/10"
             }
         }
-    }
+    },
+
+    "VPS_HOST": "{hostname}"
 }

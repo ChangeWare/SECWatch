@@ -48,7 +48,7 @@ public class UserService(
         
         await userRepository.AddAsync(user);
         
-        await emailService.SendVerificationEmailAsync(user.Email, verificationToken);
+        await emailService.SendVerificationEmailAsync(user, verificationToken);
         
         await eventService.TrackEventAsync(
             "UserRegistered",

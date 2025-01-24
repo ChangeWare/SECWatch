@@ -1,0 +1,125 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <AssemblyName>SECWatch.API</AssemblyName>
+        <RootNamespace>SECWatch.API</RootNamespace>
+        <OutputType>Exe</OutputType>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="SECWatch.Domain\**" />
+      <Compile Remove="SECWatch.Infrastructure\**" />
+      <Compile Remove="SECWatch.Application\**" />
+      <Compile Remove="AlertWorkerService\**" />
+      <Compile Update="SECWatch.EmailTemplates\Models\CompanyNotificationGroup.cs">
+        <Link>EmailTemplates\Models\CompanyNotificationGroup.cs</Link>
+      </Compile>
+      <Compile Update="SECWatch.EmailTemplates\Models\FilingNotificationInfo.cs">
+        <Link>EmailTemplates\Models\FilingNotificationInfo.cs</Link>
+      </Compile>
+      <Compile Remove="SECWatch.AlertWorkerService\**" />
+      <Compile Remove="SECWatch.EmailTemplates\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="SECWatch.Domain\**" />
+      <EmbeddedResource Remove="SECWatch.Infrastructure\**" />
+      <EmbeddedResource Remove="SECWatch.Application\**" />
+      <EmbeddedResource Remove="AlertWorkerService\**" />
+      <EmbeddedResource Remove="SECWatch.AlertWorkerService\**" />
+      <EmbeddedResource Remove="SECWatch.EmailTemplates\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Remove="SECWatch.Domain\**" />
+      <Content Remove="SECWatch.Infrastructure\**" />
+      <Content Remove="SECWatch.Application\**" />
+      <Content Remove="AlertWorkerService\**" />
+      <Content Remove="SECWatch.AlertWorkerService\**" />
+      <Content Remove="SECWatch.EmailTemplates\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="SECWatch.Domain\**" />
+      <None Remove="SECWatch.Infrastructure\**" />
+      <None Remove="SECWatch.Application\**" />
+      <None Remove="AlertWorkerService\**" />
+      <None Remove="SECWatch.AlertWorkerService\**" />
+      <None Remove="SECWatch.EmailTemplates\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="SECWatch.Domain\appsettings.Development.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.Domain\appsettings.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.Domain\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.Domain\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.Domain\obj\SECWatch.Domain.csproj.nuget.dgspec.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.Domain\Properties\launchSettings.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.Infrastructure\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.Infrastructure\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.Infrastructure\obj\SECWatch.Infrastructure.csproj.nuget.dgspec.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.Application\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.Application\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.Application\obj\SECWatch.Application.csproj.nuget.dgspec.json" />
+      <_ContentIncludedByDefault Remove="AlertWorkerService\appsettings.Development.json" />
+      <_ContentIncludedByDefault Remove="AlertWorkerService\appsettings.json" />
+      <_ContentIncludedByDefault Remove="AlertWorkerService\obj\AlertWorkerService.csproj.nuget.dgspec.json" />
+      <_ContentIncludedByDefault Remove="AlertWorkerService\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="AlertWorkerService\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="AlertWorkerService\Properties\launchSettings.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.AlertWorkerService\appsettings.Development.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.AlertWorkerService\appsettings.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.AlertWorkerService\appsettings.Production.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.AlertWorkerService\bin\Debug\net9.0\AlertWorkerService.deps.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.AlertWorkerService\bin\Debug\net9.0\AlertWorkerService.runtimeconfig.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.AlertWorkerService\bin\Debug\net9.0\appsettings.Development.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.AlertWorkerService\bin\Debug\net9.0\appsettings.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.AlertWorkerService\bin\Debug\net9.0\appsettings.Production.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.AlertWorkerService\bin\Debug\net9.0\EmailTemplates.staticwebassets.endpoints.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.AlertWorkerService\bin\Debug\net9.0\EmailTemplates.staticwebassets.runtime.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.AlertWorkerService\bin\Debug\net9.0\ReferenceData\concept_categories.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.AlertWorkerService\bin\Debug\net9.0\SECWatch.Domain.staticwebassets.endpoints.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.AlertWorkerService\obj\AlertWorkerService.csproj.nuget.dgspec.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.AlertWorkerService\obj\Debug\net9.0\AlertWorkerService.sourcelink.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.AlertWorkerService\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.AlertWorkerService\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.AlertWorkerService\obj\SECWatch.AlertWorkerService.csproj.nuget.dgspec.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.AlertWorkerService\Properties\launchSettings.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.EmailTemplates\bin\Debug\net9.0\EmailTemplates.deps.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.EmailTemplates\bin\Debug\net9.0\EmailTemplates.staticwebassets.endpoints.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.EmailTemplates\bin\Debug\net9.0\EmailTemplates.staticwebassets.runtime.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.EmailTemplates\obj\Debug\net9.0\EmailTemplates.sourcelink.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.EmailTemplates\obj\Debug\net9.0\staticwebassets.build.endpoints.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.EmailTemplates\obj\Debug\net9.0\staticwebassets.build.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.EmailTemplates\obj\Debug\net9.0\staticwebassets.development.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.EmailTemplates\obj\EmailTemplates.csproj.nuget.dgspec.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.EmailTemplates\obj\project.assets.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.EmailTemplates\obj\project.packagespec.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.EmailTemplates\obj\SECWatch.EmailTemplates.csproj.nuget.dgspec.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.EmailTemplates\Views\NewFilingsDailyDigestEmail.razor" />
+      <_ContentIncludedByDefault Remove="SECWatch.EmailTemplates\Views\VerificationEmail.razor" />
+      <_ContentIncludedByDefault Remove="SECWatch.EmailTemplates\_Imports.razor" />
+      <_ContentIncludedByDefault Remove="SECWatch.EmailTemplates\bin\Debug\net9.0\SECWatch.EmailTemplates.deps.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.EmailTemplates\bin\Debug\net9.0\SECWatch.EmailTemplates.staticwebassets.endpoints.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.EmailTemplates\bin\Debug\net9.0\SECWatch.EmailTemplates.staticwebassets.runtime.json" />
+      <_ContentIncludedByDefault Remove="SECWatch.EmailTemplates\obj\Debug\net9.0\SECWatch.EmailTemplates.sourcelink.json" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SECWatch.Application\SECWatch.Application.csproj" />
+      <ProjectReference Include="..\SECWatch.Domain\SECWatch.Domain.csproj" />
+      <ProjectReference Include="..\SECWatch.Infrastructure\SECWatch.Infrastructure.csproj" />
+    </ItemGroup>
+
+</Project>

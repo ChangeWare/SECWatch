@@ -1,5 +1,6 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,11 +9,13 @@ using MongoDB.Bson.Serialization.Conventions;
 using SECWatch.Application.Features.Authentication.Utils;
 using SECWatch.Application.Features.Communication.Email.Services;
 using SECWatch.Domain.Common;
+using SECWatch.Domain.Features.Alerts.Repositories;
 using SECWatch.Domain.Features.Companies.Repositories;
 using SECWatch.Domain.Features.Notes;
 using SECWatch.Domain.Features.Users;
 using SECWatch.Domain.Features.Users.Models.Preferences;
 using SECWatch.Infrastructure.Common;
+using SECWatch.Infrastructure.Features.Alerts;
 using SECWatch.Infrastructure.Features.Authentication;
 using SECWatch.Infrastructure.Features.Authentication.Utils;
 using SECWatch.Infrastructure.Features.Communication.Email;
@@ -32,20 +35,12 @@ public static class DependencyInjection
     this IServiceCollection services,
     IConfiguration configuration)
     {
-        // Add JWT Configuration
         var jwtConfig = configuration.GetSection("Jwt").Get<JwtTokenConfiguration>();
         if (jwtConfig is null)
         {
             throw new InvalidOperationException("JWT configuration is missing from appsettings");
         }
         services.AddSingleton(jwtConfig);
-        
-        // Add MongoDB Configuration
-        services.Configure<MongoDbSettings>(
-            configuration.GetSection("MongoDb"));
-        var conventionPack = new ConventionPack { new MongoSnakeCaseElementNameConvention() };
-        ConventionRegistry.Register("SnakeCase", conventionPack, _ => true);
-        MongoMappings.RegisterMappings();
         
         // First configure all the JWT options
         var jwtSection = configuration.GetSection("Jwt");
@@ -61,7 +56,7 @@ public static class DependencyInjection
             ValidateLifetime = true,
             ClockSkew = TimeSpan.Zero
         };
-
+        
         // Do authentication setup and scheme registration in one chain
         services.AddAuthentication(options =>
             {
@@ -76,13 +71,21 @@ public static class DependencyInjection
         // Make sure this runs AFTER AddJwtBearer
         services.AddScoped<JwtBearerHandler, JwtAuthenticationHandler>();
         
+        services.AddSingleton<ITokenGenerator, JwtTokenGenerator>();
+        
+        // Add MongoDB Configuration
+        services.Configure<MongoDbSettings>(
+            configuration.GetSection("MongoDb"));
+        var conventionPack = new ConventionPack { new MongoSnakeCaseElementNameConvention() };
+        ConventionRegistry.Register("SnakeCase", conventionPack, _ => true);
+        MongoMappings.RegisterMappings();
+        
         services.AddHttpClient();
         
         // Register infrastructure & utility services
-        services.AddSingleton<ITokenGenerator, JwtTokenGenerator>();
         services.AddSingleton<IPasswordHasher, BcryptPasswordHasher>();
-        services.AddScoped<IEmailService, SendGridEmailService>();
-        
+        services.AddTransient<IEmailRenderer, EmailRenderer>();
+        services.AddTransient<IEmailService, MailgunEmailService>();
         
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -101,6 +104,8 @@ public static class DependencyInjection
         services.AddTransient<INoteRepository, NoteRepository>();
         services.AddTransient<ITrackedCompanyRepository, TrackedCompanyRepository>();
         services.AddTransient<ICompanyUserDashboardPreferencesRepository, CompanyUserDashboardPreferencesRepository>();
+        services.AddTransient<IFilingAlertRuleRepository, FilingAlertRuleRepository>();
+        services.AddTransient<IFilingAlertNotificationRepository, FilingAlertNotificationRepository>();
         
         return services;
     }

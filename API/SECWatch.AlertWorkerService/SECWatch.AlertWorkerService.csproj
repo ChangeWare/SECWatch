@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>dotnet-AlertWorkerService-82ab5ffe-a0cf-49fe-a69b-ee76a6b2c1cf</UserSecretsId>
+        <AssemblyName>SECWatch.AlertWorkerService</AssemblyName>
+        <RootNamespace>SECWatch.AlertWorkerService</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="MassTransit" Version="8.3.5-develop.2185" />
+        <PackageReference Include="MassTransit.RabbitMQ" Version="8.3.5-develop.2185" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.0"/>
+        <PackageReference Include="Quartz" Version="3.13.1" />
+        <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.13.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SECWatch.Application\SECWatch.Application.csproj" />
+      <ProjectReference Include="..\SECWatch.Domain\SECWatch.Domain.csproj" />
+      <ProjectReference Include="..\SECWatch.Infrastructure\SECWatch.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Utils\" />
+    </ItemGroup>
+</Project>

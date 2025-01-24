@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SECWatch.Application.Common.Events;
+using SECWatch.Application.Features.Alerts.Services;
 using SECWatch.Application.Features.Authentication.Services;
 using SECWatch.Application.Features.Companies;
 using SECWatch.Application.Features.Notes;
@@ -20,6 +21,7 @@ public static class DependencyInjection
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IUserDomainService, UserDomainService>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddTransient<IAlertRulesEngine, AlertRulesEngine>();
         services.AddTransient<HttpClient>();
         services.AddScoped<ICompanyService, CompanyService>();
         services.AddScoped<INoteService, NoteService>();
