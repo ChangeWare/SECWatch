@@ -1,0 +1,90 @@
+@using SECWatch.EmailTemplates.Models
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: #1a1f35;
+            color: #f2f2f2;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: #242b45;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header {
+            color: #4f46e5;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .company-group {
+            margin-bottom: 24px;
+        }
+
+        .company-name {
+            color: #ffb703;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .filing {
+            background-color: #2d3555;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+        }
+
+        .filing-type {
+            color: #10b981;
+            font-weight: 600;
+        }
+
+        .filing-date {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+    </style>
+    <title>Daily New Filings Digest</title>
+</head>
+<body>
+<div class="card">
+    <div class="header">
+        Your Daily SEC Filing Digest
+    </div>
+
+    @foreach (var group in NotificationsByCompany)
+    {
+        <div class="company-group">
+            <div class="company-name">
+                @group.CompanyName
+            </div>
+
+            @foreach (var notification in group.Notifications)
+            {
+                <div class="filing">
+                    <span class="filing-type">@notification.FormType</span>
+                    <div class="filing-date">
+                        Filed on @notification.FilingDate.ToString("MMMM d, yyyy")
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+</body>
+</html>
+
+@code {
+    [Parameter]
+    public List<CompanyNotificationGroup> NotificationsByCompany { get; set; } = new();
+}

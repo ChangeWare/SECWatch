@@ -27,8 +27,8 @@ class FilingEvent:
     def to_json(self):
         return {
             'cik': self.cik,
-            'event_type': self.event_type,
-            'event_id': self.event_id,
-            'timestamp': str(self.timestamp),
+            'eventType': self.event_type,
+            'eventId': self.event_id,
+            'timestamp': self.timestamp.isoformat(),  # Use ISO format with T and Z
             'data': self.data.to_json()
         }

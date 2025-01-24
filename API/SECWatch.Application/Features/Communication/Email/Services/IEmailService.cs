@@ -1,10 +1,12 @@
+using SECWatch.Domain.Features.Alerts.Models;
 using SECWatch.Domain.Features.Authentication;
+using SECWatch.Domain.Features.Users.Models;
 
 namespace SECWatch.Application.Features.Communication.Email.Services;
 
 public interface IEmailService
 {
-    Task SendEmailAsync(string email, string subject, string message);
+    Task SendDailyFilingDigestAsync(User user, IEnumerable<FilingAlertNotification> notifications);
     
-    Task SendVerificationEmailAsync(string email, VerificationToken token);
+    Task SendVerificationEmailAsync(User user, VerificationToken token);
 }

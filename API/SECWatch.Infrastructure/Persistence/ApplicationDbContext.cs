@@ -1,6 +1,7 @@
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using SECWatch.Domain.Common;
+using SECWatch.Domain.Features.Alerts.Models;
 using SECWatch.Domain.Features.Companies.Models;
 using SECWatch.Domain.Features.Notes.Models;
 using SECWatch.Domain.Features.Users.Models;
@@ -19,6 +20,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<CompanyUserDashboardPreferences> CompanyUserDashboardPreferences => Set<CompanyUserDashboardPreferences>();
 
     public DbSet<Note> Notes => Set<Note>();
+    
+    public DbSet<FilingAlertNotification> FilingAlertNotifications => Set<FilingAlertNotification>();
+    
+    public DbSet<FilingAlertRule> FilingAlertRules => Set<FilingAlertRule>();
     
     public DbSet<SystemEvent> SystemEvents => Set<SystemEvent>();
 
