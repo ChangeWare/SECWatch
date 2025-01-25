@@ -1,21 +1,20 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SECWatch.Domain.Features.Alerts.Models;
-using SECWatch.Domain.Features.Users.Models;
 
 namespace SECWatch.Infrastructure.Features.Alerts;
 
-public class FilingAlertNotificationConfiguration : IEntityTypeConfiguration<FilingAlertNotification>
+public class AlertNotificationConfiguration : IEntityTypeConfiguration<AlertNotification>
 {
-    public void Configure(EntityTypeBuilder<FilingAlertNotification> builder)
+    public void Configure(EntityTypeBuilder<AlertNotification> builder)
     {
-        builder.ToTable("FilingAlertNotifications");
+        builder.ToTable("AlertNotifications");
 
         builder.HasKey(x => x.Id);
 
-        builder.HasOne(x => x.FilingAlertRule)
+        builder.HasOne(x => x.AlertRule)
             .WithMany()
-            .HasForeignKey(x => x.FilingAlertRuleId)
+            .HasForeignKey(x => x.AlertRuleId)
             .OnDelete(DeleteBehavior.Restrict);
         
         builder.HasOne(x => x.User)

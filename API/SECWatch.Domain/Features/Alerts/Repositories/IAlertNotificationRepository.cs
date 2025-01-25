@@ -2,11 +2,11 @@ using SECWatch.Domain.Features.Alerts.Models;
 
 namespace SECWatch.Domain.Features.Alerts.Repositories;
 
-public interface IFilingAlertNotificationRepository
+public interface IAlertNotificationRepository
 {
     Task<IEnumerable<UserNotificationGroup>> GetUnprocessedNotificationsGroupedByUserAsync(DateTime since);
     
-    Task<FilingAlertNotification> AddAsync(FilingAlertNotification notification);
+    Task<AlertNotification> AddAsync(AlertNotification notification);
     
     Task MarkEmailsSentAsync(List<Guid> notificationIds);
 }

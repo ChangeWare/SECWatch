@@ -4,6 +4,9 @@
       "route": "/images/*"
     },
     {
+      "route": "/assets/*"
+    },
+    {
       "route": "/*",
       "rewrite": "/index.html"
     }

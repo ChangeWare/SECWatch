@@ -9,7 +9,9 @@ import {
     Settings,
 } from "lucide-react";
 import {Link, useLocation} from "react-router-dom";
-import {dashboardPaths} from "@features/dashboard";
+import { dashboardPaths } from "@features/dashboard";
+import filingPaths from "@features/filings/paths.ts";
+import alertPaths from "@features/alerts/paths.ts";
 
 interface DashboardSidebarProps {
     sidebarOpen: boolean;
@@ -100,6 +102,7 @@ function SideNavMenuItem(props: SideNavMenuItemProps) {
 export default function DashboardSidebar(props: DashboardSidebarProps) {
     const [companiesOpen, setCompaniesOpen] = useState(true);
     const [filingsOpen, setFilingsOpen] = useState(false);
+    const [alertsOpen, setAlertsOpen] = useState(false);
 
     // Navigation items with nested structure
     const navItems: SideNavMenuItemData[] = [
@@ -123,13 +126,22 @@ export default function DashboardSidebar(props: DashboardSidebarProps) {
             isOpen: filingsOpen,
             setOpen: setFilingsOpen,
             items: [
-                {label: 'Recent Filings', href: '#'},
-                {label: 'Filing Alerts', href: '#'},
+                { label: 'Recent Filings', href: '#' },
                 {label: 'Analysis', href: '#'},
             ],
         },
+        {
+            icon: AlertCircle,
+            label: 'Alerts',
+            href: '#',
+            isGroup: true,
+            isOpen: alertsOpen,
+            setOpen: setAlertsOpen,
+            items: [
+                { label: 'Alert Rules', href: alertPaths.rules },
+            ],
+        },
         {icon: LineChart, label: 'Analytics', href: '#'},
-        {icon: AlertCircle, label: 'Alerts', href: '#'},
         {icon: Settings, label: 'Settings', href: '#'},
     ];
 

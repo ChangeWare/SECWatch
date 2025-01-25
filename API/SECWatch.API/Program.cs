@@ -1,7 +1,10 @@
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using SECWatch.API.Common;
+using SECWatch.API.Features.Alerts.DTOs;
 using SECWatch.API.Features.Dev;
 using SECWatch.Application;
 using SECWatch.Domain.Common;
@@ -43,7 +46,6 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 // Add application & domain services
 builder.Services.AddApplicationServices(builder.Configuration);
-
 
 var app = builder.Build();
 

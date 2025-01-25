@@ -8,7 +8,7 @@ namespace SECWatch.AlertWorkerService.Consumers;
 public class FilingEventConsumer(
     ILogger<FilingEventConsumer> logger,
     IAlertRulesEngine rulesEngine,
-    IFilingAlertNotificationRepository notificationRepository)
+    IAlertNotificationRepository notificationRepository)
     : IConsumer<FilingEvent>
 {
     public async Task Consume(ConsumeContext<FilingEvent> context)
@@ -25,15 +25,15 @@ public class FilingEventConsumer(
         
         foreach (var match in filingAlertRuleMatches)
         {
-            await notificationRepository.AddAsync(new FilingAlertNotification
+            await notificationRepository.AddAsync(new AlertNotification
             {
-                FilingAlertRuleId = match.Rule.Id,
+                AlertRuleId = match.Rule.Id,
                 UserId = match.Rule.UserId,
                 CompanyCik = filingEvent.Cik,
                 EventId = filingEvent.EventId,
                 IsViewed = false,
                 IsEmailSent = false,
-                EventType = "Filing",
+                EventType = AlertNotificationType.FilingAlert,
                 FormType = match.Filing.FormType,
                 AccessionNumber = match.Filing.AccessionNumber,
                 FilingDate = match.Filing.FilingDate,

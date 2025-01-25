@@ -5,11 +5,11 @@ using SECWatch.Infrastructure.Persistence;
 
 namespace SECWatch.Infrastructure.Features.Alerts;
 
-public class FilingAlertNotificationRepository(ApplicationDbContext dbContext) : IFilingAlertNotificationRepository
+public class AlertNotificationRepository(ApplicationDbContext dbContext) : IAlertNotificationRepository
 {
     public async Task<IEnumerable<UserNotificationGroup>> GetUnprocessedNotificationsGroupedByUserAsync(DateTime since)
     {
-        return await dbContext.FilingAlertNotifications
+        return await dbContext.AlertNotifications
             .Where(n => 
                 !n.IsEmailSent && 
                 n.CreatedAt >= since)
@@ -18,22 +18,22 @@ public class FilingAlertNotificationRepository(ApplicationDbContext dbContext) :
             .Select(group => new UserNotificationGroup
             {
                 UserId = group.Key,
-                User = group.First().User,  // If you included User above
+                User = group.First().User, 
                 Notifications = group.ToList()
             })
             .ToListAsync();
     }
 
-    public async Task<FilingAlertNotification> AddAsync(FilingAlertNotification notification)
+    public async Task<AlertNotification> AddAsync(AlertNotification notification)
     {
-        await dbContext.FilingAlertNotifications.AddAsync(notification);
+        await dbContext.AlertNotifications.AddAsync(notification);
         await dbContext.SaveChangesAsync();
         return notification;
     }
 
     public async Task MarkEmailsSentAsync(List<Guid> notificationIds)
     {
-        var notifications = await dbContext.FilingAlertNotifications
+        var notifications = await dbContext.AlertNotifications
             .Where(n => notificationIds.Contains(n.Id))
             .ToListAsync();
 
