@@ -95,5 +95,3 @@ class ConfigModel(BaseModel):
 
     # Beat Schedule
     BEAT_SCHEDULE: Dict[str, CelerySchedule]
-
-    VPS_HOST: str
