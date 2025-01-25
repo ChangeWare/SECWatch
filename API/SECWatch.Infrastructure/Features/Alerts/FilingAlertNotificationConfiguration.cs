@@ -12,14 +12,16 @@ public class FilingAlertNotificationConfiguration : IEntityTypeConfiguration<Fil
         builder.ToTable("FilingAlertNotifications");
 
         builder.HasKey(x => x.Id);
-        
-        builder.HasOne<FilingAlertRule>()
-            .WithMany()
-            .HasForeignKey(x => x.FilingAlertRuleId);
 
-        builder.HasOne<User>()
+        builder.HasOne(x => x.FilingAlertRule)
             .WithMany()
-            .HasForeignKey(x => x.UserId);
+            .HasForeignKey(x => x.FilingAlertRuleId)
+            .OnDelete(DeleteBehavior.Restrict);
+        
+        builder.HasOne(x => x.User)
+            .WithMany()
+            .HasForeignKey(x => x.UserId)
+            .OnDelete(DeleteBehavior.Cascade); 
         
         builder.Property(x => x.FormType)
             .HasMaxLength(100)
@@ -51,5 +53,8 @@ public class FilingAlertNotificationConfiguration : IEntityTypeConfiguration<Fil
 
         builder.Property(x => x.CreatedAt)
             .IsRequired();
+
+        builder.Property(x => x.AccessionNumber)
+            .HasMaxLength(20);
     }
 }

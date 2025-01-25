@@ -15,19 +15,22 @@ public class FilingAlertRuleConfiguration : IEntityTypeConfiguration<FilingAlert
 
         builder.HasKey(x => x.Id);
         
-        builder.HasOne<Company>()
+        builder.HasOne(x => x.Company)
             .WithMany()
             .HasForeignKey(x => x.CompanyId);
         
-        builder.HasOne<User>()
+        builder.HasOne(x => x.User)
             .WithMany()
             .HasForeignKey(x => x.UserId);
         
-        builder.Property(x => x.FormTypes)
+        builder.Property("_formTypes")
             .HasConversion(new ValueConverter<List<string>, string>(
                 v => string.Join(',', v),
                 v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList()
                 )
             );
+
+        builder.Property(x => x.LastTriggeredAt)
+            .IsRequired(false);
     }
 }

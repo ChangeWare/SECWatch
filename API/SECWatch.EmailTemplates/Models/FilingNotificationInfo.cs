@@ -1,7 +1,8 @@
 namespace SECWatch.EmailTemplates.Models;
 
-public class FilingNotificationInfo
+public record FilingNotificationInfo
 {
-    public string FormType { get; set; }
-    public DateTime FilingDate { get; set; }
+    public required string AccessionNumber { get; set; }
+    public required string FormType { get; set; }
+    public required DateTime FilingDate { get; set; }
 }

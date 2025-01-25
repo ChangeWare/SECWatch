@@ -1,7 +1,7 @@
-using AlertWorkerService.Consumers;
-using AlertWorkerService.Jobs;
 using MassTransit;
 using Quartz;
+using SECWatch.AlertWorkerService.Consumers;
+using SECWatch.AlertWorkerService.Jobs;
 using SECWatch.Application;
 using SECWatch.Infrastructure;
 
@@ -16,7 +16,6 @@ builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<FilingEventConsumer>();
-    x.AddConsumer<FilingAlertNotificationConsumer>();
     
     x.UsingRabbitMq((context, cfg) =>
     {
@@ -35,6 +34,8 @@ builder.Services.AddMassTransit(x =>
                 TimeSpan.FromSeconds(15)
             ));
         });
+        
+        cfg.ConfigureEndpoints(context);
     });
 });
 
@@ -47,13 +48,15 @@ builder.Services.AddQuartz(q =>
     q.AddTrigger(opts => opts
         .ForJob(jobKey)
         .WithIdentity("AlertDigestJob-trigger")
-        // Run at 9 AM & 2PM EST daily
-        //.WithCronSchedule("0 0 14,19 * * ?")
-        .WithSimpleSchedule(x => x
-            .WithIntervalInMinutes(1)
-            .RepeatForever()
-        )
+        // Run at 10AM EST daily
+        .WithCronSchedule("0 0 10 ? * MON-FRI *", x => 
+            x.InTimeZone(TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time")))
     );
+});
+
+builder.Services.AddQuartzHostedService(options =>
+{
+    options.WaitForJobsToComplete = true;
 });
 
 var host = builder.Build();

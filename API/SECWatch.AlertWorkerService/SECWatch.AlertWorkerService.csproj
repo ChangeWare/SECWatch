@@ -15,15 +15,12 @@
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.0"/>
         <PackageReference Include="Quartz" Version="3.13.1" />
         <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.13.1" />
+        <PackageReference Include="Quartz.Extensions.Hosting" Version="3.13.1" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\SECWatch.Application\SECWatch.Application.csproj" />
       <ProjectReference Include="..\SECWatch.Domain\SECWatch.Domain.csproj" />
       <ProjectReference Include="..\SECWatch.Infrastructure\SECWatch.Infrastructure.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Utils\" />
     </ItemGroup>
 </Project>

@@ -2,6 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using SECWatch.API.Common;
+using SECWatch.API.Features.Dev;
 using SECWatch.Application;
 using SECWatch.Domain.Common;
 using SECWatch.Domain.Features.Users.Models.Infrastructure;
@@ -53,6 +54,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.MapEmailPreviewEndpoints();
 }
 
 app.UseHttpsRedirection();

@@ -18,13 +18,13 @@ class FilingEventBroker:
             )
         )
         self.channel = self.connection.channel()
-        self.channel.queue_declare(queue='filing_event', durable=True)
+        self.channel.queue_declare(queue='filing_events', durable=True)
 
-    def queue_filings_events(self, filing_events: List[FilingEvent]):
-        data = json.dumps([event.to_json() for event in filing_events], default=str)
+    def queue_filings_event(self, filing_event: FilingEvent):
+        data = json.dumps(filing_event.to_json(), default=str)
         self.channel.basic_publish(
             exchange='',
-            routing_key='filing_event',
+            routing_key='filing_events',
             body=data, 
             properties=pika.BasicProperties(
                 content_type='application/json'

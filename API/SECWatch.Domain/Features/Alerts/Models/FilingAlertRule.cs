@@ -19,5 +19,5 @@ public class FilingAlertRule : AggregateRoot
     
     public required DateTime CreatedAt { get; set; }
     
-    public DateTime LastTriggeredAt { get; set; }
+    public DateTime? LastTriggeredAt { get; set; }
 }
