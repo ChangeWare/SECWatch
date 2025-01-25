@@ -1,40 +1,46 @@
-using AlertWorkerService.Contracts;
 using MassTransit;
 using SECWatch.Application.Features.Alerts.Services;
 using SECWatch.Domain.Features.Alerts.Models;
+using SECWatch.Domain.Features.Alerts.Repositories;
 
-namespace AlertWorkerService.Consumers;
+namespace SECWatch.AlertWorkerService.Consumers;
 
 public class FilingEventConsumer(
     ILogger<FilingEventConsumer> logger,
     IAlertRulesEngine rulesEngine,
-    IPublishEndpoint publishEndpoint)
+    IFilingAlertNotificationRepository notificationRepository)
     : IConsumer<FilingEvent>
 {
     public async Task Consume(ConsumeContext<FilingEvent> context)
     {
-        var filing = context.Message;
+        var filingEvent = context.Message;
         
         logger.LogInformation(
             "Processing filing event {EventId} for CIK {Cik}", 
-            filing.EventId, 
-            filing.Cik
+            filingEvent.EventId, 
+            filingEvent.Cik
         );
 
-        var matchingRules = await rulesEngine.GetMatchingFilingRulesAsync(filing);
-
-        foreach (var rule in matchingRules)
+        var filingAlertRuleMatches = await rulesEngine.GetFilingsMatchingRules(filingEvent);
+        
+        foreach (var match in filingAlertRuleMatches)
         {
-            await publishEndpoint.Publish(new FilingAlertNotificationEvent
+            await notificationRepository.AddAsync(new FilingAlertNotification
             {
-                AlertRuleId = rule.Id,
-                UserId = rule.UserId,
-                CompanyCik = rule.Company.Cik,
-                EventId = filing.EventId,
-                FormType = filing.Data.FormType,
-                FilingDate = filing.Data.FilingDate,
-                AccessionNumber = filing.Data.AccessionNumber
+                FilingAlertRuleId = match.Rule.Id,
+                UserId = match.Rule.UserId,
+                CompanyCik = filingEvent.Cik,
+                EventId = filingEvent.EventId,
+                IsViewed = false,
+                IsEmailSent = false,
+                EventType = "Filing",
+                FormType = match.Filing.FormType,
+                AccessionNumber = match.Filing.AccessionNumber,
+                FilingDate = match.Filing.FilingDate,
+                IsDismissed = false,
+                CreatedAt = DateTime.UtcNow
             });
+
         }
     }
 }

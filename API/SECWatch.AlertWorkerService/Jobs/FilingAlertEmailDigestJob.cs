@@ -2,7 +2,7 @@ using Quartz;
 using SECWatch.Application.Features.Communication.Email.Services;
 using SECWatch.Domain.Features.Alerts.Repositories;
 
-namespace AlertWorkerService.Jobs;
+namespace SECWatch.AlertWorkerService.Jobs;
 
 public class FilingAlertEmailDigestJob(
     IFilingAlertNotificationRepository notificationRepository,

@@ -87,24 +87,20 @@ class FilingProcessor:
                      f"{len(filings) - num_retry_filings} were stored as dead letters.")
 
     @staticmethod
-    def _new_filings_to_events(cik: str, new_filings: List[SECFiling]):
-        filing_events: List[FilingEvent] = []
+    def _new_filings_to_event(cik: str, new_filings: List[SECFiling]):
         timestamp = datetime.now()
 
-        for filing in new_filings:
-            filing_events.append(FilingEvent(
-                cik=cik,
-                event_type='new_filing',
-                event_id=str(uuid.uuid4()),
-                timestamp=timestamp,
-                data=FilingEventData(
-                    form_type=filing.form,
-                    filing_date=filing.filing_date,
-                    accession_number=filing.accession_number
-                )
-            ))
-
-        return filing_events
+        return FilingEvent(
+            cik=cik,
+            event_type='new_filing',
+            event_id=str(uuid.uuid4()),
+            timestamp=timestamp,
+            filings=[FilingEventData(
+                form_type=filing.form,
+                filing_date=filing.filing_date,
+                accession_number=filing.accession_number
+            ) for filing in new_filings]
+        )
 
     def _process_filing_batch(self, filings_by_cik: Dict[str, List[UnprocessedFiling]],
                               processed_file_accessions: Set[str]):
@@ -131,8 +127,8 @@ class FilingProcessor:
                     )
 
                     # Publish info about new filings to our message bus for consumers
-                    filing_events = self._new_filings_to_events(cik, new_filings)
-                    self.event_broker.queue_filings_events(filing_events)
+                    filing_event = self._new_filings_to_event(cik, new_filings)
+                    self.event_broker.queue_filings_event(filing_event)
 
                     # Mark all successfully processed filings
                     for filing in new_filings:

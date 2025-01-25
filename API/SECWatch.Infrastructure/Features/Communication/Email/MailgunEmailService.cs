@@ -117,10 +117,13 @@ public class MailgunEmailService(
             groups.Add(new CompanyNotificationGroup
             {
                 CompanyName = company.Name,
+                CompanyCik = company.Cik,
+                CompanyTicker = company.Ticker ?? "",
                 Notifications = group.Select(n => new FilingNotificationInfo
                 {
                     FormType = n.FormType,
-                    FilingDate = n.FilingDate
+                    FilingDate = n.FilingDate,
+                    AccessionNumber = n.AccessionNumber
                 }).ToList()
             });
         }

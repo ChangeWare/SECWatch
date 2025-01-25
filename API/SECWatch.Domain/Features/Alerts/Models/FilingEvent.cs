@@ -13,7 +13,8 @@ public record FilingEvent
     public required string EventId { get; init; }
     
     public required DateTime Timestamp { get; init; }
-    public required FilingEventData Data { get; init; }
+    
+    public required List<FilingEventData> Filings { get; init; }
 }
 
 public record FilingEventData

@@ -1,7 +1,10 @@
 namespace SECWatch.EmailTemplates.Models;
 
-public class CompanyNotificationGroup
+public record CompanyNotificationGroup
 {
-    public string CompanyName { get; set; }
-    public List<FilingNotificationInfo> Notifications { get; set; } = new();
+    public required string CompanyCik { get; init; }
+    public required string CompanyName { get; init; }
+    
+    public required string CompanyTicker { get; init; }
+    public required List<FilingNotificationInfo> Notifications { get; init; } = new();
 }
