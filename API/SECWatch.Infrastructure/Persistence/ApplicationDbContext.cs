@@ -21,9 +21,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     public DbSet<Note> Notes => Set<Note>();
     
-    public DbSet<FilingAlertNotification> FilingAlertNotifications => Set<FilingAlertNotification>();
+    public DbSet<AlertNotification> AlertNotifications => Set<AlertNotification>();
     
-    public DbSet<FilingAlertRule> FilingAlertRules => Set<FilingAlertRule>();
+    public DbSet<AlertRule> AlertRules => Set<AlertRule>();
     
     public DbSet<SystemEvent> SystemEvents => Set<SystemEvent>();
 

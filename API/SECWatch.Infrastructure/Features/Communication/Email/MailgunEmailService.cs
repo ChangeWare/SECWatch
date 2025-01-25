@@ -19,7 +19,7 @@ public class MailgunEmailService(
     IConfiguration configuration)
     : IEmailService
 {
-    public async Task SendDailyFilingDigestAsync(User user, IEnumerable<FilingAlertNotification> notifications)
+    public async Task SendDailyFilingDigestAsync(User user, IEnumerable<AlertNotification> notifications)
     {
         try
         {
@@ -99,7 +99,7 @@ public class MailgunEmailService(
     }
 
     private async Task<List<CompanyNotificationGroup>> GroupNotificationsByCompany(
-        IEnumerable<FilingAlertNotification> notifications)
+        IEnumerable<AlertNotification> notifications)
     {
         var groups = new List<CompanyNotificationGroup>();
         

@@ -6,7 +6,7 @@ namespace SECWatch.Application.Features.Communication.Email.Services;
 
 public interface IEmailService
 {
-    Task SendDailyFilingDigestAsync(User user, IEnumerable<FilingAlertNotification> notifications);
+    Task SendDailyFilingDigestAsync(User user, IEnumerable<AlertNotification> notifications);
     
     Task SendVerificationEmailAsync(User user, VerificationToken token);
 }

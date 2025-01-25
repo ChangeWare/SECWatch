@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SECWatch.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace SECWatch.Domain.Features.Users.Models.Infrastructure.Persistence.Migrations
+namespace SECWatch.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250125032500_AddNameAndDescToFilingRule")]
+    partial class AddNameAndDescToFilingRule
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,7 +57,7 @@ namespace SECWatch.Domain.Features.Users.Models.Infrastructure.Persistence.Migra
                     b.ToTable("SystemEvents");
                 });
 
-            modelBuilder.Entity("SECWatch.Domain.Features.Alerts.Models.AlertNotification", b =>
+            modelBuilder.Entity("SECWatch.Domain.Features.Alerts.Models.FilingAlertNotification", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -64,9 +67,6 @@ namespace SECWatch.Domain.Features.Users.Models.Infrastructure.Persistence.Migra
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
-
-                    b.Property<Guid>("AlertRuleId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CompanyCik")
                         .IsRequired()
@@ -79,8 +79,12 @@ namespace SECWatch.Domain.Features.Users.Models.Infrastructure.Persistence.Migra
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("EventType")
-                        .HasColumnType("int");
+                    b.Property<string>("EventType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("FilingAlertRuleId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("FilingDate")
                         .HasColumnType("datetime2");
@@ -107,14 +111,14 @@ namespace SECWatch.Domain.Features.Users.Models.Infrastructure.Persistence.Migra
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AlertRuleId");
+                    b.HasIndex("FilingAlertRuleId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AlertNotifications", (string)null);
+                    b.ToTable("FilingAlertNotifications", (string)null);
                 });
 
-            modelBuilder.Entity("SECWatch.Domain.Features.Alerts.Models.AlertRule", b =>
+            modelBuilder.Entity("SECWatch.Domain.Features.Alerts.Models.FilingAlertRule", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -139,9 +143,6 @@ namespace SECWatch.Domain.Features.Users.Models.Infrastructure.Persistence.Migra
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
@@ -155,9 +156,7 @@ namespace SECWatch.Domain.Features.Users.Models.Infrastructure.Persistence.Migra
 
                     b.HasIndex("UserId");
 
-                    b.HasIndex("Type", "UserId");
-
-                    b.ToTable("AlertRules", (string)null);
+                    b.ToTable("FilingAlertRules", (string)null);
                 });
 
             modelBuilder.Entity("SECWatch.Domain.Features.Companies.Models.Address", b =>
@@ -439,11 +438,11 @@ namespace SECWatch.Domain.Features.Users.Models.Infrastructure.Persistence.Migra
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("SECWatch.Domain.Features.Alerts.Models.AlertNotification", b =>
+            modelBuilder.Entity("SECWatch.Domain.Features.Alerts.Models.FilingAlertNotification", b =>
                 {
-                    b.HasOne("SECWatch.Domain.Features.Alerts.Models.AlertRule", "AlertRule")
+                    b.HasOne("SECWatch.Domain.Features.Alerts.Models.FilingAlertRule", "FilingAlertRule")
                         .WithMany()
-                        .HasForeignKey("AlertRuleId")
+                        .HasForeignKey("FilingAlertRuleId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -453,12 +452,12 @@ namespace SECWatch.Domain.Features.Users.Models.Infrastructure.Persistence.Migra
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("AlertRule");
+                    b.Navigation("FilingAlertRule");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SECWatch.Domain.Features.Alerts.Models.AlertRule", b =>
+            modelBuilder.Entity("SECWatch.Domain.Features.Alerts.Models.FilingAlertRule", b =>
                 {
                     b.HasOne("SECWatch.Domain.Features.Companies.Models.Company", "Company")
                         .WithMany()

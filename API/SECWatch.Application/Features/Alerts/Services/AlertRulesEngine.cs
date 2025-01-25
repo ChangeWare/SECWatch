@@ -3,11 +3,11 @@ using SECWatch.Domain.Features.Alerts.Repositories;
 
 namespace SECWatch.Application.Features.Alerts.Services;
 
-public class AlertRulesEngine(IFilingAlertRuleRepository filingAlertRuleRepository) : IAlertRulesEngine
+public class AlertRulesEngine(IAlertRuleRepository filingAlertRuleRepository) : IAlertRulesEngine
 {
     public async Task<ICollection<FilingAlertRuleMatch>> GetFilingsMatchingRules(FilingEvent filingEvent)
     {
-        var rules = await filingAlertRuleRepository.GetActiveRulesForCompanyAsync(filingEvent.Cik);
+        var rules = await filingAlertRuleRepository.GetActiveFilingAlertRulesForCompanyAsync(filingEvent.Cik);
         
         var matches = new List<FilingAlertRuleMatch>();
 

@@ -87,7 +87,7 @@ public class CompaniesController(
     
     [HttpGet("tracked")]
     [ProducesResponseType(typeof(TrackedCompaniesResponse), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetTrackedCompanies()
+    public async Task<ActionResult<TrackedCompaniesResponse>> GetTrackedCompanies()
     {
         var userId = User.GetUserId();
         var result = await companyTrackingService.GetTrackedCompaniesAsync(userId);

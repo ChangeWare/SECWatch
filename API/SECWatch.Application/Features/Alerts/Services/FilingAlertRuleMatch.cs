@@ -6,5 +6,5 @@ public record FilingAlertRuleMatch
 {
     public FilingEventData Filing { get; init; }
     
-    public FilingAlertRule Rule { get; init; }
+    public AlertRule Rule { get; init; }
 }

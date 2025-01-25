@@ -6,5 +6,5 @@ public class UserNotificationGroup
 {
     public Guid UserId { get; set; }
     public User? User { get; set; }
-    public List<FilingAlertNotification> Notifications { get; set; } = [];
+    public List<AlertNotification> Notifications { get; set; } = [];
 }

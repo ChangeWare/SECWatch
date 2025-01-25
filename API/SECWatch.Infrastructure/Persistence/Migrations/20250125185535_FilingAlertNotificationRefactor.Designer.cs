@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SECWatch.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace SECWatch.Domain.Features.Users.Models.Infrastructure.Persistence.Migrations
+namespace SECWatch.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250125185535_FilingAlertNotificationRefactor")]
+    partial class FilingAlertNotificationRefactor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,66 +55,6 @@ namespace SECWatch.Domain.Features.Users.Models.Infrastructure.Persistence.Migra
                     b.HasKey("Id");
 
                     b.ToTable("SystemEvents");
-                });
-
-            modelBuilder.Entity("SECWatch.Domain.Features.Alerts.Models.AlertNotification", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("AccessionNumber")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<Guid>("AlertRuleId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CompanyCik")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("EventId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("EventType")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("FilingDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FormType")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<bool>("IsDismissed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsEmailSent")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsViewed")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("ViewedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AlertRuleId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AlertNotifications", (string)null);
                 });
 
             modelBuilder.Entity("SECWatch.Domain.Features.Alerts.Models.AlertRule", b =>
@@ -158,6 +101,67 @@ namespace SECWatch.Domain.Features.Users.Models.Infrastructure.Persistence.Migra
                     b.HasIndex("Type", "UserId");
 
                     b.ToTable("AlertRules", (string)null);
+                });
+
+            modelBuilder.Entity("SECWatch.Domain.Features.Alerts.Models.FilingAlertNotification", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AccessionNumber")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<Guid>("AlertRuleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CompanyCik")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EventId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EventType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("FilingDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FormType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("IsDismissed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsEmailSent")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsViewed")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ViewedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AlertRuleId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("FilingAlertNotifications", (string)null);
                 });
 
             modelBuilder.Entity("SECWatch.Domain.Features.Companies.Models.Address", b =>
@@ -439,25 +443,6 @@ namespace SECWatch.Domain.Features.Users.Models.Infrastructure.Persistence.Migra
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("SECWatch.Domain.Features.Alerts.Models.AlertNotification", b =>
-                {
-                    b.HasOne("SECWatch.Domain.Features.Alerts.Models.AlertRule", "AlertRule")
-                        .WithMany()
-                        .HasForeignKey("AlertRuleId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("SECWatch.Domain.Features.Users.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AlertRule");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("SECWatch.Domain.Features.Alerts.Models.AlertRule", b =>
                 {
                     b.HasOne("SECWatch.Domain.Features.Companies.Models.Company", "Company")
@@ -473,6 +458,25 @@ namespace SECWatch.Domain.Features.Users.Models.Infrastructure.Persistence.Migra
                         .IsRequired();
 
                     b.Navigation("Company");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SECWatch.Domain.Features.Alerts.Models.FilingAlertNotification", b =>
+                {
+                    b.HasOne("SECWatch.Domain.Features.Alerts.Models.AlertRule", "AlertRule")
+                        .WithMany()
+                        .HasForeignKey("AlertRuleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SECWatch.Domain.Features.Users.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AlertRule");
 
                     b.Navigation("User");
                 });

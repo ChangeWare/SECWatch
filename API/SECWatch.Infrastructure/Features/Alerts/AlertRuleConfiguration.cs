@@ -7,11 +7,11 @@ using SECWatch.Domain.Features.Users.Models;
 
 namespace SECWatch.Infrastructure.Features.Alerts;
 
-public class FilingAlertRuleConfiguration : IEntityTypeConfiguration<FilingAlertRule>
+public class AlertRuleConfiguration : IEntityTypeConfiguration<AlertRule>
 {
-    public void Configure(EntityTypeBuilder<FilingAlertRule> builder)
+    public void Configure(EntityTypeBuilder<AlertRule> builder)
     {
-        builder.ToTable("FilingAlertRules");
+        builder.ToTable("AlertRules");
 
         builder.HasKey(x => x.Id);
         
@@ -32,5 +32,7 @@ public class FilingAlertRuleConfiguration : IEntityTypeConfiguration<FilingAlert
 
         builder.Property(x => x.LastTriggeredAt)
             .IsRequired(false);
+        
+        builder.HasIndex(x => new { x.Type, x.UserId });
     }
 }

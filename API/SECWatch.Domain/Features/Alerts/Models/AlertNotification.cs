@@ -3,10 +3,10 @@ using SECWatch.Domain.Features.Users.Models;
 
 namespace SECWatch.Domain.Features.Alerts.Models;
 
-public class FilingAlertNotification : AggregateRoot
+public class AlertNotification : AggregateRoot
 {
-    public required Guid FilingAlertRuleId { get; set; }
-    public FilingAlertRule FilingAlertRule { get; set; }
+    public required Guid AlertRuleId { get; set; }
+    public AlertRule AlertRule { get; set; }
     
     public required string CompanyCik { get; set; }
     
@@ -14,7 +14,7 @@ public class FilingAlertNotification : AggregateRoot
     public User User { get; set; }
     
     public required string EventId { get; set; }
-    public required string EventType { get; set; }
+    public required AlertNotificationType EventType { get; set; }
     
     public required string FormType { get; set; }
     

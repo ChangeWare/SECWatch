@@ -5,6 +5,8 @@ import {companyRoutes} from "@features/company/routes.tsx";
 import CompanySearchView from "@features/dashboard/views/CompanySearchView.tsx";
 import companyPaths from "@features/company/paths.ts";
 import TrackedCompaniesView from "@features/company/views/TrackedCompaniesView.tsx";
+import {filingsRoutes} from "@features/filings/routes.tsx";
+import {alertRoutes} from "@features/alerts/routes.tsx";
 
 export const dashboardRoutes: RouteObject[] = [
     {
@@ -19,7 +21,9 @@ export const dashboardRoutes: RouteObject[] = [
         path: companyPaths.tracked,
         element: <TrackedCompaniesView />
     },
-    ...companyRoutes
+    ...companyRoutes,
+    ...filingsRoutes,
+    ...alertRoutes
 ];
 
 export default dashboardRoutes;

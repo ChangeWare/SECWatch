@@ -5,7 +5,7 @@ using SECWatch.Domain.Features.Alerts.Repositories;
 namespace SECWatch.AlertWorkerService.Jobs;
 
 public class FilingAlertEmailDigestJob(
-    IFilingAlertNotificationRepository notificationRepository,
+    IAlertNotificationRepository notificationRepository,
     IEmailService emailService,
     ILogger<FilingAlertEmailDigestJob> logger)
     : IJob
