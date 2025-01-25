@@ -20,7 +20,19 @@ builder.Services.AddMassTransit(x =>
     x.UsingRabbitMq((context, cfg) =>
     {
         var host = builder.Configuration.GetValue<string>("RabbitMQ:Host");
-        cfg.Host(host);
+        var username = builder.Configuration.GetValue<string>("RabbitMQ:Username");
+        var password = builder.Configuration.GetValue<string>("RabbitMQ:Password");
+        
+        if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+        {
+            throw new InvalidOperationException("RabbitMQ configuration is invalid.");
+        }
+
+        cfg.Host(new Uri(host), h =>
+        {
+            h.Username(username);
+            h.Password(password);
+        });
         
         cfg.UseJsonSerializer();
         
