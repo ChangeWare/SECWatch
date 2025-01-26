@@ -2,6 +2,8 @@
 
 A modern, full-stack application for SEC filing analysis, note taking, financial metric display & exploration, and corporate oversight built with React and ASP.NET Core.
 
+Official version hosted at https://secwatch.changeware.net
+
 ## License
 
 SECWatch is distributed with a GPL v3 "copy-left" license. Share-alike, spread the love, make the world a better place.
