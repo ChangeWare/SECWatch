@@ -1,6 +1,5 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,7 +18,6 @@ using SECWatch.Infrastructure.Features.Alerts;
 using SECWatch.Infrastructure.Features.Authentication;
 using SECWatch.Infrastructure.Features.Authentication.Utils;
 using SECWatch.Infrastructure.Features.Communication.Email;
-using SECWatch.Infrastructure.Features.Companies;
 using SECWatch.Infrastructure.Features.Companies.Repositories;
 using SECWatch.Infrastructure.Features.Notes;
 using SECWatch.Infrastructure.Features.Users;
