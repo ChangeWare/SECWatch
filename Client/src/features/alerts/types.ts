@@ -23,11 +23,12 @@ export enum AlertRuleTypes {
 }
 
 export interface AlertRuleFormData {
+    id?: string;
     type: string;
     name: string;
     description: string;
     company?: CompanyResult;
-    data: Record<string, any>; // This will be type-specific data
+    data: Record<string, any>;
 }
 
 export interface FilingAlertData {

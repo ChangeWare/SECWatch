@@ -11,11 +11,16 @@ public class AlertNotificationConfiguration : IEntityTypeConfiguration<AlertNoti
         builder.ToTable("AlertNotifications");
 
         builder.HasKey(x => x.Id);
-
+        
+        builder.HasOne(x => x.User)
+            .WithMany()
+            .HasForeignKey(x => x.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
         builder.HasOne(x => x.AlertRule)
             .WithMany()
             .HasForeignKey(x => x.AlertRuleId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.NoAction);
         
         builder.HasOne(x => x.User)
             .WithMany()

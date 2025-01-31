@@ -1,4 +1,4 @@
-using SECWatch.Domain.Common;
+using SECWatch.Domain.Common.Events;
 
 namespace SECWatch.Application.Common.Events;
 

@@ -42,6 +42,15 @@ public class AlertRule : AggregateRoot
         };
     }
     
+    internal AlertRule Update(List<string> formTypes, string name, string? description = null)
+    {
+        _formTypes = formTypes;
+        Name = name;
+        Description = description;
+        
+        return this;
+    }
+    
     private AlertRule()
     {
     }

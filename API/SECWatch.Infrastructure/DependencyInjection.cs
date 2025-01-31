@@ -7,7 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson.Serialization.Conventions;
 using SECWatch.Application.Features.Authentication.Utils;
 using SECWatch.Application.Features.Communication.Email.Services;
-using SECWatch.Domain.Common;
+using SECWatch.Domain.Common.Events;
 using SECWatch.Domain.Features.Alerts.Repositories;
 using SECWatch.Domain.Features.Companies.Repositories;
 using SECWatch.Domain.Features.Notes;

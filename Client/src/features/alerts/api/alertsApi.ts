@@ -1,5 +1,5 @@
 import { apiClient } from "@common/api/apiClient.ts";
-import {AlertRulesResponse} from "@features/alerts/api/types.ts";
+import {AlertRulesResponse, CreateAlertRuleRequest, UpdateAlertRuleRequest} from "@features/alerts/api/types.ts";
 
 export const alertsApi = {
 
@@ -7,8 +7,16 @@ export const alertsApi = {
         const response = await apiClient.get(`/alerts/rules`);
         return response.data;
     },
-    createAlertRule: async (rule: any) => {
-        const response = await apiClient.post(`/alerts/rules/create`, rule);
+    createAlertRule: async (req: CreateAlertRuleRequest) => {
+        const response = await apiClient.post(`/alerts/rules/create`, req);
+        return response.data;
+    },
+    deleteAlertRule: async (ruleId: string) => {
+        const response = await apiClient.delete(`/alerts/rules/${ruleId}`);
+        return response.data;
+    },
+    updateAlertRule: async (req: UpdateAlertRuleRequest) => {
+        const response = await apiClient.put(`/alerts/rules/${req.rule.id}`, req);
         return response.data;
     },
 }

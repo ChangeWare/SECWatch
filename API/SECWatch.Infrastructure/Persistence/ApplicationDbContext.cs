@@ -1,6 +1,7 @@
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using SECWatch.Domain.Common;
+using SECWatch.Domain.Common.Events;
 using SECWatch.Domain.Features.Alerts.Models;
 using SECWatch.Domain.Features.Companies.Models;
 using SECWatch.Domain.Features.Notes.Models;

@@ -1,4 +1,4 @@
-namespace SECWatch.Domain.Common;
+namespace SECWatch.Domain.Common.Events;
 
 /// <summary>
 /// Tracks events that occur in the system.
