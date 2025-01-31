@@ -75,7 +75,7 @@ const AlertRulesView = () => {
                         type: AlertRuleTypes.Filing,
                         name: ruleSubmission.name,
                         description: ruleSubmission.description,
-                        cik: 'asdfasdfasdfsdf',
+                        cik: ruleSubmission.company?.cik || '',
                         formTypes: (ruleSubmission.data as FilingAlertData).formTypes
                     } as AlertRuleInfo;
             default:
