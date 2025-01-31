@@ -5,7 +5,7 @@ namespace SECWatch.Domain.Features.Alerts.Models;
 
 public class AlertNotification : AggregateRoot
 {
-    public required Guid AlertRuleId { get; set; }
+    public Guid? AlertRuleId { get; set; }
     public AlertRule AlertRule { get; set; }
     
     public required string CompanyCik { get; set; }

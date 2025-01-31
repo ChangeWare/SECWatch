@@ -21,7 +21,8 @@ public class AlertRuleConfiguration : IEntityTypeConfiguration<AlertRule>
         
         builder.HasOne(x => x.User)
             .WithMany()
-            .HasForeignKey(x => x.UserId);
+            .HasForeignKey(x => x.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
         
         builder.Property("_formTypes")
             .HasConversion(new ValueConverter<List<string>, string>(

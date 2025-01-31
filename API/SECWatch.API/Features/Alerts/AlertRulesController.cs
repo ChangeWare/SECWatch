@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using SECWatch.API.Common;
 using SECWatch.API.Features.Alerts.DTOs;
 using SECWatch.API.Features.Authentication;
 using SECWatch.Application.Common.Utils;
@@ -21,37 +22,63 @@ public class AlertRulesController(IAlertRulesService alertRulesService) : Contro
         
         var result = await alertRulesService.GetFilingAlertRulesForUser(userId);
         
-        if (result.IsFailed)
+        return result.ToActionResponse(rules => new UserAlertRulesResponse 
+        { 
+            Rules = rules 
+        });
+    }
+    
+    [HttpPut("{ruleId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UpdateAlertRule(Guid ruleId, [FromBody] UpdateAlertRuleRequest request)
+    {
+        var userId = User.GetUserId();
+        
+        if (request.Rule.Id != ruleId)
         {
-            return NotFound(result.Errors);
+            return BadRequest("Rule ID in the request body does not match the rule ID in the URL");
         }
-
-        var response = new UserAlertRulesResponse()
+        
+        var result = request.Rule switch
         {
-            Rules = result.Value
+            TransactFilingAlertRuleInfo filingData => 
+                await alertRulesService.UpdateFilingAlertRuleAsync(userId, filingData),
+            _ => throw new ArgumentException($"Unsupported alert type: {request.Rule.GetType()}")
         };
-
-        return Ok(response);
+        
+        return result.ToActionResult();
+    }
+    
+    [HttpDelete("{ruleId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> DeleteAlertRule(Guid ruleId)
+    {
+        var userId = User.GetUserId();
+        
+        var result = await alertRulesService.DeleteAlertRuleAsync(userId, ruleId);
+        
+        return result.ToActionResult();
     }
     
     [HttpPost("create")]
-    [ProducesResponseType(typeof(CreateFilingAlertRuleResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(CreateAlertRuleResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<FilingAlertRuleInfo>>CreateFilingAlertRule([FromBody]CreateAlertRuleRequest request)
+    public async Task<ActionResult<CreateAlertRuleResponse>>CreateFilingAlertRule([FromBody]CreateAlertRuleRequest request)
     {
         var userId = User.GetUserId();
         
         var result = request.Rule switch
         {
-            CreateFilingAlertRuleInfo filingData => await alertRulesService.CreateFilingAlertRuleAsync(userId, filingData),
+            TransactFilingAlertRuleInfo filingData => await alertRulesService.CreateFilingAlertRuleAsync(userId, filingData),
             _ => throw new ArgumentException($"Unsupported alert type: {request.Rule.GetType()}")
         };
-        
-        if (result.IsFailed)
-        {
-            return BadRequest(result.Errors);
-        }
-        
-        return Ok(result.Value);
+
+        return result.ToActionResponse(rule => new CreateAlertRuleResponse
+        { 
+            Rule = rule 
+        });
     }
 }

@@ -1,11 +1,15 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Bell, Plus, Trash2} from 'lucide-react';
 import {Card, CardContent, CardHeader, CardTitle} from '@/common/components/Card';
 import Button from '@/common/components/Button';
 import StyledLink from '@/common/components/HyperLink';
-import AlertRuleDialog from "@features/alerts/components/AlertRuleDialog.tsx";
+import CreateAlertRuleDialog from "@features/alerts/components/CreateAlertRuleDialog.tsx";
 import {useAlertRules} from "../hooks/useAlertRules.tsx";
-import {CreateAlertRuleRequest, CreateFilingAlertRuleInfo} from "@features/alerts/api/types.ts";
+import {
+    AlertRuleInfo,
+    CreateAlertRuleRequest,
+    UpdateAlertRuleRequest
+} from "@features/alerts/api/types.ts";
 import {
     AlertRule,
     AlertRuleFormData,
@@ -15,15 +19,21 @@ import {
 } from "@features/alerts/types.ts";
 import {toast} from 'react-toastify';
 import {formatRuleType} from "@features/alerts/utils.ts";
+import UpdateAlertRuleDialog from "@features/alerts/components/UpdateAlertRuleDialog.tsx";
 
 
 const AlertRulesView = () => {
-    const [dialogOpen, setDialogOpen] = React.useState(false);
+    const [createDialogOpen, setCreateDialogOpen] = useState(false);
 
-    const { alertRules, createAlertRule } = useAlertRules();
+    const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
+    const [selectedRule, setSelectedRule] = useState<AlertRule | null>(null);
+
+    const { alertRules, createAlertRule, updateAlertRule, deleteAlertRule } = useAlertRules();
 
     const handleCreateRule = (submission: AlertRuleFormData) => {
-        const req = constructTypedRule(submission);
+        const req = {
+            rule: constructTypedRule(submission)
+        } as CreateAlertRuleRequest;
 
         if (!req) {
             toast.error('Invalid alert rule');
@@ -31,26 +41,43 @@ const AlertRulesView = () => {
         }
 
         createAlertRule(req);
-        setDialogOpen(false);
+        setCreateDialogOpen(false);
     };
+
+    const handleUpdateRule = (submission: AlertRuleFormData) => {
+        const req = {
+            rule: constructTypedRule(submission)
+        } as UpdateAlertRuleRequest;
+
+        if (!req) {
+            toast.error('Invalid alert rule');
+            return;
+        }
+
+        updateAlertRule(req);
+    }
 
 
     const handleDeleteRule = (ruleId: string) => {
-
+        deleteAlertRule(ruleId);
     };
 
-    const constructTypedRule = (ruleSubmission: AlertRuleFormData): CreateAlertRuleRequest | null => {
+    const handleSelectAlertRule = (rule: AlertRule) => {
+        setSelectedRule(rule);
+        setUpdateDialogOpen(true);
+    }
+
+    const constructTypedRule = (ruleSubmission: AlertRuleFormData): AlertRuleInfo | null => {
         switch (ruleSubmission.type) {
             case AlertRuleTypes.Filing:
                 return {
-                    rule: {
+                        id: ruleSubmission.id,
                         type: AlertRuleTypes.Filing,
                         name: ruleSubmission.name,
                         description: ruleSubmission.description,
-                        cik: ruleSubmission.company?.cik || '',
+                        cik: 'asdfasdfasdfsdf',
                         formTypes: (ruleSubmission.data as FilingAlertData).formTypes
-                    } as CreateFilingAlertRuleInfo
-                };
+                    } as AlertRuleInfo;
             default:
                 return null;
         }
@@ -86,18 +113,26 @@ const AlertRulesView = () => {
                 </div>
                 <Button
                     variant="primary"
-                    onClick={() => setDialogOpen(true)}
+                    onClick={() => setCreateDialogOpen(true)}
                     className="flex items-center gap-2"
                 >
                     <Plus className="h-4 w-4" />
                     New Alert Rule
                 </Button>
 
-                <AlertRuleDialog
-                    open={dialogOpen}
-                    onOpenChange={setDialogOpen}
+                <CreateAlertRuleDialog
+                    open={createDialogOpen}
+                    onCancel={() => setCreateDialogOpen(false)}
                     onSubmit={handleCreateRule}
                 />
+                {selectedRule &&
+                    <UpdateAlertRuleDialog
+                        open={updateDialogOpen}
+                        onSubmit={handleUpdateRule}
+                        onCancel={() => setUpdateDialogOpen(false)}
+                        selectedAlertRule={selectedRule}
+                    />
+                }
             </div>
 
             <div className="grid gap-4">
@@ -109,7 +144,7 @@ const AlertRulesView = () => {
                             </p>
                             <Button
                                 variant="primary"
-                                to="/alerts/new"
+                                onClick={() => setCreateDialogOpen(true)}
                                 className="inline-flex items-center gap-2"
                             >
                                 <Plus className="h-4 w-4" />
@@ -123,8 +158,8 @@ const AlertRulesView = () => {
                             <CardHeader>
                                 <div className="flex justify-between items-start">
                                     <div>
-                                        <CardTitle className="mb-2">
-                                            <StyledLink to={`/companies/${rule.company.cik}`} variant="default">
+                                        <CardTitle className="mb-4">
+                                            <StyledLink className="cursor-pointer" onClick={() => handleSelectAlertRule(rule)} variant="default">
                                                 {rule.company.name} ({rule.company.ticker})
                                             </StyledLink>
                                         </CardTitle>

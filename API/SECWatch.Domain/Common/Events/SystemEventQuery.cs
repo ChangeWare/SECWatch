@@ -1,4 +1,4 @@
-namespace SECWatch.Domain.Common;
+namespace SECWatch.Domain.Common.Events;
 
 public record SystemEventQuery(
     DateTime? StartDate, 

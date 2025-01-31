@@ -2,6 +2,7 @@ using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SECWatch.Domain.Common;
+using SECWatch.Domain.Common.Events;
 
 namespace SECWatch.Infrastructure.Persistence.Configurations;
 

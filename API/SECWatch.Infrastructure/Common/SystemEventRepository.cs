@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using SECWatch.Domain.Common;
+using SECWatch.Domain.Common.Events;
 using SECWatch.Infrastructure.Persistence;
 
 namespace SECWatch.Infrastructure.Common;
