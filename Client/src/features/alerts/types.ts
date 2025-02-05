@@ -34,3 +34,24 @@ export interface AlertRuleFormData {
 export interface FilingAlertData {
     formTypes: string[];
 }
+
+export enum AlertEventTypes {
+    FilingAlert
+}
+
+export interface AlertNotification {
+    id: string;
+    ruleId: string;
+    createdAt: Date;
+    eventType: AlertEventTypes;
+    isViewed: boolean;
+    isDismissed: boolean;
+    viewedAt?: Date;
+}
+
+export interface FilingAlertNotification extends AlertNotification {
+    formType: string;
+    accessionNumber: string;
+    company: CompanyDetails;
+    filingDate: Date;
+}

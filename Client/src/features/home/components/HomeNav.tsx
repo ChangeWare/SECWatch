@@ -4,8 +4,26 @@ import {Logo} from "@common/components/Logo.tsx";
 import {paths} from "@routes/paths.ts";
 import { useAuth } from "@features/auth";
 
+interface HomeNavItem {
+    name: string;
+    href: string;
+}
+
 export function HomeNav() {
-  const navItems = ['Features', 'About', 'Contact'];
+  const navItems: HomeNavItem[] = [
+    {
+      name: 'Home',
+      href: '/'
+    },
+    {
+      name: 'About',
+      href: '/about'
+    },
+    {
+      name: 'Contact',
+      href: '/contact'
+    }
+  ];
 
   const { isAuthenticated } = useAuth();
 
@@ -20,11 +38,11 @@ export function HomeNav() {
             <div className="hidden md:flex space-x-8 pt-1.5">
               {navItems.map((item) => (
                   <a
-                      key={item}
-                      href={`#${item.toLowerCase()}`}
+                      key={item.href}
+                      href={`${item.href}`}
                       className="text-secondary hover:text-info transition"
                   >
-                    {item}
+                    {item.name}
                   </a>
               ))}
             </div>

@@ -1,4 +1,4 @@
-import {AlertRule} from "@features/alerts/types.ts";
+import { AlertNotification, AlertRule } from "@features/alerts/types.ts";
 
 export interface AlertRulesResponse {
     rules: AlertRule[];
@@ -18,4 +18,8 @@ export interface AlertRuleInfo {
     cik: string;
     name: string;
     description: string;
+}
+
+export interface UserAlertNotificationsResponse {
+    notifications: AlertNotification[];
 }
