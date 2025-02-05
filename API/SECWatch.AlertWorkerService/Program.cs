@@ -34,12 +34,11 @@ builder.Services.AddMassTransit(x =>
             h.Password(password);
         });
         
-        cfg.UseJsonSerializer();
+        cfg.UseRawJsonDeserializer();
         
         cfg.ReceiveEndpoint("filing_events", e =>
         {
             e.ConfigureConsumer<FilingEventConsumer>(context);
-            e.UseRawJsonDeserializer();
             e.UseMessageRetry(r => r.Intervals(
                 TimeSpan.FromSeconds(1),
                 TimeSpan.FromSeconds(5),
