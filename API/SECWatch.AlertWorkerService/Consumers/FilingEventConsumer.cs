@@ -33,7 +33,7 @@ public class FilingEventConsumer(
                 EventId = filingEvent.EventId,
                 IsViewed = false,
                 IsEmailSent = false,
-                EventType = seAlertNotificationType.FilingAlert,
+                EventType = AlertNotificationType.FilingAlert,
                 FormType = match.Filing.FormType,
                 AccessionNumber = match.Filing.AccessionNumber,
                 FilingDate = match.Filing.FilingDate,
