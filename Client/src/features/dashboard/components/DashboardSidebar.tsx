@@ -119,7 +119,7 @@ export default function DashboardSidebar(props: DashboardSidebarProps) {
                 {label: 'Company Search', href: dashboardPaths.company.search},
             ],
         },
-        {
+        /*** {
             icon: FileText,
             label: 'Filings',
             isGroup: true,
@@ -129,7 +129,7 @@ export default function DashboardSidebar(props: DashboardSidebarProps) {
                 { label: 'Recent Filings', href: '#' },
                 {label: 'Analysis', href: '#'},
             ],
-        },
+        }, **/
         {
             icon: AlertCircle,
             label: 'Alerts',
@@ -141,8 +141,8 @@ export default function DashboardSidebar(props: DashboardSidebarProps) {
                 { label: 'Alert Rules', href: alertPaths.rules },
             ],
         },
-        {icon: LineChart, label: 'Analytics', href: '#'},
-        {icon: Settings, label: 'Settings', href: '#'},
+        //{icon: LineChart, label: 'Analytics', href: '#'},
+        //{icon: Settings, label: 'Settings', href: '#'},
     ];
 
     return (
