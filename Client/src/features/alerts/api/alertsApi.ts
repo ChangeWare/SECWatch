@@ -1,5 +1,10 @@
 import { apiClient } from "@common/api/apiClient.ts";
-import {AlertRulesResponse, CreateAlertRuleRequest, UpdateAlertRuleRequest} from "@features/alerts/api/types.ts";
+import {
+    AlertRulesResponse,
+    CreateAlertRuleRequest,
+    UpdateAlertRuleRequest,
+    UserAlertNotificationsResponse
+} from "@features/alerts/api/types.ts";
 
 export const alertsApi = {
 
@@ -19,4 +24,9 @@ export const alertsApi = {
         const response = await apiClient.put(`/alerts/rules/${req.rule.id}`, req);
         return response.data;
     },
+
+    getUserAlertNotifications: async (): Promise<UserAlertNotificationsResponse> => {
+        const response = await apiClient.get(`/alerts/notifications`);
+        return response.data;
+    }
 }
