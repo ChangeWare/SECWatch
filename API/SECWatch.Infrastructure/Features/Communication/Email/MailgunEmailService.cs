@@ -67,11 +67,11 @@ public class MailgunEmailService(
     {
         var parameters = new Dictionary<string, object?>
         {
-            { nameof(VerificationEmail.FirstName), user.FirstName},
-            { nameof(VerificationEmail.VerificationLink), $"https://secwatch.changeware.net/verify-email?token={token.Token}"}
+            { nameof(WelcomeEmail.FirstName), user.FirstName},
+            //{ nameof(WelcomeEmail.VerificationLink), $"https://secwatch.changeware.net/verify-email?token={token.Token}"}
         };
             
-        var emailBody = await emailRenderer.RenderEmailAsync<NewFilingsDailyDigestEmail>(parameters);
+        var emailBody = await emailRenderer.RenderEmailAsync<WelcomeEmail>(parameters);
         
         var client = new HttpClient();
         var mailgunDomain = configuration["Mailgun:Domain"];

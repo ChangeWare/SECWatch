@@ -28,5 +28,13 @@ export const alertsApi = {
     getUserAlertNotifications: async (): Promise<UserAlertNotificationsResponse> => {
         const response = await apiClient.get(`/alerts/notifications`);
         return response.data;
-    }
+    },
+    markAlertNotificationAsDismissed: async (notificationId: string) => {
+        const response = await apiClient.post(`/alerts/notifications/${notificationId}/mark-dismissed`);
+        return response.data;
+    },
+    markAlertNotificationAsRead: async (notificationId: string) => {
+        const response = await apiClient.post(`/alerts/notifications/${notificationId}/mark-read`);
+        return response.data;
+    },
 }

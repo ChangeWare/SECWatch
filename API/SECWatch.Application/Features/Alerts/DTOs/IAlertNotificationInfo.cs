@@ -1,7 +1,10 @@
+using System.Text.Json.Serialization;
 using SECWatch.Domain.Features.Alerts.Models;
 
 namespace SECWatch.Application.Features.Alerts.DTOs;
 
+[JsonPolymorphic(TypeDiscriminatorPropertyName = "EventType")]
+[JsonDerivedType(typeof(FilingAlertNotificationInfo), (int)AlertNotificationType.FilingAlert)]
 public interface IAlertNotificationInfo
 {
     public Guid Id { get; init; }

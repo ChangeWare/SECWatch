@@ -1,33 +1,19 @@
 import React from 'react';
 import { cn } from "@/common/lib/utils";
-import { AlertTriangle, Info, XCircle, Clock, FileText, Bell } from 'lucide-react';
-
-export interface AlertItem {
-    id: string;
-    type: 'filing' | 'threshold' | 'news' | 'watchlist';
-    priority: 'high' | 'medium' | 'low';
-    title: string;
-    description: string;
-    timestamp: string;
-    company?: {
-        name: string;
-        symbol: string;
-    };
-    read?: boolean;
-}
+import { XCircle, Clock, FileText, Bell } from 'lucide-react';
+import {AlertEventTypes, AlertNotification, FilingAlertNotification} from "@/features/alerts/types";
+import HyperLink from "@common/components/HyperLink.tsx";
+import {useNavigate} from "react-router-dom";
 
 interface AlertItemProps {
-    alert: AlertItem;
+    alert: AlertNotification;
     onDismiss?: (id: string) => void;
     onMarkAsRead?: (id: string) => void;
     className?: string;
 }
 
 const alertTypeIcons = {
-    filing: FileText,
-    threshold: AlertTriangle,
-    news: Info,
-    watchlist: Bell,
+    [AlertEventTypes.FilingAlert]: FileText
 } as const;
 
 const priorityStyles = {
@@ -36,13 +22,60 @@ const priorityStyles = {
     low: "before:bg-success"
 } as const;
 
-export const AlertNotification = ({
-                                      alert,
-                                      onDismiss,
-                                      onMarkAsRead,
-                                      className
-                                  }: AlertItemProps) => {
-    const Icon = alertTypeIcons[alert.type];
+function AlertNotificationEntry(props: AlertItemProps) {
+    const {
+        alert,
+        onDismiss,
+        onMarkAsRead,
+        className
+    } = props;
+
+    const navigate = useNavigate();
+
+    const Icon = alertTypeIcons[alert.eventType];
+
+    const handleViewFiling = (filingAlert: FilingAlertNotification) => {
+        onMarkAsRead?.(alert.id);
+        navigate(`/companies/${filingAlert.company.cik}/filings/${filingAlert.accessionNumber}`);
+    }
+
+    const renderAlertEntry = (alert: AlertNotification) => {
+
+        // Handle different alert types
+        switch (alert.eventType) {
+            case AlertEventTypes.FilingAlert: {
+                const filingAlert = alert as FilingAlertNotification;
+                console.log(filingAlert);
+                return (
+                    <>
+                        <div className="flex items-center gap-2 mb-1">
+                            <span className="font-medium text-foreground">
+                                {filingAlert.company.name}
+                            </span>
+                            <span className="text-sm text-foreground/50">
+                                {filingAlert.company.ticker}
+                            </span>
+                        </div>
+                        <h4 className="text-foreground font-medium truncate mb-1">
+                            {filingAlert.formType} Filing Alert
+                        </h4>
+                        <span className="flex items-center gap-1 text-xs text-foreground/50 mb-5">
+                            <Clock className="h-3 w-3"/>
+                            Filed {new Date(filingAlert.filingDate).toLocaleString()}
+                        </span>
+                        <p className="text-sm text-foreground/70 line-clamp-2 mb-4">
+                            <HyperLink className="cursor-pointer" onClick={() => handleViewFiling(filingAlert)}>
+                                View Filing
+                            </HyperLink>
+                        </p>
+                        <p className="text-sm text-foreground/70">
+                            Filed on {new Date(filingAlert.filingDate).toLocaleDateString()}
+                        </p>
+                    </>
+                )
+            }
+        }
+    }
 
     return (
         <div className={cn(
@@ -52,9 +85,9 @@ export const AlertNotification = ({
             "relative overflow-hidden",
             "before:absolute before:left-0 before:top-0 before:bottom-0 before:w-0.5",
             // Read state
-            alert.read ? "opacity-75" : "opacity-100",
-            // Priority indicator
-            priorityStyles[alert.priority],
+            alert.isViewed ? "opacity-50" : "opacity-100",
+            // TODO: Priority indicator
+            // priorityStyles[alert.priority],
             "group",
             className
         )}>
@@ -62,28 +95,13 @@ export const AlertNotification = ({
                 {/* Icon */}
                 <div className={cn(
                     "mt-1 p-2 rounded-full bg-surface/40",
-                    alert.read ? "text-foreground/50" : "text-info"
+                    alert.isViewed ? "text-foreground/50" : "text-info"
                 )}>
                     <Icon className="h-4 w-4"/>
                 </div>
 
                 <div className="flex-1 min-w-0 pt-1.5">
-                    {alert.company && (
-                        <div className="flex items-center gap-2 mb-1">
-                            <span className="font-medium text-foreground">
-                                {alert.company.name}
-                            </span>
-                            <span className="text-sm text-foreground/50">
-                                {alert.company.symbol}
-                            </span>
-                        </div>
-                    )}
-                    <h4 className="text-foreground font-medium mb-1 truncate">
-                        {alert.title}
-                    </h4>
-                    <p className="text-sm text-foreground/70 line-clamp-2">
-                        {alert.description}
-                    </p>
+                    {alert && (renderAlertEntry(alert))}
                 </div>
 
                 {/* Dismiss button - only shows on hover */}
@@ -98,50 +116,59 @@ export const AlertNotification = ({
                     </button>
                 )}
             </div>
-            <div className="flex items-center gap-4 mt-2">
-                <span className="flex items-center gap-1 text-xs text-foreground/50">
-                    <Clock className="h-3 w-3"/>
-                    {new Date(alert.timestamp).toLocaleString()}
-                </span>
-                {!alert.read && onMarkAsRead && (
+            <div className=" gap-4 mt-2">
+                {!alert.isViewed && onMarkAsRead ? (
                     <button
                         onClick={() => onMarkAsRead(alert.id)}
                         className="text-xs text-info hover:text-info/80 transition-colors duration-200 ml-auto"
                     >
                         Mark as read
                     </button>
-                )}
+                ) : (<a className="text-xs text-secondary ml-auto">Notification read {alert.viewedAt?.toLocaleDateString()}</a>)}
             </div>
         </div>
     );
-};
+}
 
 interface AlertFeedProps {
-    alerts: AlertItem[];
+    alerts: AlertNotification[];
     onDismiss?: (id: string) => void;
     onMarkAsRead?: (id: string) => void;
     className?: string;
 }
 
-export const AlertFeed = ({
-                              alerts,
-                              onDismiss,
-                              onMarkAsRead,
-                              className
-                          }: AlertFeedProps) => {
+function AlertFeed (props: AlertFeedProps) {
+    const {
+        alerts,
+        onDismiss,
+        onMarkAsRead,
+        className
+    } = props;
+
     const groupedAlerts = React.useMemo(() => {
+
         return alerts.reduce((acc, alert) => {
-            const date = new Date(alert.timestamp).toLocaleDateString();
+            const date = new Date(alert.createdAt).toLocaleDateString();
             if (!acc[date]) {
                 acc[date] = [];
             }
             acc[date].push(alert);
             return acc;
-        }, {} as Record<string, AlertItem[]>);
+        }, {} as Record<string, AlertNotification[]>);
     }, [alerts]);
 
     return (
         <div className={cn("space-y-6", className)}>
+            {alerts.length === 0 && (
+                <div className="space-y-1">
+                    <div className="text-md text-foreground/50 px-1">
+                        No alerts.
+                    </div>
+                    <div className="text-md text-foreground/50 px-1">
+                        <HyperLink to="/alerts/rules">Create an alert rule</HyperLink>.
+                    </div>
+                </div>
+            )}
             {Object.entries(groupedAlerts).map(([date, dateAlerts]) => (
                 <div key={date} className="space-y-2">
                     <h3 className="text-sm font-medium text-foreground/50 px-1">
@@ -149,7 +176,7 @@ export const AlertFeed = ({
                     </h3>
                     <div className="space-y-3">
                         {dateAlerts.map(alert => (
-                            <AlertNotification
+                            <AlertNotificationEntry
                                 key={alert.id}
                                 alert={alert}
                                 onDismiss={onDismiss}
@@ -161,6 +188,6 @@ export const AlertFeed = ({
             ))}
         </div>
     );
-};
+}
 
 export default AlertFeed;

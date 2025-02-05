@@ -43,15 +43,14 @@ public static class EmailPreviewEndpoints
             return Results.Content(html, "text/html");
         });
 
-        group.MapGet("/verification", async (IEmailRenderer emailRenderer) =>
+        group.MapGet("/welcome", async (IEmailRenderer emailRenderer) =>
         {
             var parameters = new Dictionary<string, object?>
             {
-                { nameof(VerificationEmail.FirstName), "John" },
-                { nameof(VerificationEmail.VerificationLink), "https://secwatch.changeware.net/verify?token=sample" }
+                { nameof(WelcomeEmail.FirstName), "John" },
             };
 
-            var html = await emailRenderer.RenderEmailAsync<VerificationEmail>(parameters);
+            var html = await emailRenderer.RenderEmailAsync<WelcomeEmail>(parameters);
             return Results.Content(html, "text/html");
         });
     }
