@@ -1,27 +1,19 @@
-import {useEffect, useState} from "react";
-import {AlertFeed, AlertItem} from "@features/dashboard/components/AlertStream/AlertFeed.tsx";
 import {Card, CardContent, CardHeader, CardTitle} from "@common/components/Card.tsx";
 import {Bell} from "lucide-react";
+import useAlertNotifications from "@features/alerts/hooks/useAlertNotifications.tsx";
+import AlertFeed from "@features/dashboard/components/AlertStream/AlertFeed.tsx";
+import LoadingIndicator from "@common/components/LoadingIndicator.tsx";
 
-interface AlertStreamProps {
-    alerts: AlertItem[];
-}
 
-export default function AlertStream(props: AlertStreamProps) {
-    const [alerts, setAlerts] = useState<AlertItem[]>(props.alerts);
-
-    useEffect(() => {
-        setAlerts(props.alerts);
-    }, [props.alerts]);
+export default function AlertStream() {
+    const { notifications, notificationsLoading, markRead, markDismissed } = useAlertNotifications();
 
     const handleDismiss = (id: string) => {
-        setAlerts(alerts.filter(alert => alert.id !== id));
+        markDismissed(id);
     };
 
     const handleMarkAsRead = (id: string) => {
-        setAlerts(alerts.map(alert =>
-            alert.id === id ? { ...alert, read: true } : alert
-        ));
+        markRead(id);
     };
 
     return (
@@ -33,11 +25,13 @@ export default function AlertStream(props: AlertStreamProps) {
                 </CardTitle>
             </CardHeader>
             <CardContent>
-                <AlertFeed
-                    alerts={alerts}
-                    onDismiss={handleDismiss}
-                    onMarkAsRead={handleMarkAsRead}
-                />
+                <LoadingIndicator isLoading={notificationsLoading || !notifications}>
+                    <AlertFeed
+                        alerts={notifications!}
+                        onDismiss={handleDismiss}
+                        onMarkAsRead={handleMarkAsRead}
+                    />
+                </LoadingIndicator>
             </CardContent>
         </Card>
     );

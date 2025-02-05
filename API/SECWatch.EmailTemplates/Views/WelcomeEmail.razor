@@ -1,0 +1,119 @@
+@using SECWatch.EmailTemplates.Components
+@namespace SECWatch.EmailTemplates.Views
+
+<LayoutView Layout="@typeof(_EmailLayout)">
+    <!-- Welcome Header -->
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 24px;" role="presentation">
+        <tr>
+            <td style="text-align:center;">
+                <p style="color: #07A1ED; font-size: 24px; font-weight: 600; margin: 0 0 8px 0;">
+                    Welcome to SECWatch!
+                </p>
+                <p style="color: rgba(242, 242, 242, 0.7); font-size: 16px; margin: 0;">
+                    Empowering Corporate Accountability Through Data
+                </p>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Main Content -->
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 32px;" role="presentation">
+        <tr>
+            <td style="color: #F2F2F2; font-size: 16px; line-height: 1.5;">
+                <p>Hello @UserName,</p>
+                <p>We're thrilled to welcome you to SECWatch - a tool built by and for those working to advance corporate transparency and accountability. 
+                    Whether you're conducting research, organizing campaigns, or monitoring corporate behavior, 
+                    we're here to ensure you never miss critical corporate disclosures that could impact your work.</p>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Features Section -->
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 32px;" role="presentation">
+        @foreach (var feature in Features)
+        {
+            <tr>
+                <td style="padding-bottom: 16px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #2D3555; border-radius: 8px;" role="presentation">
+                        <tr>
+                            <td style="padding: 16px;">
+                                <p style="color: #FB8500; font-size: 18px; font-weight: 600; margin: 0 0 8px 0;">
+                                    @feature.Title
+                                </p>
+                                <p style="color: rgba(242, 242, 242, 0.7); font-size: 14px; margin: 0;">
+                                    @feature.Description
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        }
+    </table>
+
+    <!-- Next Steps -->
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 32px;" role="presentation">
+        <tr>
+            <td style="text-align: center;">
+                <p style="color: #07A1ED; font-size: 18px; font-weight: 600; margin: 0 0 16px 0;">
+                    Get Started Now:
+                </p>
+                <center>
+                    <EmailButton Url="@DashboardUrl">
+                        Go to Your Dashboard
+                    </EmailButton>
+                </center>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Help Section -->
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-top: 24px;" role="presentation">
+        <tr>
+            <td style="text-align: center; color: rgba(242, 242, 242, 0.7); font-size: 14px;">
+                <p style="margin: 0 0 8px 0;">Need help getting started?</p>
+                <p style="margin: 0;">
+                    <a href="mailto:john@changeware.net" style="color: #07A1ED; text-decoration: none;">Contact our support team</a>.
+                </p>
+            </td>
+        </tr>
+    </table>
+</LayoutView>
+
+@code {
+    public class FeatureHighlight
+    {
+        public string Title { get; set; } = "";
+        public string Description { get; set; } = "";
+    }
+    
+    [Parameter]
+    public string UserName { get; set; } = "";
+
+    [Parameter]
+    public List<FeatureHighlight> Features { get; set; } = new()
+    {
+        new FeatureHighlight
+        {
+            Title = "Real-Time Notifications",
+            Description = "Get instant alerts when companies you follow file new documents with the SEC."
+        },
+        new FeatureHighlight
+        {
+            Title = "Smart Filtering",
+            Description = "Customize your alerts by form type, company, or content to focus on what matters most."
+        },
+        new FeatureHighlight
+        {
+            Title = "Daily Digest",
+            Description = "Receive a daily summary of all new filings from your watched companies."
+        }
+    };
+
+    [Parameter]
+    public string DashboardUrl { get; set; } = "https://secwatch.changeware.net/dash";
+    
+    
+    [Parameter]
+    public string FirstName { get; set; } = "";
+}

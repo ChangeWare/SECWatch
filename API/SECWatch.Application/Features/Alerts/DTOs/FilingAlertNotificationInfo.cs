@@ -17,7 +17,7 @@ public record FilingAlertNotificationInfo : IAlertNotificationInfo
     
     public required string FormType { get; init; }
     
-    public required DateTime FiledAt { get; init; }
+    public required DateTime FilingDate { get; init; }
     
     public required string AccessionNumber { get; init; }
     

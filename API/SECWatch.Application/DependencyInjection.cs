@@ -31,6 +31,7 @@ public static class DependencyInjection
         services.AddScoped<IAlertRulesService, AlertRulesService>();
         services.AddScoped<ICompanyUserDashboardPreferencesService, CompanyUserDashboardPreferencesService>();
         services.AddSingleton<IConceptCategoriesService, ConceptCategoryService>();
+        services.AddScoped<IAlertNotificationService, AlertNotificationService>();
 
         return services;
     }

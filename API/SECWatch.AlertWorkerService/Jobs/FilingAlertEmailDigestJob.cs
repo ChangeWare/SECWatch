@@ -14,7 +14,7 @@ public class FilingAlertEmailDigestJob(
     {
         // Get notifications since last digest, grouped by user
         var userNotifications = await notificationRepository.GetUnprocessedNotificationsGroupedByUserAsync(
-            DateTime.UtcNow.AddHours(-5) // 5 hours ago (run at 9AM and 2PM EST daily)
+            DateTime.UtcNow.AddHours(-24)
         );
 
         foreach (var userGroup in userNotifications)
