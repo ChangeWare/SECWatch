@@ -1,3 +1,6 @@
+import {CompanyDetails} from "@features/company/types.ts";
+import {CompanyFiling} from "@features/filings/types.ts";
+
 export interface SelectionData {
 
 }
@@ -16,9 +19,16 @@ export interface FilingNoteSelectionData extends SelectionData {
     };
 }
 
+export interface NoteTag {
+    id: string;
+    label: string;
+    color: string;
+}
 
 export interface Note {
     id: string;
+    noteType: string;
+    tags: NoteTag[];
     content: string;
     color: string;
     createdAt: Date;
@@ -26,30 +36,10 @@ export interface Note {
 }
 
 export interface FilingNote extends Note {
-    accessionNumber: string;
     selectionData: FilingNoteSelectionData;
-}
-
-export interface GetFilingNotesResponse {
-    notes: FilingNote[];
-    count: number;
-}
-
-export interface CreateFilingNoteRequest {
-    content: string;
-    color: string;
     accessionNumber: string;
-    selectionData: FilingNoteSelectionData;
-}
-
-export interface CreateFilingNoteResponse {
-    success: boolean;
-    note: FilingNote;
-}
-
-export interface UpdateFilingNoteResponse extends CreateFilingNoteResponse {
-
-}
-
-export interface UpdateFilingNoteRequest extends CreateFilingNoteRequest {
+    filingDate: Date;
+    reportDate?: Date;
+    company: CompanyDetails;
+    form: string;
 }

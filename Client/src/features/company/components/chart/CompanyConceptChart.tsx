@@ -23,10 +23,6 @@ function CompanyConceptChart(props: CompanyConceptChartProps) {
         handleDataPointSelected?.(data[index]);
     }
 
-    useEffect(() => {
-        console.log(data);
-    }, [data]);
-
     return (
         <Card variant="subtle" className="w-full">
             <CardHeader>

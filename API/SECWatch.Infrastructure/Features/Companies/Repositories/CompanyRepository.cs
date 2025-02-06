@@ -49,7 +49,16 @@ public class CompanyRepository(
         
         return filingHistory?.MostRecentFiling;
     }
-    
+
+    public async Task<IReadOnlyList<Company>> GetCompaniesAsync(IEnumerable<string> ciks)
+    {
+        var companies = await context.Companies
+            .Where(c => ciks.Contains(c.Cik))
+            .ToListAsync();
+
+        return companies.AsReadOnly();
+    }
+
     /// <summary>
     /// Fetches the most recent filings for the specified ciks
     /// </summary>

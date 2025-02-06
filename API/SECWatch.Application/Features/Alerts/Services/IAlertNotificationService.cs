@@ -6,7 +6,7 @@ namespace SECWatch.Application.Features.Alerts.Services;
 
 public interface IAlertNotificationService
 {
-    Task<Result<ReadOnlyCollection<IAlertNotificationInfo>>> GetAlertNotificationsForUserAsync(Guid userId);
+    Task<Result<ReadOnlyCollection<AlertNotificationInfo>>> GetAlertNotificationsForUserAsync(Guid userId);
     
     Task<Result> MarkAlertNotificationAsViewedAsync(Guid userId, Guid notificationId);
     

@@ -1,5 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using SECWatch.API.Common;
+using SECWatch.API.Features.Alerts.DTOs;
 using SECWatch.API.Features.Authentication;
 using SECWatch.API.Features.Notes.DTOs;
 using SECWatch.Application.Common.Utils;
@@ -14,51 +16,94 @@ namespace SECWatch.API.Features.Notes;
 public class NoteController(INoteService noteService, IMapper mapper) : ControllerBase
 {
     [HttpGet]
-    [ProducesResponseType(typeof(FilingNoteResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(NotesResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [Route("filing-notes/{accessionNumber}")]
-    public async Task<ActionResult<FilingNoteResponse>> GetFilingNotes(string accessionNumber)
+    public async Task<ActionResult<NotesResponse>> GetFilingNotes(string accessionNumber)
+    {
+        var userId = User.GetUserId();
+
+        var result = await noteService.GetFilingNotesAsync(userId, accessionNumber);
+
+        return result.ToActionResponse(notes => new NotesResponse()
+        {
+            Notes = notes,
+            Count = notes.Count
+        });
+    }
+
+    [HttpPost]
+    [ProducesResponseType(typeof(CreateNoteResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [Route("create")]
+    public async Task<ActionResult<CreateNoteResponse>> CreateNote([FromBody]CreateNoteRequest request)
     {
         var userId = User.GetUserId();
         
-        var result = await noteService.GetFilingNotesAsync(userId, accessionNumber);
-        
-        if (result.IsFailed)
+        var result = request.Note switch
         {
-            return BadRequest(result.Errors);
-        }
-
-        var response = new FilingNoteResponse()
-        {
-            Notes = result.Value,
-            Count = result.Value.Count
+            TransactFilingNoteInfo noteData => await noteService.CreateFilingNoteAsync(userId, noteData),
+            _ => throw new ArgumentException($"Unsupported alert type: {request.Note.GetType()}")
         };
 
-        return Ok(response);
+        return result.ToActionResponse(note => new CreateNoteResponse
+        {
+            Note = note
+        });
+    }
+
+    [HttpGet]
+    [ProducesResponseType(typeof(NotesResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<NotesResponse>> GetNotes()
+    {
+        var userId = User.GetUserId();
+
+        var result = await noteService.GetUserNotesAsync(userId);
+
+        return result.ToActionResponse(notes => new NotesResponse
+        { 
+            Notes = notes,
+            Count = notes.Count
+        });
+    }
+    
+    [HttpDelete]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [Route("{noteId}")]
+    public async Task<ActionResult> DeleteNote(Guid noteId)
+    {
+        var userId = User.GetUserId();
+
+        var result = await noteService.DeleteNoteAsync(userId, noteId);
+
+        return result.ToActionResult();
     }
     
     [HttpPost]
-    [ProducesResponseType(typeof(CreatedNoteResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [Route("filing-notes/{accessionNumber}/create")]
-    public async Task<ActionResult<CreatedNoteResponse>> CreateFilingNote(CreateFilingNoteRequest request)
+    [Route("{noteId}/tags")]
+    public async Task<ActionResult> AddTag(Guid noteId, [FromBody]CreateNoteTagRequest request)
     {
         var userId = User.GetUserId();
-        
-        var filingNote = mapper.Map<FilingNote>(request);
-        
-        var result = await noteService.CreateFilingNoteAsync(userId, filingNote);
-        
-        if (result.IsFailed)
-        {
-            return BadRequest(result.Errors);
-        }
 
-        var response = new CreatedNoteResponse()
-        {
-            Note = result.Value
-        };
+        var result = await noteService.AddNoteTagAsync(userId, noteId, request.Tag);
 
-        return Ok(response);
+        return result.ToActionResult();
+    }
+    
+    [HttpDelete]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [Route("{noteId}/tags/{tagId}")]
+    public async Task<ActionResult> DeleteTag(Guid noteId, Guid tagId)
+    {
+        var userId = User.GetUserId();
+
+        var result = await noteService.RemoveNoteTagAsync(userId, noteId, tagId);
+
+        return result.ToActionResult();
     }
 }

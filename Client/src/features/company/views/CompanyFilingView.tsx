@@ -3,9 +3,9 @@ import { useParams } from "react-router-dom";
 import IXBRLViewer, {IXBRLLoadingIndicator} from "@features/filings/components/XBRLViewer.tsx";
 import useCompany from "@features/company/hooks/useCompany.tsx";
 import useSecFiling from "@features/filings/hooks/useSecFiling.ts";
-import {CreateFilingNoteRequest, FilingNote} from "@features/notes/types.ts";
 import useFilingNotes from "@features/notes/hooks/useFilingNotes.tsx";
 import LoadingIndicator from "@common/components/LoadingIndicator.tsx";
+import {FilingNoteInfo} from "@features/notes/api/types.ts";
 
 export function CompanyFilingView() {
     const { companyId, accessionNumber } = useParams();
@@ -18,12 +18,22 @@ export function CompanyFilingView() {
 
     const { notes, createNote, deleteNote, updateNote } = useFilingNotes(accessionNumber);
 
-    const handleCreateNote = (note: CreateFilingNoteRequest) => {
-        createNote(note);
+    const handleCreateNote = (note: FilingNoteInfo) => {
+        const req = {
+            note: note
+        }
+
+        console.log(note);
+
+        createNote(req);
     };
 
-    const handleUpdateNote = (updatedNote: FilingNote) => {
-        updateNote(updatedNote);
+    const handleUpdateNote = (note: FilingNoteInfo) => {
+        const req = {
+            note: note
+        }
+
+        updateNote(req);
     };
 
     const handleDeleteNote = (id: string) => {
@@ -42,7 +52,7 @@ export function CompanyFilingView() {
             <LoadingIndicator isLoading={!filingContents} ContainerComponent={IXBRLLoadingIndicator}>
                 <IXBRLViewer
                     cik={companyId!}
-                    accessionNumber={accessionNumber!}
+                    filing={filing!}
                     filingContents={filingContents!}
                     notes={notes}
                     onNoteCreate={handleCreateNote}

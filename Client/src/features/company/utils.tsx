@@ -139,7 +139,9 @@ export function convertConceptDataPointsToCSV (dataPoints: ConceptDataPoint[]): 
 
 
 export function processData(data: ConceptDataPoint[]): GroupedConceptDataPoints[] {
+
     // Group by end date + fiscal period
+
     const groupedByDate = data.reduce((acc, curr) => {
         const dateStr = curr.endDate.toISOString() + curr.fiscalPeriod;
         if (!acc[dateStr]) {

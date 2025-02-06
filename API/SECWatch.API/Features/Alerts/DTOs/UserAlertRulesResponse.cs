@@ -4,5 +4,5 @@ namespace SECWatch.API.Features.Alerts.DTOs;
 
 public record UserAlertRulesResponse
 {
-    public required IReadOnlyList<IAlertRuleInfo> Rules { get; init; }
+    public required IReadOnlyList<AlertRuleInfo> Rules { get; init; }
 }

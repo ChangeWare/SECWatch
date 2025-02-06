@@ -22,6 +22,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     public DbSet<Note> Notes => Set<Note>();
     
+    public DbSet<NoteTag> NoteTags => Set<NoteTag>();
+    
     public DbSet<AlertNotification> AlertNotifications => Set<AlertNotification>();
     
     public DbSet<AlertRule> AlertRules => Set<AlertRule>();

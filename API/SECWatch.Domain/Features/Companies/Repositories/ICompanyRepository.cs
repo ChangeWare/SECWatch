@@ -12,6 +12,8 @@ public interface ICompanyRepository
     Task<CompanyFilingHistory> GetCompanyFilingsHistoryAsync(string cik);
 
     Task<CompanyFiling?> GetCompanyMostRecentFilingAsync(string cik);
+    
+    Task<IReadOnlyList<Company>> GetCompaniesAsync(IEnumerable<string> ciks);
 
     Task<Dictionary<string, CompanyFiling?>> GetCompaniesMostRecentFilingsAsync(IEnumerable<string> ciks);
 }

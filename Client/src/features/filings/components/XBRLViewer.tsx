@@ -3,18 +3,20 @@ import {Card, CardContent} from "@common/components/Card.tsx";
 import NotesSidebar from '../../notes/components/NotesSidebar.tsx';
 import AddNotePopover from "../../notes/components/AddNotePopover.tsx";
 import {PanelRightOpen} from "lucide-react";
-import {CreateFilingNoteRequest, FilingNote, FilingNoteSelectionData} from "@features/notes/types.ts";
+import {FilingNote, FilingNoteSelectionData, Note} from "@features/notes/types.ts";
 import secDocumentStyles from '../styles/filing.css?raw';
 import noteStyles from '../styles/noteStyles.css?raw'
 import {getNodeFromXPath, getProxiedImageSrc, getXPathForNode} from "@features/filings/utils.ts";
+import {CompanyFiling} from "@features/filings/types.ts";
+import {FilingNoteInfo} from "@features/notes/api/types.ts";
 
 interface IXBRLViewerProps {
     filingContents: string;
-    accessionNumber: string;
+    filing: CompanyFiling;
     cik: string;
     notes?: FilingNote[];
-    onNoteCreate: (note: CreateFilingNoteRequest) => void;
-    onNoteUpdate: (note: FilingNote) => void;
+    onNoteCreate: (note: FilingNoteInfo) => void;
+    onNoteUpdate: (note: FilingNoteInfo) => void;
     onNoteDelete: (id: string) => void;
 }
 
@@ -41,7 +43,7 @@ const IXBRLViewer: React.FC<IXBRLViewerProps> = (props: IXBRLViewerProps) => {
         onNoteCreate,
         onNoteUpdate,
         onNoteDelete,
-        accessionNumber,
+        filing,
         cik
     } = props;
 
@@ -103,7 +105,7 @@ const IXBRLViewer: React.FC<IXBRLViewerProps> = (props: IXBRLViewerProps) => {
             )
             // Fix image src URLs
             .replace(/<img[^>]+src="([^"]+)"/g, (match, src) => {
-                const newSrc = getProxiedImageSrc(src, cik, accessionNumber);
+                const newSrc = getProxiedImageSrc(src, cik, filing.accessionNumber);
                 return match.replace(src, newSrc);
             });
 
@@ -340,11 +342,16 @@ const IXBRLViewer: React.FC<IXBRLViewerProps> = (props: IXBRLViewerProps) => {
     const createNote = (content: string) => {
         if (!selection || !onNoteCreate) return;
 
-        const newNote: CreateFilingNoteRequest = {
-            content,
+        const newNote: FilingNoteInfo = {
+            type: 'filing',
+            content: content,
+            accessionNumber: filing.accessionNumber,
             color: '#FFE176',
-            accessionNumber,
-            selectionData: selection
+            form: filing.form,
+            cik: cik,
+            filingDate: filing.filingDate,
+            reportDate: filing.reportDate,
+            selectionData: selection,
         };
 
         onNoteCreate(newNote);
@@ -424,6 +431,10 @@ const IXBRLViewer: React.FC<IXBRLViewerProps> = (props: IXBRLViewerProps) => {
         renderTableIndicators();
     }, [notes, hoveredTable, renderTableIndicators]);
 
+    const handleNoteUpdate = (note: Note) => {
+
+    }
+
     return (
         <div className="space-y-4 max-w-full">
             <div className="flex justify-end">
@@ -471,8 +482,7 @@ const IXBRLViewer: React.FC<IXBRLViewerProps> = (props: IXBRLViewerProps) => {
                             onClose={() => setIsSidebarOpen(false)}
                             onNoteClick={handleNoteClick}
                             onNoteDelete={onNoteDelete}
-                            onNoteEdit={onNoteUpdate}
-                        />
+                            onNoteEdit={handleNoteUpdate}/>
                     </div>
                 )}
             </div>

@@ -15,19 +15,33 @@ public class Note : AggregateRoot
     public DateTime CreatedAt { get; private set; }
     public DateTime? UpdatedAt { get; private set; }
     
-    public NoteSubject Subject { get; private init; }
+    public string? Cik { get; private set; }
+    
+    public string? AccessionNumber { get; private set; }
+    
+    public string? Form { get; private set; }
+    
+    public DateTime FilingDate { get; private set; }
+    
+    public DateTime? FilingReportDate { get; private set; }
+    
+    public NoteTypes NoteType { get; private set; }
     
     private Note()
     {
     }
 
-    public static Note Create(Guid userId, NoteSubject subject, 
-        string content, string color, string selectionData)
+    public static Note CreateFilingNote(Guid userId, string accessionNumber, string cik, string form, DateTime filingDate,
+        DateTime? reportDate, string content, string color, string selectionData)
     {
         var note = new Note()
         {
             UserId = userId,
-            Subject = subject,
+            AccessionNumber = accessionNumber,
+            Cik = cik,
+            Form = form,
+            FilingDate = filingDate,
+            FilingReportDate = reportDate,
             Content = content,
             CreatedAt = DateTime.UtcNow,
             Color = color,
