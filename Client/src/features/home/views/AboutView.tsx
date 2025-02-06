@@ -88,7 +88,7 @@ function ContactSection() {
                             Have questions about SECWatch? We'd love to hear from you. Reach out to our team or join our community.
                         </p>
                         <div className="flex flex-col justify-between sm:flex-row gap-4">
-                            <Button variant="primary" to={"#contact"}>
+                            <Button variant="primary" to={paths.home.contact}>
                                 Contact Us
                             </Button>
 
