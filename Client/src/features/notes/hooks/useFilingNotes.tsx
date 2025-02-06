@@ -18,7 +18,7 @@ const useFilingNotes = (accessionNumber?: string) => {
     });
 
     const createNoteMutation = useMutation({
-        mutationFn: notesApi.createFilingNote,
+        mutationFn: notesApi.createNote,
         onSuccess: (resp) => {
             toast.success('Note created successfully');
 
@@ -32,7 +32,7 @@ const useFilingNotes = (accessionNumber?: string) => {
     });
 
     const updateNoteMutation = useMutation({
-        mutationFn: notesApi.updateFilingNote,
+        mutationFn: notesApi.updateNote,
         onSuccess: (resp) => {
             toast.success('Note updated successfully');
 

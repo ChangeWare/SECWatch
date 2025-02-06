@@ -2,7 +2,7 @@ using SECWatch.Application.Features.Notes.DTOs;
 
 namespace SECWatch.API.Features.Notes.DTOs;
 
-public record CreatedNoteResponse
+public record CreateNoteResponse
 {
-    public required NoteDetails Note { get; init; }
+    public required INoteInfo Note { get; set; }
 }

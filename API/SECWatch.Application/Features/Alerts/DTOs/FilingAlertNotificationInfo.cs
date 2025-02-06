@@ -3,7 +3,7 @@ using SECWatch.Domain.Features.Alerts.Models;
 
 namespace SECWatch.Application.Features.Alerts.DTOs;
 
-public record FilingAlertNotificationInfo : IAlertNotificationInfo
+public record FilingAlertNotificationInfo : AlertNotificationInfo
 {
     public required Guid Id { get; init; }
     

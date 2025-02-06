@@ -14,7 +14,13 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
         return note;
     }
 
-    public async Task<Note?> GetByIdAsync(Guid id)
+    public async Task DeleteAsync(Note note)
+    {
+        context.Notes.Remove(note);
+        await context.SaveChangesAsync();
+    }
+
+    public async Task<Note?> GetNoteByIdAsync(Guid id)
     {
         return await context.Notes.FindAsync(id);
     }
@@ -26,23 +32,12 @@ public class NoteRepository(ApplicationDbContext context) : INoteRepository
             .ToListAsync();
     }
 
-    public async Task<IReadOnlyList<Note>> GetUserCompanyNotesAsync(Guid userId, string cik)
-    {
-        return await context.Notes
-            .Include(x => x.Subject)
-            .Where(x => x.UserId == userId && 
-                        x.Subject.Type == "Company" &&
-                        x.Subject.Cik == cik)
-            .ToListAsync();
-    }
-
     public async Task<IReadOnlyList<Note>> GetUserFilingNotesAsync(Guid userId, string accessionNumber) 
     {
         return await context.Notes
-            .Include(x => x.Subject)
             .Where(x => x.UserId == userId &&
-                        x.Subject.Type == "Filing" &&
-                        x.Subject.AccessionNumber == accessionNumber)
+                x.NoteType == NoteTypes.Filing &&
+                x.AccessionNumber == accessionNumber)
             .ToListAsync(); 
     }
 }

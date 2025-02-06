@@ -22,7 +22,7 @@ namespace SECWatch.Domain.Features.Users.Models.Infrastructure.Persistence.Migra
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("SECWatch.Domain.Common.SystemEvent", b =>
+            modelBuilder.Entity("SECWatch.Domain.Common.Events.SystemEvent", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -328,6 +328,12 @@ namespace SECWatch.Domain.Features.Users.Models.Infrastructure.Persistence.Migra
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("AccessionNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Cik")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Color")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -339,6 +345,18 @@ namespace SECWatch.Domain.Features.Users.Models.Infrastructure.Persistence.Migra
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FilingDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FilingReportDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Form")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("NoteType")
+                        .HasColumnType("int");
 
                     b.Property<string>("SelectionData")
                         .IsRequired()
@@ -355,27 +373,30 @@ namespace SECWatch.Domain.Features.Users.Models.Infrastructure.Persistence.Migra
                     b.ToTable("Notes");
                 });
 
-            modelBuilder.Entity("SECWatch.Domain.Features.Notes.Models.NoteSubject", b =>
+            modelBuilder.Entity("SECWatch.Domain.Features.Notes.Models.NoteTag", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("AccessionNumber")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasMaxLength(7)
+                        .HasColumnType("nvarchar(7)");
 
-                    b.Property<string>("Cik")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Type")
+                    b.Property<string>("Label")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<Guid>("NoteId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
-                    b.ToTable("NoteSubject");
+                    b.HasIndex("NoteId");
+
+                    b.ToTable("NoteTags");
                 });
 
             modelBuilder.Entity("SECWatch.Domain.Features.Users.Models.User", b =>
@@ -525,24 +546,20 @@ namespace SECWatch.Domain.Features.Users.Models.Infrastructure.Persistence.Migra
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SECWatch.Domain.Features.Notes.Models.NoteSubject", b =>
+            modelBuilder.Entity("SECWatch.Domain.Features.Notes.Models.NoteTag", b =>
                 {
-                    b.HasOne("SECWatch.Domain.Features.Notes.Models.Note", null)
-                        .WithOne("Subject")
-                        .HasForeignKey("SECWatch.Domain.Features.Notes.Models.NoteSubject", "Id")
+                    b.HasOne("SECWatch.Domain.Features.Notes.Models.Note", "Note")
+                        .WithMany()
+                        .HasForeignKey("NoteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Note");
                 });
 
             modelBuilder.Entity("SECWatch.Domain.Features.Companies.Models.Company", b =>
                 {
                     b.Navigation("Addresses");
-                });
-
-            modelBuilder.Entity("SECWatch.Domain.Features.Notes.Models.Note", b =>
-                {
-                    b.Navigation("Subject")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

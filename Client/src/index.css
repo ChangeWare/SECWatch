@@ -79,3 +79,19 @@ html, body, #root {
         @apply bg-background text-foreground;
     }
 }
+
+@keyframes tableHighlight {
+    0% {
+        background-color: rgba(79, 70, 229, 0.1);
+    }
+    50% {
+        background-color: rgba(79, 70, 229, 0.2);
+    }
+    100% {
+        background-color: transparent;
+    }
+}
+
+.table-highlight {
+    animation: tableHighlight 2s ease-out;
+}

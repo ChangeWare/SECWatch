@@ -2,10 +2,9 @@ export interface CompanyFiling {
     accessionNumber: string;
     form: string;
     filingDate: Date;
+    reportDate: Date;
     items: string;
     primaryDocument: string;
-    fiscalYear: number;
-    fiscalPeriod: string;
 }
 
 export interface CompanyFilingHistory {

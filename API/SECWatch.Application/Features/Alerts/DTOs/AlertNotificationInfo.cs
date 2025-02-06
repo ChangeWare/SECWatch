@@ -5,7 +5,7 @@ namespace SECWatch.Application.Features.Alerts.DTOs;
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "EventType")]
 [JsonDerivedType(typeof(FilingAlertNotificationInfo), (int)AlertNotificationType.FilingAlert)]
-public interface IAlertNotificationInfo
+public abstract record AlertNotificationInfo
 {
     public Guid Id { get; init; }
     
@@ -18,5 +18,4 @@ public interface IAlertNotificationInfo
     public bool IsViewed { get; init; }
     
     public bool IsDismissed { get; init; }
-    
 }

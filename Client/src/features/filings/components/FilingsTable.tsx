@@ -68,16 +68,12 @@ function FilingsTable(props: FilingsTableProps) {
             cell: info => new Date(info.row.original.filingDate).toLocaleDateString(),
             sortingFn: 'datetime'
         }),
+        columnHelper.accessor('reportDate', {
+            header: 'Report Date',
+            cell: info => new Date(info.row.original.filingDate).toLocaleDateString() || 'N/A',
+        }),
         columnHelper.accessor('items', {
             header: 'Items',
-            cell: info => info.getValue() || 'N/A',
-        }),
-        columnHelper.accessor('fiscalYear', {
-            header: 'Fiscal Year',
-            cell: info => info.getValue() || 'N/A',
-        }),
-        columnHelper.accessor('fiscalPeriod', {
-            header: 'Period',
             cell: info => info.getValue() || 'N/A',
         }),
     ];

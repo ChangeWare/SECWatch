@@ -5,7 +5,7 @@ import {
     ChevronRight,
     FileText,
     Home,
-    LineChart,
+    LineChart, NotebookIcon,
     Settings,
 } from "lucide-react";
 import {Link, useLocation} from "react-router-dom";
@@ -102,6 +102,7 @@ function SideNavMenuItem(props: SideNavMenuItemProps) {
 export default function DashboardSidebar(props: DashboardSidebarProps) {
     const [companiesOpen, setCompaniesOpen] = useState(true);
     const [filingsOpen, setFilingsOpen] = useState(false);
+    const [notesOpen, setNotesOpen] = useState(false);
     const [alertsOpen, setAlertsOpen] = useState(false);
 
     // Navigation items with nested structure
@@ -130,6 +131,17 @@ export default function DashboardSidebar(props: DashboardSidebarProps) {
                 {label: 'Analysis', href: '#'},
             ],
         }, **/
+        {
+            icon: NotebookIcon,
+            label: 'Notes',
+            href: '/notes',
+            isGroup: true,
+            isOpen: notesOpen,
+            setOpen: setNotesOpen,
+            items: [
+                { label: 'Explore Notes', href: dashboardPaths.exploreNotes }
+            ]
+        },
         {
             icon: AlertCircle,
             label: 'Alerts',

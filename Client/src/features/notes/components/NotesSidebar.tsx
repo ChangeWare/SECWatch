@@ -2,7 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@common/components/Car
 import ScrollArea from "@common/components/ScrollArea.tsx";
 import Alert from "@common/components/Alert.tsx";
 import { PanelRightClose, Pencil, Trash2 } from "lucide-react";
-import { Note } from "@features/notes/types.ts";
+import {FilingNote, Note} from "@features/notes/types.ts";
+import HyperLink from "@common/components/HyperLink.tsx";
 
 interface NotesSidebarProps<T extends Note> {
     notes: T[];
@@ -70,6 +71,11 @@ interface NoteCardProps<T extends Note> {
     onClick: () => void;
     onDelete: () => void;
     onEdit: () => void;
+    onTableClick?: (note: FilingNote) => void;
+}
+
+function isFilingNote(note: Note): note is FilingNote {
+    return (note as FilingNote) !== undefined;
 }
 
 function NoteCard<T extends Note>(props: NoteCardProps<T>) {
@@ -80,6 +86,21 @@ function NoteCard<T extends Note>(props: NoteCardProps<T>) {
         onEdit,
         isHighlighted
     } = props;
+
+    const renderNoteSelection = () => {
+        if (isFilingNote(note)) {
+            return (
+                <p className="text-sm text-tertiary line-clamp-3">
+                    {note.selectionData.selectionType === 'text' ? (
+                        note.selectionData.selectedText
+                        ) : (
+                            "Table Note"
+                        )
+                    }
+                </p>
+            );
+        }
+    }
 
     return (
         <Card
@@ -113,7 +134,7 @@ function NoteCard<T extends Note>(props: NoteCardProps<T>) {
                         </button>
                     </div>
                 </div>
-                <p className="text-sm text-tertiary line-clamp-3">{note.content}</p>
+                {renderNoteSelection()}
                 <p className="text-xs text-secondary">
                     {note.createdAt.toLocaleDateString()}
                 </p>

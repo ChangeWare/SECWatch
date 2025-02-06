@@ -5,9 +5,9 @@ using SECWatch.Domain.Features.Notes.Models;
 namespace SECWatch.Application.Features.Notes.DTOs.Configurations;
 
 public class SelectionDataValueResolver(ISelectionDataResolver resolver)
-    : IValueResolver<Note, FilingNote, FilingNoteSelectionData>
+    : IValueResolver<Note, FilingNoteInfo, FilingNoteSelectionData>
 {
-    public FilingNoteSelectionData Resolve(Note source, FilingNote destination, FilingNoteSelectionData destMember, ResolutionContext context)
+    public FilingNoteSelectionData Resolve(Note source, FilingNoteInfo destination, FilingNoteSelectionData destMember, ResolutionContext context)
     {
         return resolver.Resolve<FilingNoteSelectionData>(source);
     }
@@ -17,9 +17,16 @@ public class NoteMapperProfile : Profile
 {
     public NoteMapperProfile()
     {
-        CreateMap<CreateFilingNoteRequest, FilingNote>();
-        CreateMap<Note, FilingNote>()
-            .ForMember(dest => dest.SelectionData, 
+        CreateMap<TransactFilingNoteInfo, FilingNoteInfo>();
+
+        CreateMap<Note, INoteInfo>()
+            .Include<Note, FilingNoteInfo>();
+        
+        CreateMap<Note, FilingNoteInfo>()
+            .ForMember(dest => dest.SelectionData,
                 opt => opt.MapFrom<SelectionDataValueResolver>());
+
+        CreateMap<NoteTag, NoteTagInfo>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
     }
 }

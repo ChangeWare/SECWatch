@@ -1,25 +1,36 @@
 import {apiClient} from "@common/api/apiClient.ts";
 import {
-    CreateFilingNoteRequest,
-    CreateFilingNoteResponse,
-    GetFilingNotesResponse, UpdateFilingNoteRequest, UpdateFilingNoteResponse
-} from "@features/notes/types.ts";
+    CreateNoteRequest, CreateNoteResponse, CreateNoteTagRequest, DeleteNoteTagRequest,
+    GetFilingNotesResponse, GetUserNotesResponse, UpdateNoteRequest, UpdateNoteResponse
+} from "./types.ts";
 
 export const notesApi = {
-    createFilingNote: async (req: CreateFilingNoteRequest): Promise<CreateFilingNoteResponse> => {
-        const response = await apiClient.post<CreateFilingNoteResponse>(`/notes/filing-notes/${req.accessionNumber}/create`, req);
+    createNote: async (req: CreateNoteRequest): Promise<CreateNoteResponse> => {
+        const response = await apiClient.post<CreateNoteResponse>(`/notes/create`, req);
         return response.data;
+    },
+    updateNote: async (req: UpdateNoteRequest): Promise<UpdateNoteResponse> => {
+        const response = await apiClient.post<UpdateNoteResponse>(`/notes/update`, req);
+        return response.data;
+    },
+    deleteFilingNote: async (noteId: string): Promise<string> => {
+        await apiClient.delete(`/notes/${noteId}`);
+        return noteId;
     },
     getFilingNotes: async (accessionNumber: string): Promise<GetFilingNotesResponse> => {
         const response = await apiClient.get<GetFilingNotesResponse>(`/notes/filing-notes/${accessionNumber}`);
         return response.data;
     },
-    updateFilingNote: async (req: UpdateFilingNoteRequest): Promise<UpdateFilingNoteResponse> => {
-        const response = await apiClient.post<UpdateFilingNoteResponse>(`/notes/filing-notes/${req.accessionNumber}/update`, req);
+    getUserNotes: async (): Promise<GetUserNotesResponse> => {
+        const response = await apiClient.get('/notes');
         return response.data;
     },
-    deleteFilingNote: async (noteId: string): Promise<string> => {
-        await apiClient.delete(`/notes/filing-notes/${noteId}/delete`);
-        return noteId;
-    }
+    addNoteTag: async (req: CreateNoteTagRequest) => {
+        const response = await apiClient.post(`/notes/${req.noteId}/tags`, req);
+        return response.data;
+    },
+    removeNoteTag: async (req: DeleteNoteTagRequest) => {
+        const response = await apiClient.delete(`/notes/${req.noteId}/tags/${req.tagId}`);
+        return response.data;
+    },
 }

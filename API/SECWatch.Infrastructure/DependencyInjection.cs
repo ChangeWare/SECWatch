@@ -104,6 +104,7 @@ public static class DependencyInjection
         services.AddTransient<ICompanyUserDashboardPreferencesRepository, CompanyUserDashboardPreferencesRepository>();
         services.AddTransient<IAlertRuleRepository, AlertRuleRepository>();
         services.AddTransient<IAlertNotificationRepository, AlertNotificationRepository>();
+        services.AddTransient<INoteTagRepository, NoteTagRepository>();
         
         return services;
     }

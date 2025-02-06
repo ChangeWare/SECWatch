@@ -15,11 +15,11 @@ public class AlertNotificationService(
     IMapper mapper
     ) : IAlertNotificationService
 {
-    public async Task<Result<ReadOnlyCollection<IAlertNotificationInfo>>> GetAlertNotificationsForUserAsync(Guid userId)
+    public async Task<Result<ReadOnlyCollection<AlertNotificationInfo>>> GetAlertNotificationsForUserAsync(Guid userId)
     {
         var notifications = await alertNotificationRepository.GetAlertNotificationsForUserAsync(userId);
 
-        var notificationDtos = await Task.WhenAll(notifications.Select<AlertNotification, Task<IAlertNotificationInfo>>(async n =>
+        var notificationDtos = await Task.WhenAll(notifications.Select<AlertNotification, Task<AlertNotificationInfo>>(async n =>
         {
             if (n.EventType == AlertNotificationType.FilingAlert)
             {
