@@ -3,46 +3,53 @@ import {TrendingUp, TrendingDown, TableIcon, PinOff} from 'lucide-react';
 import {Card, CardContent, CardHeader, CardTitle} from "@common/components/Card.tsx";
 import { CompanyConcept, ConceptDataPoint, GroupedConceptDataPoints } from "@features/company/types.ts";
 import LoadingScreen from "@common/components/LoadingIndicator.tsx";
-import CompanyConceptChart from "@features/company/components/chart/CompanyConceptChart.tsx";
 import {
     formatConceptType,
-    formatCurrency, getChangeOverPriorYear,
-    getChangePercentClassName, getPercentChangeOverPriorYear,
+    formatCurrency,
+    getChangeOverPriorYear,
+    getChangePercentClassName,
+    getPercentChangeOverPriorYear,
     groupByCurrency,
-    processData
+    processData,
+    separateAnnualAndQuarterlyData
 } from "@features/company/utils.tsx";
 import Button from "@common/components/Button.tsx";
 import CurrencyTypeSelector from "@features/company/components/chart/CurrencyTypeSelector.tsx";
 import CompanyConceptDataTableModal from '@features/company/components/chart/CompanyConceptDataTableModal.tsx';
+import CompanyConceptViewer from "@features/company/components/CompanyConceptViewer.tsx";
+import LoadingIndicator from "@common/components/LoadingIndicator.tsx";
 
 interface CompanyConceptContentProps {
     companyConcept: CompanyConcept;
-    data: GroupedConceptDataPoints[];
+    data: {
+        annual: GroupedConceptDataPoints[];
+        quarterly: GroupedConceptDataPoints[];
+    };
     onDataPointSelected?: (dataPoint: GroupedConceptDataPoints) => void;
 }
 
 function CompanyConceptContent(props: CompanyConceptContentProps) {
-
     const {
         companyConcept,
         data
     } = props;
 
+    useEffect(() => {
+        console.log('data', data);
+    }, [data]);
 
     const currentPeriodYoYChange = useMemo(() => {
-
         if (companyConcept.dataPoints?.length <= 0) return { value: 0, percentage: 0 };
 
         const percentChange = getPercentChangeOverPriorYear(companyConcept.dataPoints);
         const valueChange = getChangeOverPriorYear(companyConcept.dataPoints);
 
         return { value: valueChange, percentage: percentChange };
-
-    }, [props.companyConcept]);
+    }, [companyConcept]);
 
     const handleDataPointSelected = (dataPoint: GroupedConceptDataPoints) => {
         props.onDataPointSelected?.(dataPoint);
-    }
+    };
 
     const formatValue = companyConcept.isCurrencyData ? formatCurrency : (value: number) => value.toLocaleString();
 
@@ -79,18 +86,25 @@ function CompanyConceptContent(props: CompanyConceptContentProps) {
                             {formatValue(currentPeriodYoYChange.value)}
                         </div>
                         <div className="text-sm text-muted-foreground mt-2">
-                            <a className={getChangePercentClassName(currentPeriodYoYChange.percentage)}>{currentPeriodYoYChange.value > 0 ? 'Increase' : 'Decrease'}</a> from previous year
+                            <a className={getChangePercentClassName(currentPeriodYoYChange.percentage)}>
+                                {currentPeriodYoYChange.value > 0 ? 'Increase' : 'Decrease'}
+                            </a> from previous year
                         </div>
                     </CardContent>
                 </Card>
             </div>
 
             {/* Chart */}
-            <CompanyConceptChart
-                data={data}
-                valueFormatter={formatValue}
-                handleDataPointSelected={handleDataPointSelected}
-            />
+            <LoadingIndicator isLoading={data == null || data.annual == null || data.quarterly == null}>
+                {(data?.annual.length > 0 || data?.quarterly.length > 0) && (
+                    <CompanyConceptViewer
+                        annual={data.annual}
+                        quarterly={data.quarterly}
+                        valueFormatter={formatValue}
+                        handleDataPointSelected={handleDataPointSelected}
+                    />
+                )}
+            </LoadingIndicator>
 
             <div className="text-sm text-muted-foreground">
                 Last updated: {props.companyConcept.lastUpdated?.toLocaleDateString() ?? 'N/A'}
@@ -100,7 +114,10 @@ function CompanyConceptContent(props: CompanyConceptContentProps) {
 }
 
 interface DataGroupedByUnit {
-    [unitType: string]: GroupedConceptDataPoints[];
+    [unitType: string]: {
+        annual: GroupedConceptDataPoints[];
+        quarterly: GroupedConceptDataPoints[];
+    };
 }
 
 interface PinnedCompanyConceptSectionProps {
@@ -114,25 +131,44 @@ function PinnedCompanyConceptSection(props: PinnedCompanyConceptSectionProps) {
         companyConcept
     } = props;
 
-    const [ focusedDataPointDate, setFocusedDataPointDate] = useState<Date | undefined>();
+    const [focusedDataPointDate, setFocusedDataPointDate] = useState<Date | undefined>();
     const [dataTableModalOpen, setDataTableModalOpen] = useState<boolean>(false);
     const [selectedCurrency, setSelectedCurrency] = useState<string>('ALL');
 
     const processedData = useMemo<DataGroupedByUnit>(() => {
-        if (!companyConcept) return {};
+        const emptyData = {
+            annual: [],
+            quarterly: []
+        };
 
-        const data = processData(companyConcept.dataPoints);
+        if (!companyConcept || !companyConcept.dataPoints?.length) {
+            return { ["ALL"]: emptyData };
+        }
 
         // If underlying grouped data is currency data, group by currency
         // otherwise, we'll just lump everything into a single group
         if (companyConcept.isCurrencyData) {
-            return groupByCurrency(data);
+            const groupedByCurrency = companyConcept.dataPoints.reduce((acc, curr) => {
+                const unitType = curr.unitType || 'USD'; // Fallback to USD if unitType is missing
+                if (!acc[unitType]) {
+                    acc[unitType] = [];
+                }
+                acc[unitType].push(curr);
+                return acc;
+            }, {} as Record<string, ConceptDataPoint[]>);
+
+            const result = Object.entries(groupedByCurrency).reduce((acc, [currency, points]) => {
+                acc[currency] = separateAnnualAndQuarterlyData(points);
+                return acc;
+            }, {} as DataGroupedByUnit);
+
+            return Object.keys(result).length > 0 ? result : { ["ALL"]: emptyData };
         } else {
-            return { ["ALL"]: data };
+            return {
+                ["ALL"]: separateAnnualAndQuarterlyData(companyConcept.dataPoints)
+            };
         }
-
     }, [companyConcept]);
-
 
     const availableCurrencies = useMemo(() => {
         return Object.keys(processedData);
@@ -142,24 +178,21 @@ function PinnedCompanyConceptSection(props: PinnedCompanyConceptSectionProps) {
         if (companyConcept?.isCurrencyData) {
             setSelectedCurrency(availableCurrencies[0]);
         }
-
     }, [companyConcept, availableCurrencies]);
 
     const handleDataPointSelected = (dataPoint: GroupedConceptDataPoints) => {
         setFocusedDataPointDate(dataPoint.date);
         setDataTableModalOpen(true);
-    }
+    };
 
     const handleUnpinClick = () => {
         props.onUnpin(props.companyConcept!);
-    }
+    };
 
     const formatValue = companyConcept?.isCurrencyData ? formatCurrency : (value: number) => value.toLocaleString();
 
     return (
-        <Card
-            className={props.className}
-        >
+        <Card className={props.className}>
             <LoadingScreen isLoading={props.companyConcept == null}>
                 <>
                     <CardHeader>
@@ -199,7 +232,6 @@ function PinnedCompanyConceptSection(props: PinnedCompanyConceptSectionProps) {
                                     onClose={() => setDataTableModalOpen(false)}
                                 />
                             </div>
-
                         </div>
                     </CardHeader>
                     <CardContent className="p-6 space-y-6">
