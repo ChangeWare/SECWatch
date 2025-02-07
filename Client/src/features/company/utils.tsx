@@ -135,55 +135,104 @@ export function convertConceptDataPointsToCSV (dataPoints: ConceptDataPoint[]): 
     ).join('\n');
 
     return headers + rows;
-};
+}
 
 
-export function processData(data: ConceptDataPoint[]): GroupedConceptDataPoints[] {
+export function separateAnnualAndQuarterlyData(data: ConceptDataPoint[]) {
+    const annualData: ConceptDataPoint[] = [];
+    const quarterlyData: ConceptDataPoint[] = [];
 
-    // Group by end date + fiscal period
-
-    const groupedByDate = data.reduce((acc, curr) => {
-        const dateStr = curr.endDate.toISOString() + curr.fiscalPeriod;
-        if (!acc[dateStr]) {
-            acc[dateStr] = [];
+    data.forEach(point => {
+        if (point.fiscalPeriod === 'FY' && point.formType === '10-K') {
+            annualData.push(point);
+        } else if (point.fiscalPeriod !== 'FY') {
+            quarterlyData.push(point);
         }
-        acc[dateStr].push(curr);
+    });
+
+    // Group annual data by fiscal year
+    const annualByYear = annualData.reduce((acc, point) => {
+        const yearKey = point.fiscalYear.toString();
+        if (!acc[yearKey]) {
+            acc[yearKey] = [];
+        }
+        acc[yearKey].push(point);
         return acc;
     }, {} as Record<string, ConceptDataPoint[]>);
 
-    // Process each date group
-    return Object.entries(groupedByDate).map<GroupedConceptDataPoints>(([_, points]) => {
-        // Sort by filings date to get most recent (descending)
-        const sorted = [...points].sort((a, b) =>
+    // For each year, get the most recently reported FY value
+    const processedAnnualData = Object.entries(annualByYear).map(([year, yearPoints]) => {
+        // Sort by filing date, most recent first
+        const sorted = [...yearPoints].sort((a, b) =>
             b.filingDate.getTime() - a.filingDate.getTime()
         );
 
-        const uniqueValues = new Set(points.map(p => p.value));
-        const hasDiscrepancy = uniqueValues.size > 1;
-        const hasMultipleFilings = points.length > 1;
         const mostRecent = sorted[0];
-
-        // Calculate value range if there are discrepancies
-        const valueRange = hasDiscrepancy ? {
-            min: Math.min(...points.map(p => p.value)),
-            max: Math.max(...points.map(p => p.value)),
-            diff: Math.max(...points.map(p => p.value)) - Math.min(...points.map(p => p.value))
-        } : undefined;
 
         return {
             date: mostRecent.endDate,
             fiscalYear: mostRecent.fiscalYear,
-            fiscalPeriod: mostRecent.fiscalPeriod,
-            fiscalLabel: formatFiscalPeriod(mostRecent),
-            unitType: mostRecent.unitType,
+            fiscalPeriod: 'FY',
+            fiscalLabel: `FY${mostRecent.fiscalYear}`,
             value: mostRecent.value,
-            hasDiscrepancy,
-            hasMultipleFilings,
+            hasMultipleFilings: yearPoints.length > 1,
+            unitType: mostRecent.unitType,
             details: {
-                underlyingData: points,
-                valueRange
+                underlyingData: yearPoints
             }
         };
-    }).sort((a, b) =>
-        a.date.getTime() - b.date.getTime());
+    });
+
+    // Process quarterly data by looking for period-specific frames
+    const processedQuarterlyData = quarterlyData.reduce((acc, point) => {
+        const periodKey = `${point.fiscalYear}-${point.fiscalPeriod}`;
+        if (!acc[periodKey]) {
+            acc[periodKey] = [];
+        }
+        acc[periodKey].push(point);
+        return acc;
+    }, {} as Record<string, ConceptDataPoint[]>);
+
+    // Get the correct quarterly values (non-cumulative)
+    const processedQuarterly = Object.entries(processedQuarterlyData)
+        .map(([_, points]) => {
+            // Sort by filing date, most recent first
+            const sorted = [...points].sort((a, b) =>
+                b.filingDate.getTime() - a.filingDate.getTime()
+            );
+
+            // Look for point with the matching frame for this quarter
+            const mostRecent = sorted[0];
+            const expectedFrame = `CY${mostRecent.fiscalYear}${mostRecent.fiscalPeriod}`;
+
+            // First try to find a point with matching frame
+            let quarterPoint = sorted.find(p => p.frame === expectedFrame);
+
+            // If no matching frame, look for the smallest non-null value
+            // (since larger values are likely cumulative)
+            if (!quarterPoint) {
+                const nonNullValues = sorted.filter(p => p.value !== null);
+                quarterPoint = nonNullValues.reduce((min, curr) =>
+                        curr.value < min.value ? curr : min
+                    , nonNullValues[0]);
+            }
+
+            return {
+                date: quarterPoint.endDate,
+                fiscalYear: quarterPoint.fiscalYear,
+                fiscalPeriod: quarterPoint.fiscalPeriod,
+                fiscalLabel: `${quarterPoint.fiscalYear}${quarterPoint.fiscalPeriod}`,
+                value: quarterPoint.value,
+                hasMultipleFilings: points.length > 1,
+                unitType: quarterPoint.unitType,
+                details: {
+                    underlyingData: points
+                }
+            };
+        });
+
+    return {
+        annual: processedAnnualData.sort((a, b) => a.date.getTime() - b.date.getTime()),
+        quarterly: processedQuarterly.sort((a, b) => a.date.getTime() - b.date.getTime())
+    };
 }

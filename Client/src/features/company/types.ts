@@ -10,7 +10,6 @@ export interface GroupedConceptDataPoints {
     fiscalPeriod: string;
     fiscalLabel: string;
     value: number;
-    hasDiscrepancy: boolean;
     hasMultipleFilings: boolean;
     unitType: string;
     details: {
