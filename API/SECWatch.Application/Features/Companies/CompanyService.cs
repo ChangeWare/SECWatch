@@ -23,7 +23,7 @@ public class CompanyService(
         return Result.Ok(companiesSearchResponse);
     }
 
-    public async Task<Result<CompanyDetails>> GetCompanyDetailsAsync(Guid userId, string cik)
+    public async Task<Result<CompanyDetails>> GetCompanyDetailsAsync(Guid? userId, string cik)
     {
         // Ensure CIK is padded to 10 characters
         cik = cik.PadLeft(10, '0');
@@ -34,8 +34,11 @@ public class CompanyService(
         var companyDetails = mapper.Map<CompanyDetails>(company);
         
         // Check whether the user is tracking this company
-        var trackedCompany = await trackedCompanyRepository.GetTrackedCompanyByCikForUser(cik, userId);
-        companyDetails.IsTracked = trackedCompany != null;
+        if (userId != null)
+        {
+            var trackedCompany = await trackedCompanyRepository.GetTrackedCompanyByCikForUser(cik, userId.Value);
+            companyDetails.IsTracked = trackedCompany != null;
+        }
         
         return Result.Ok(companyDetails);
     }

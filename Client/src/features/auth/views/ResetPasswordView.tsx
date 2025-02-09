@@ -1,4 +1,4 @@
-export default function ResetPassword() {
+export default function ResetPasswordView() {
     return (
         <div>
             ResetPassword

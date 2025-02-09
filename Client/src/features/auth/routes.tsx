@@ -1,21 +1,21 @@
 import { Suspense } from "react";
 import { RouteObject } from "react-router-dom";
-import Login from "./views/Login";
-import Register from "./views/Register";
-import ForgotPassword from "./views/ForgotPassword";
-import ResetPassword from "./views/ResetPassword";
-import VerifyEmail from "./views/VerifyEmail";
+import RegisterView from "./views/RegisterView.tsx";
+import ForgotPasswordView from "./views/ForgotPasswordView.tsx";
+import ResetPasswordView from "./views/ResetPasswordView.tsx";
+import VerifyEmailView from "./views/VerifyEmailView.tsx";
 import { authPaths } from "./paths";
-import RegistrationSuccessful from "@features/auth/views/RegistrationSuccessful.tsx";
-import Logout from "@features/auth/views/Logout.tsx";
+import RegistrationSuccessfulView from "@features/auth/views/RegistrationSuccessfulView.tsx";
+import LogoutView from "@features/auth/views/LogoutView.tsx";
 import LoadingScreen from "@common/views/LoadingScreen.tsx";
+import LoginView from "./views/LoginView.tsx";
 
 export const authRoutes: RouteObject[] = [
     {
       path: authPaths.login,
       element: (
         <Suspense fallback={<LoadingScreen />}>
-          <Login />
+          <LoginView />
         </Suspense>
       )
     },
@@ -23,7 +23,7 @@ export const authRoutes: RouteObject[] = [
         path: authPaths.logout,
         element: (
             <Suspense fallback={<LoadingScreen />}>
-                <Logout />
+                <LogoutView />
             </Suspense>
         )
     },
@@ -31,7 +31,7 @@ export const authRoutes: RouteObject[] = [
       path: authPaths.register,
       element: (
         <Suspense fallback={<LoadingScreen />}>
-          <Register />
+          <RegisterView />
         </Suspense>
       )
     },
@@ -39,7 +39,7 @@ export const authRoutes: RouteObject[] = [
       path: authPaths.forgotPassword,
       element: (
         <Suspense fallback={<LoadingScreen />}>
-          <ForgotPassword />
+          <ForgotPasswordView />
         </Suspense>
       )
     },
@@ -47,7 +47,7 @@ export const authRoutes: RouteObject[] = [
       path: authPaths.resetPassword,
       element: (
         <Suspense fallback={<LoadingScreen />}>
-          <ResetPassword />
+          <ResetPasswordView />
         </Suspense>
       )
     },
@@ -55,16 +55,17 @@ export const authRoutes: RouteObject[] = [
         path: authPaths.registerSuccess,
         element: (
             <Suspense fallback={<LoadingScreen />}>
-                <RegistrationSuccessful />
+                <RegistrationSuccessfulView />
             </Suspense>
         )
     },
+
     {
       // Handle email verification links
       path: authPaths.verifyEmail,
       element: (
         <Suspense fallback={<LoadingScreen />}>
-          <VerifyEmail />
+          <VerifyEmailView />
         </Suspense>
       )
     }

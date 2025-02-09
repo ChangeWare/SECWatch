@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SECWatch.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace SECWatch.Domain.Features.Users.Models.Infrastructure.Persistence.Migrations
+namespace SECWatch.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250208163520_AddNoteTags")]
+    partial class AddNoteTags
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -411,12 +414,7 @@ namespace SECWatch.Domain.Features.Users.Models.Infrastructure.Persistence.Migra
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Tags");
                 });
@@ -585,17 +583,6 @@ namespace SECWatch.Domain.Features.Users.Models.Infrastructure.Persistence.Migra
                     b.Navigation("Note");
 
                     b.Navigation("Tag");
-                });
-
-            modelBuilder.Entity("SECWatch.Domain.Features.Notes.Models.Tag", b =>
-                {
-                    b.HasOne("SECWatch.Domain.Features.Users.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SECWatch.Domain.Features.Companies.Models.Company", b =>

@@ -1,27 +1,27 @@
 import { layoutStyles, textStyles} from "@common/styles/components.ts";
-import {LoginForm} from "@features/auth/components/LoginForm.tsx";
+import {RegistrationForm} from "@features/auth/components/RegistrationForm.tsx";
 import HyperLink from "@common/components/HyperLink.tsx";
 import {Card} from "@common/components/Card.tsx";
 
-export default function Login() {
+export default function RegisterView() {
     return (
         <div className="min-h-screen bg-background">
             <div className={`min-h-screen ${layoutStyles.flexCenter} py-8`}>
                 <Card className={'w-full max-w-md p-8 m-4'}>
                     <div className="text-center mb-8">
-                        <h1 className={textStyles.heading}>Welcome Back</h1>
+                        <h1 className={textStyles.heading}>Join SECWatch</h1>
                         <p className={textStyles.paragraph}>
-                            Sign in to continue monitoring SEC filings
+                            Start monitoring SEC filings and get real-time alerts
                         </p>
                     </div>
 
-                    <LoginForm/>
+                    <RegistrationForm/>
 
                     <div className="mt-6 text-center">
                         <p className={textStyles.paragraph}>
-                            Don't have an account?{' '}
+                            Already have an account?{' '}
 
-                            <HyperLink href="/register">Create one</HyperLink>
+                            <HyperLink href="/login">Sign in</HyperLink>
                         </p>
                     </div>
                 </Card>

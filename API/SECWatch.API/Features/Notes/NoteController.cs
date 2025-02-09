@@ -94,6 +94,35 @@ public class NoteController(INoteService noteService, IMapper mapper) : Controll
         return result.ToActionResult();
     }
     
+    [HttpGet]
+    [ProducesResponseType(typeof(TagsResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [Route("tags")]
+    public async Task<ActionResult<TagsResponse>> GetTags()
+    {
+        var userId = User.GetUserId();
+        
+        var result = await noteService.GetAvailableTagsAsync(userId);
+
+        return result.ToActionResponse(tags => new TagsResponse
+        {
+            Tags = tags
+        });
+    }
+    
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [Route("tags/{tagId}/apply/{noteId}")]
+    public async Task<ActionResult> AddTag(Guid noteId, Guid tagId)
+    {
+        var userId = User.GetUserId();
+
+        var result = await noteService.ApplyNoteTagAsync(userId, noteId, tagId);
+
+        return result.ToActionResult();
+    }
+    
     [HttpDelete]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

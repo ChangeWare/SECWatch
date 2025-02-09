@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SECWatch.API.Features.Users.DTOs;
 using SECWatch.Application.Common.Utils;
@@ -9,6 +10,7 @@ using SECWatch.Domain.Features.Users.Models.Preferences;
 namespace SECWatch.API.Features.Users;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class UsersController(
     IUserService userService,

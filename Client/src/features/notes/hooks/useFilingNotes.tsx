@@ -2,13 +2,16 @@ import {useMutation, useQuery} from "@tanstack/react-query";
 import {notesApi} from "@features/notes/api/notesApi.ts";
 import {toast} from "react-toastify";
 import queryClient from "@common/api/queryClient.ts";
+import {useAuth} from "@features/auth";
 
 const useFilingNotes = (accessionNumber?: string) => {
+
+    const { isAuthenticated } = useAuth();
 
     const { data: notes, isLoading: notesLoading } = useQuery({
         queryKey: ['filingNotes', accessionNumber],
         queryFn: () => notesApi.getFilingNotes(accessionNumber!),
-        enabled: !!accessionNumber,
+        enabled: !!accessionNumber && isAuthenticated,
         select: (data) => {
             return data.notes.map(note => ({
                 ...note,

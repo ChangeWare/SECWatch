@@ -3,14 +3,15 @@ import { useForm } from 'react-hook-form';
 import Button  from '@/common/components/Button.tsx';
 import { useAuth } from "@features/auth";
 import { LoginFormData } from "@features/auth/types.ts";
-import {useNavigate} from "react-router-dom";
-import {paths} from "@routes/paths.ts";
 import HyperLink from "@common/components/HyperLink.tsx";
 
-export function LoginForm() {
+interface LoginFormProps {
+    onLoginSuccess: () => void;
+}
+
+export function LoginForm({onLoginSuccess}: LoginFormProps) {
     const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>();
     const {login, loginError, isLoggingIn, loginSuccess } = useAuth();
-    const navigate = useNavigate();
 
     const onSubmit = (data: LoginFormData) => {
         login(data);
@@ -18,7 +19,7 @@ export function LoginForm() {
 
     useEffect(() => {
         if (loginSuccess) {
-            navigate(paths.dashboard.default);
+           onLoginSuccess();
         }
     }, [loginSuccess]);
 

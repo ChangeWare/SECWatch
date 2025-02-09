@@ -25,8 +25,7 @@ public class NoteMapperProfile : Profile
         CreateMap<Note, FilingNoteInfo>()
             .ForMember(dest => dest.SelectionData,
                 opt => opt.MapFrom<SelectionDataValueResolver>());
-
-        CreateMap<NoteTag, NoteTagInfo>()
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
+        
+        CreateMap<Tag, TagInfo>();
     }
 }

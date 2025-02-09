@@ -9,6 +9,10 @@ import noteStyles from '../styles/noteStyles.css?raw'
 import {getNodeFromXPath, getProxiedImageSrc, getXPathForNode} from "@features/filings/utils.ts";
 import {CompanyFiling} from "@features/filings/types.ts";
 import {FilingNoteInfo} from "@features/notes/api/types.ts";
+import {useAuth} from "@features/auth";
+import Button from "@common/components/Button.tsx";
+import {paths} from "@routes/paths.ts";
+import {useAuthModal} from "@features/auth/components/AuthModal.tsx";
 
 interface IXBRLViewerProps {
     filingContents: string;
@@ -36,7 +40,7 @@ export const IXBRLLoadingIndicator: React.FC<{
     )
 };
 
-const IXBRLViewer: React.FC<IXBRLViewerProps> = (props: IXBRLViewerProps) => {
+function IXBRLViewer (props: IXBRLViewerProps) {
     const {
         filingContents,
         notes = [],
@@ -46,6 +50,10 @@ const IXBRLViewer: React.FC<IXBRLViewerProps> = (props: IXBRLViewerProps) => {
         filing,
         cik
     } = props;
+
+    const { isAuthenticated } = useAuth();
+    const { openAuthModal, closeAuthModal } = useAuthModal();
+
 
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const [selection, setSelection] = useState<FilingNoteSelectionData | null>(null);
@@ -130,7 +138,7 @@ const IXBRLViewer: React.FC<IXBRLViewerProps> = (props: IXBRLViewerProps) => {
         setIsSidebarOpen(true);
     };
 
-    const handleTableClick = (table: HTMLTableElement) => {
+    const handleCreateTableNote = (table: HTMLTableElement) => {
         const tableRect = table.getBoundingClientRect();
         const iframeRect = iframeRef.current?.getBoundingClientRect();
 
@@ -156,6 +164,22 @@ const IXBRLViewer: React.FC<IXBRLViewerProps> = (props: IXBRLViewerProps) => {
             });
             setIsAddingNote(true);
         }
+    }
+
+    const handleTableClick = (table: HTMLTableElement) => {
+        if (!isAuthenticated) {
+            openAuthModal({
+                title: "Notes Require Authentication",
+                message: "Sign in or create an account to add notes to SEC filings",
+                onAuthenticated: () => {
+                    closeAuthModal();
+                    handleCreateTableNote(table);
+                }
+            });
+            return;
+        }
+
+        handleCreateTableNote(table);
     };
 
     const handleSelection = (e: MouseEvent) => {
@@ -439,13 +463,23 @@ const IXBRLViewer: React.FC<IXBRLViewerProps> = (props: IXBRLViewerProps) => {
         <div className="space-y-4 max-w-full">
             <div className="flex justify-end">
                 {!isSidebarOpen && (
-                    <button
-                        onClick={() => setIsSidebarOpen(true)}
-                        className="h-10 px-3 bg-surface hover:bg-surface-foreground rounded-lg transition-colors flex items-center gap-2"
-                    >
-                        <PanelRightOpen className="h-5 w-5" />
-                        <span className="text-sm">Show Notes</span>
-                    </button>
+                    isAuthenticated ? (
+                        <button
+                            onClick={() => setIsSidebarOpen(true)}
+                            className="h-10 px-3 bg-surface hover:bg-surface-foreground rounded-lg transition-colors flex items-center gap-2"
+                        >
+                            <PanelRightOpen className="h-5 w-5" />
+                            <span className="text-sm">Show Notes</span>
+                        </button>
+
+                    ) : (
+                        <Button
+                            to={paths.auth.login}
+                            className="h-10 px-3 bg-surface hover:bg-surface-foreground rounded-lg transition-colors flex items-center gap-2"
+                        >
+                            <span className="text-sm">Login to add notes</span>
+                        </Button>
+                    )
                 )}
             </div>
 

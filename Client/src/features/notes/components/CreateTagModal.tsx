@@ -38,7 +38,8 @@ function CreateTagModal (props: CreateTagModalProps) {
         e.preventDefault();
         if (tagName.trim() && selectedColor) {
             onCreateTag({
-                id: '',
+                tagId: '',
+                noteTagId: '',
                 label: tagName.trim(),
                 color: selectedColor
             }, selectedNote);

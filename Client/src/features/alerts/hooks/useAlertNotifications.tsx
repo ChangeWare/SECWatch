@@ -3,12 +3,16 @@ import {alertsApi} from "@features/alerts/api/alertsApi.ts";
 import {useMemo} from "react";
 import queryClient from "@/common/api/queryClient";
 import {toast} from "react-toastify";
+import {useAuth} from "@features/auth";
 
 const useAlertNotifications = () => {
+
+    const { isAuthenticated } = useAuth();
 
     const { data, error, isLoading } = useQuery({
         queryKey: ['alertNotifications'],
         queryFn: alertsApi.getUserAlertNotifications,
+        enabled: isAuthenticated,
         staleTime: 1000 * 60, // 1 minute
     });
 

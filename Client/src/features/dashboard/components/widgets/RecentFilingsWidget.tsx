@@ -8,12 +8,45 @@ import {RecentFilingsWidgetPreference, UserPreferenceKeys} from "@features/user/
 import UpdateRecentFilingsWidgetPreferencesModal from "./UpdateRecentFilingsWidgetPreferencesModal.tsx";
 import LoadingIndicator from "@common/components/LoadingIndicator.tsx";
 import {dashboardPaths} from "@features/dashboard";
+import {useAuth} from "@features/auth";
 
 
 function RecentFilingsWidget() {
+    const { isAuthenticated } = useAuth();
+
     const navigate = useNavigate();
     const { trackedCompanies } = useTrackedCompanies();
     const [isPreferencesOpen, setIsPreferencesOpen] = useState(false);
+
+    const previewContent = (
+        <div className="space-y-4">
+            <p className="text-gray-400 text-sm text-right">Date Filed</p>
+            {[1, 2, 3].map((i) => (
+                <Card variant="elevated" key={i} className="justify-between p-2">
+                    <CardContent className="p-1">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <h3 className="text-foreground font-medium">
+                                    Example Company {i}
+                                </h3>
+                                <p className="text-secondary text-sm">
+                                    TICK
+                                </p>
+                            </div>
+                            <div className="text-right">
+                                <p className="text-foreground">
+                                    Form 10-K
+                                </p>
+                                <p className="text-foreground/70 text-sm">
+                                    {new Date().toLocaleDateString()}
+                                </p>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+            ))}
+        </div>
+    );
 
     const { preference, updatePreference } = useUserPreference<RecentFilingsWidgetPreference>(UserPreferenceKeys.RecentFilingsWidget);
 
@@ -37,10 +70,13 @@ function RecentFilingsWidget() {
             <WidgetContainer
                 title="Recent Filings"
                 onConfigure={() => setIsPreferencesOpen(true)}
-                widgetLoading={!companiesWithMostRecentFiling || !preference}
+                widgetLoading={(!companiesWithMostRecentFiling || !preference)}
             >
-                <LoadingIndicator isLoading={!trackedCompanies || !preference}>
+                <LoadingIndicator isLoading={isAuthenticated &&  (!trackedCompanies || !preference)}>
                     <div className="space-y-4">
+                        {!isAuthenticated && (
+                            previewContent
+                        )}
 
                         {companiesWithMostRecentFiling.length === 0 ? (
                             <p className="text-secondary">Start <Link className="text-info hover:opacity-80" to={dashboardPaths.company.tracked}>tracking</Link> companies to see recent filings.</p>

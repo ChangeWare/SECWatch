@@ -57,9 +57,10 @@ apiClient.interceptors.request.use(
   async (config) => {
     const token = getAuthToken();
     if (token) {
-
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+    config.headers['X-Auth-Status'] = token ? 'authenticated' : 'unauthenticated';
     return config;
   },
   (error) => {
@@ -67,14 +68,14 @@ apiClient.interceptors.request.use(
   }
 );
 
-apiClient.interceptors.response.use(
-  (response) => response,
+apiClient.interceptors.response.use((response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // If error is not 401 or request already retried, reject
-    if (error.response?.status !== 401 || originalRequest._retry) {
-      return Promise.reject(error);
+    const token = getAuthToken();
+
+    if (!token || error.response?.status !== 401 || originalRequest._retry) {
+        return Promise.reject(error);
     }
 
     // If we're already refreshing, queue this request
@@ -92,22 +93,16 @@ apiClient.interceptors.response.use(
     isRefreshing = true;
 
     try {
-      // Attempt to refresh token
       const newToken = await refreshAuthToken();
       if (newToken) {
-        // Update request header with new token
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
-        // Process any pending requests
         processPendingRequests();
-        // Retry original request
         return apiClient(originalRequest);
       }
-      
-      // If refresh failed, logout
+
       handleAuthFailure();
       return Promise.reject(error);
     } catch (refreshError) {
-      // Handle refresh failure
       handleAuthFailure();
       return Promise.reject(refreshError);
     } finally {
@@ -117,11 +112,12 @@ apiClient.interceptors.response.use(
 );
 
 const handleAuthFailure = () => {
-  // Process any pending requests with error
-  processPendingRequests(new Error('Authentication failed'));
-  
-  toast.error('Your session has expired. Please log in again.');
-  logoutAndCleanup(queryClient!);
+    processPendingRequests(new Error('Authentication failed'));
 
-  window.location.href = paths.auth.login;
+    const token = getAuthToken();
+    if (token) {
+        logoutAndCleanup(queryClient!);
+        window.location.href = paths.auth.login;
+        toast.error('Your session has expired. Please log in again.');
+    }
 };

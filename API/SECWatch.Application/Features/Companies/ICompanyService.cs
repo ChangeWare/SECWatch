@@ -7,7 +7,7 @@ public interface ICompanyService
 {
     Task<Result<IEnumerable<CompanySearchResult>>> SearchCompaniesAsync(CompanySearchRequest req);
     
-    Task<Result<CompanyDetails>> GetCompanyDetailsAsync(Guid userId, string ticker);
+    Task<Result<CompanyDetails>> GetCompanyDetailsAsync(Guid? userId, string ticker);
     
     Task<Result<IReadOnlyList<string>>> GetCompanyConceptTypesAsync(string cik);
     

@@ -12,8 +12,8 @@ using SECWatch.Infrastructure.Persistence;
 namespace SECWatch.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250206232051_AddNoteTags")]
-    partial class AddNoteTags
+    [Migration("20250208172108_FixNoteTags")]
+    partial class FixNoteTags
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -382,24 +382,46 @@ namespace SECWatch.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("NoteId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TagId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TagId");
+
+                    b.HasIndex("NoteId", "TagId")
+                        .IsUnique();
+
+                    b.ToTable("NoteTags");
+                });
+
+            modelBuilder.Entity("SECWatch.Domain.Features.Notes.Models.Tag", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Color")
                         .IsRequired()
-                        .HasMaxLength(7)
-                        .HasColumnType("nvarchar(7)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("Label")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<Guid>("NoteId")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("NoteId");
+                    b.HasIndex("UserId");
 
-                    b.ToTable("NoteTags");
+                    b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("SECWatch.Domain.Features.Users.Models.User", b =>
@@ -557,7 +579,26 @@ namespace SECWatch.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("SECWatch.Domain.Features.Notes.Models.Tag", "Tag")
+                        .WithMany()
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Note");
+
+                    b.Navigation("Tag");
+                });
+
+            modelBuilder.Entity("SECWatch.Domain.Features.Notes.Models.Tag", b =>
+                {
+                    b.HasOne("SECWatch.Domain.Features.Users.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SECWatch.Domain.Features.Companies.Models.Company", b =>

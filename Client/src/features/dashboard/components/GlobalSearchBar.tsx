@@ -1,14 +1,17 @@
 import CompanySearchBar from "@features/companySearch";
 import {CompanyResult, SearchResponse} from "@features/companySearch/types.ts";
+import {useNavigate} from "react-router-dom";
 
 function GlobalSearchBar() {
 
-    const handleResultSelect = (result: CompanyResult) => {
+    const navigate = useNavigate();
 
+    const handleResultSelect = (result: CompanyResult) => {
+        navigate(`/companies/${result.cik}`);
     }
 
     const handleQueryComplete = (query: SearchResponse) => {
-        return;
+
     }
 
     return (

@@ -15,19 +15,13 @@ export const Routes = () => {
         <Suspense fallback={<LoadingScreen />}>
             {useRoutes([
                 {
-                    path: '/dev-guide',
-                    element: <StyleGuide />
-                },
-                {
                     element: <GuestGuard>
                         <AuthLayout />
                     </GuestGuard>,
                     children: authRoutes
                 },
                 {
-                    element: <AuthGuard>
-                        <DashboardLayout />
-                    </AuthGuard>,
+                    element: <DashboardLayout />,
                     children: dashboardRoutes
                 },
                 {

@@ -9,6 +9,7 @@ import {cn} from "@common/lib/utils.ts";
 import {formatConceptType, formatCurrency, getChangePercentClassName} from "@features/company/utils.tsx";
 import ConceptPreview from "@features/company/components/ConceptPreview.tsx";
 import LoadingIndicator from "@common/components/LoadingIndicator.tsx";
+import {useAuth} from "@features/auth";
 
 interface TrackedCompanyConceptCardProps {
     trackedCompany: TrackedCompanyDetails;
@@ -17,12 +18,13 @@ function TrackedCompanyConceptCard(props: TrackedCompanyConceptCardProps) {
     const { trackedCompany } = props;
     const { dashboardPreferences, dashboardPreferencesIsLoading } = useCompanyDashboard(trackedCompany.company.cik);
 
+    const { isAuthenticated } = useAuth();
+
     const { concepts, conceptDataLoading } = useCompanyConcepts(trackedCompany.company.cik, dashboardPreferences?.pinnedConcepts);
 
     const isLoading = !concepts || dashboardPreferencesIsLoading || conceptDataLoading;
 
     const selectedConcept = useMemo<CompanyConcept | null>(() => {
-        // Only grab 1, being the one that is most recently updated
         if (!concepts) return null;
 
         return concepts.sort((a, b) => {
@@ -33,7 +35,7 @@ function TrackedCompanyConceptCard(props: TrackedCompanyConceptCardProps) {
 
     return (
         <Card variant="elevated" key={trackedCompany.ticker} className="p-4">
-            <LoadingIndicator isLoading={isLoading}>
+            <LoadingIndicator isLoading={isAuthenticated && isLoading}>
                 {selectedConcept && (
                     <>
                         <div className="flex flex-col">

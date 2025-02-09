@@ -3,6 +3,7 @@ import { layoutStyles } from "@common/styles/components.ts";
 import {Logo} from "@common/components/Logo.tsx";
 import {paths} from "@routes/paths.ts";
 import { useAuth } from "@features/auth";
+import {Link} from "react-router-dom";
 
 interface HomeNavItem {
     name: string;
@@ -37,13 +38,13 @@ export function HomeNav() {
 
             <div className="hidden md:flex space-x-8 pt-1.5">
               {navItems.map((item) => (
-                  <a
+                  <Link
                       key={item.href}
-                      href={`${item.href}`}
+                      to={`${item.href}`}
                       className="text-secondary hover:text-info transition"
                   >
                     {item.name}
-                  </a>
+                  </Link>
               ))}
             </div>
 

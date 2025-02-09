@@ -5,12 +5,16 @@ import {useMemo} from "react";
 import {UserPreferenceResponse, UserPreferenceUpdateRequest} from "@features/user/api/types.ts";
 import queryClient from "@common/api/queryClient.ts";
 import {toast} from "react-toastify";
+import {useAuth} from "@features/auth";
 
 const useUserPreference = <T extends UserPreference>(key: string) => {
 
+    const { isAuthenticated } = useAuth();
+
     const { data, isLoading, error } = useQuery<UserPreferenceResponse>({
         queryKey: ['userPreference', key],
-        queryFn: () => userApi.getUserPreference(key)
+        queryFn: () => userApi.getUserPreference(key),
+        enabled: isAuthenticated,
     });
 
     const updatePreferenceMutation = useMutation({

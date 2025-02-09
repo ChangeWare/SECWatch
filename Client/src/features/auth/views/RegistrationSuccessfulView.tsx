@@ -1,7 +1,7 @@
 import Button from "@common/components/Button.tsx";
 import {Card} from "@common/components/Card.tsx";
 
-export default function RegistrationSuccessful() {
+export default function RegistrationSuccessfulView() {
     return (
         <div className="min-h-screen bg-background">
             <div className="min-h-screen flex items-center justify-center py-8">

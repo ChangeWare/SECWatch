@@ -2,7 +2,7 @@ export interface CompanyFiling {
     accessionNumber: string;
     form: string;
     filingDate: Date;
-    reportDate: Date;
+    reportDate: Date | undefined;
     items: string;
     primaryDocument: string;
 }

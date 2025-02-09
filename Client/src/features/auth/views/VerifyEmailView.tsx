@@ -1,4 +1,4 @@
-export default function VerifyEmail() {
+export default function VerifyEmailView() {
     return (
         <div>
             VerifyEmail
