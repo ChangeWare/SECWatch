@@ -16,7 +16,7 @@ const useCompanyFilings = (companyId?: string) => {
                     filings: data.filingHistory.filings.map((filing) => ({
                         ...filing,
                         filingDate: new Date(filing.filingDate),
-                        fiscalYear: filing.fiscalYear,
+                        reportDate: filing.reportDate ? new Date(filing.reportDate) : undefined,
                     })),
                 }
             }

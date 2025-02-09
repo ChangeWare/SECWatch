@@ -7,11 +7,15 @@ import {
     Home,
     LineChart, NotebookIcon,
     Settings,
+    Lock
 } from "lucide-react";
 import {Link, useLocation} from "react-router-dom";
 import { dashboardPaths } from "@features/dashboard";
 import filingPaths from "@features/filings/paths.ts";
 import alertPaths from "@features/alerts/paths.ts";
+import {useAuth} from "@features/auth";
+import HyperLink from "@common/components/HyperLink.tsx";
+import {paths} from "@routes/paths.ts";
 
 interface DashboardSidebarProps {
     sidebarOpen: boolean;
@@ -35,37 +39,38 @@ interface SideNavMenuItemProps {
 
 function SideNavMenuItem(props: SideNavMenuItemProps) {
     const location = useLocation();
+    const { item, sidebarOpen } = props;
 
     const isActive = useMemo(() =>
-        props.item.href &&
-        location.pathname.includes(props.item.href),
-    [location.pathname, props.item.href]);
+            item.href &&
+            location.pathname.includes(item.href),
+        [location.pathname, item.href]);
 
     return (
         <div key={props.index}>
-            {props.item.isGroup ? (
+            {item.isGroup ? (
                 <div className="space-y-1">
                     <button
-                        onClick={() => props.item.setOpen?.(!props.item.isOpen)}
+                        onClick={() => item.setOpen?.(!item.isOpen)}
                         className={`w-full flex items-center justify-between p-2 rounded-lg
                                text-gray-300 hover:text-white hover:bg-white/10 transition 
                                ${isActive ? 'bg-white/10 text-white' : ''}`}
                     >
                         <div className="flex items-center">
-                            {props.item.icon && <props.item.icon className="h-5 w-5 mr-3"/>}
-                            {props.sidebarOpen && <span>{props.item.label}</span>}
+                            {item.icon && <item.icon className="h-5 w-5 mr-3"/>}
+                            {sidebarOpen && <span>{item.label}</span>}
                         </div>
-                        {props.sidebarOpen && (
+                        {sidebarOpen && (
                             <ChevronRight
                                 className={`h-4 w-4 transition-transform ${
-                                    props.item.isOpen ? 'rotate-90' : ''
+                                    item.isOpen ? 'rotate-90' : ''
                                 }`}
                             />
                         )}
                     </button>
-                    {props.sidebarOpen && props.item.isOpen && (
+                    {sidebarOpen && item.isOpen && (
                         <div className="ml-9 space-y-1">
-                            {props.item.items?.map((subItem, subIndex) => {
+                            {item.items?.map((subItem, subIndex) => {
                                 const subItemIsActive = subItem.href && location.pathname.includes(subItem.href);
                                 return (
                                     <Link
@@ -83,14 +88,15 @@ function SideNavMenuItem(props: SideNavMenuItemProps) {
                     )}
                 </div>
             ) : (
-                <Link to={props.item.href!}
-                      className={`w-full flex items-center p-2 rounded-lg text-gray-300 
+                <Link
+                    to={item.href!}
+                    className={`w-full flex items-center p-2 rounded-lg text-gray-300 
                             hover:text-white hover:bg-white/10 transition 
                             ${isActive ? 'bg-white/10 text-white' : ''}`}
                 >
                     <div className="flex items-center">
-                        {props.item.icon && <props.item.icon className="h-5 w-5 mr-3"/>}
-                        {props.sidebarOpen && <span>{props.item.label}</span>}
+                        {item.icon && <item.icon className="h-5 w-5 mr-3"/>}
+                        {sidebarOpen && <span>{item.label}</span>}
                     </div>
                 </Link>
             )}
@@ -98,6 +104,31 @@ function SideNavMenuItem(props: SideNavMenuItemProps) {
     );
 }
 
+function AuthenticatedNavGroup({ children, sidebarOpen }: { children: React.ReactNode, sidebarOpen: boolean }) {
+    const { isAuthenticated } = useAuth();
+
+    if (!isAuthenticated) {
+        return (
+            <div className="relative">
+                <div className="pointer-events-none opacity-75">
+                    {children}
+                </div>
+                <div className="absolute inset-0 backdrop-blur-xs bg-black/50 rounded-lg flex items-center justify-center">
+                    <div className="flex flex-col items-center space-y-2 p-2">
+                        <Lock className="h-4 w-4 text-white/70" />
+                        {sidebarOpen && (
+                            <p className="text-xs text-white/70 text-center">
+                                <HyperLink to={paths.auth.login}>Sign in</HyperLink> or <HyperLink to={paths.auth.register}>register</HyperLink> to use these features
+                            </p>
+                        )}
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    return <>{children}</>;
+}
 
 export default function DashboardSidebar(props: DashboardSidebarProps) {
     const [companiesOpen, setCompaniesOpen] = useState(true);
@@ -106,8 +137,8 @@ export default function DashboardSidebar(props: DashboardSidebarProps) {
     const [alertsOpen, setAlertsOpen] = useState(false);
 
     // Navigation items with nested structure
-    const navItems: SideNavMenuItemData[] = [
-        { icon: Home, label: 'Dashboard', href: '/dash'},
+    const publicNavItems: SideNavMenuItemData[] = [
+        { icon: Home, label: 'Dashboard', href: '/dash' },
         {
             icon: Building2,
             label: 'Companies',
@@ -120,17 +151,10 @@ export default function DashboardSidebar(props: DashboardSidebarProps) {
                 {label: 'Company Search', href: dashboardPaths.company.search},
             ],
         },
-        /*** {
-            icon: FileText,
-            label: 'Filings',
-            isGroup: true,
-            isOpen: filingsOpen,
-            setOpen: setFilingsOpen,
-            items: [
-                { label: 'Recent Filings', href: '#' },
-                {label: 'Analysis', href: '#'},
-            ],
-        }, **/
+    ];
+
+    const authenticatedNavItems: SideNavMenuItemData[] = [
+
         {
             icon: NotebookIcon,
             label: 'Notes',
@@ -153,8 +177,6 @@ export default function DashboardSidebar(props: DashboardSidebarProps) {
                 { label: 'Alert Rules', href: alertPaths.rules },
             ],
         },
-        //{icon: LineChart, label: 'Analytics', href: '#'},
-        //{icon: Settings, label: 'Settings', href: '#'},
     ];
 
     return (
@@ -164,7 +186,8 @@ export default function DashboardSidebar(props: DashboardSidebarProps) {
             } border-r border-white/10 transition-all duration-300`}
         >
             <nav className="p-4 space-y-2">
-                {navItems.map((item, index) => (
+                {/* Public nav items */}
+                {publicNavItems.map((item, index) => (
                     <SideNavMenuItem
                         key={index}
                         item={item}
@@ -172,6 +195,20 @@ export default function DashboardSidebar(props: DashboardSidebarProps) {
                         sidebarOpen={props.sidebarOpen}
                     />
                 ))}
+
+                {/* Authenticated nav items wrapped in group */}
+                <AuthenticatedNavGroup sidebarOpen={props.sidebarOpen}>
+                    <div className="space-y-2">
+                        {authenticatedNavItems.map((item, index) => (
+                            <SideNavMenuItem
+                                key={index + publicNavItems.length}
+                                item={item}
+                                index={index + publicNavItems.length}
+                                sidebarOpen={props.sidebarOpen}
+                            />
+                        ))}
+                    </div>
+                </AuthenticatedNavGroup>
             </nav>
         </aside>
     );

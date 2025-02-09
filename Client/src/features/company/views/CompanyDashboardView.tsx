@@ -9,6 +9,7 @@ import useCompanyConcepts from "@features/company/hooks/useCompanyConcepts.ts";
 import {CompanyConcept} from "@features/company/types.ts";
 import {Card} from "@common/components/Card.tsx";
 import companyPaths from "@features/company/paths.ts";
+import HyperLink from "@common/components/HyperLink.tsx";
 
 export function CompanyDashboardView() {
     const { companyId } = useParams();
@@ -59,7 +60,7 @@ export function CompanyDashboardView() {
                 <LoadingIndicator
                     isLoading={companyDetailsLoading || dashboardPreferencesIsLoading || conceptDataLoading}
                 >
-                    {dashboardPreferences?.pinnedConcepts.map((conceptType) => {
+                    {dashboardPreferences?.pinnedConcepts.map((conceptType: string) => {
                         const dashConcept = concepts.find((c) =>
                         c.conceptType === conceptType);
 
@@ -86,8 +87,9 @@ export function CompanyDashboardView() {
                     ) : concepts.length === 0 && (
                         <Card>
                             <div className="flex flex-col space-y-6 justify-center items-center h-64">
-                                <p className="text-foreground">Concepts related to preferences for company not found.</p>
-                                <p className="text-foreground">This is likely an error. Please contact an administrator.</p>
+                                <p className="text-foreground">No concepts available for this entity.</p>
+                                <p className="text-foreground">This is not uncommon for entities such as funds. Feel free to instead
+                                explore the entities <HyperLink to="../filings">filings</HyperLink></p>
                             </div>
                         </Card>
                     )}

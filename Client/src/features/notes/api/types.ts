@@ -1,4 +1,4 @@
-import {FilingNote, FilingNoteSelectionData, Note, SelectionData} from "@features/notes/types.ts";
+import {FilingNote, FilingNoteSelectionData, Note, SelectionData, Tag} from "@features/notes/types.ts";
 
 export interface GetFilingNotesResponse {
     notes: FilingNote[];
@@ -16,7 +16,8 @@ export interface NoteInfo {
 }
 
 export interface NoteTagInfo {
-    id?: string;
+    tagId?: string;
+    noteTagId?: string;
     label: string;
     color: string;
 }
@@ -38,6 +39,11 @@ export interface CreateNoteTagRequest {
     tag: NoteTagInfo;
 }
 
+export interface ApplyNoteTagRequest {
+    noteId: string;
+    tagId: string;
+}
+
 export interface DeleteNoteTagRequest {
     noteId: string;
     tagId: string;
@@ -57,4 +63,8 @@ export interface UpdateNoteResponse {
 
 export interface CreateNoteResponse {
     note: Note;
+}
+
+export interface AvailableTagsResponse {
+    tags: Tag[];
 }

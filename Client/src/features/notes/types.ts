@@ -20,6 +20,13 @@ export interface FilingNoteSelectionData extends SelectionData {
 }
 
 export interface NoteTag {
+    tagId: string;
+    noteTagId: string;
+    label: string;
+    color: string;
+}
+
+export interface Tag {
     id: string;
     label: string;
     color: string;

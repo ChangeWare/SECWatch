@@ -2,7 +2,7 @@ using SECWatch.Application.Features.Notes.DTOs;
 
 namespace SECWatch.API.Features.Notes.DTOs;
 
-public record CreateNoteTagRequest
+public record TagsResponse
 {
-    public required TransactTagInfo Tag { get; set; }
+    public required IReadOnlyList<TagInfo> Tags { get; init; }
 }

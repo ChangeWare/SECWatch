@@ -10,7 +10,6 @@ namespace SECWatch.API.Features.Companies;
 
 [ApiController]
 [Route("api/[controller]")]
-[RequireAuth]
 public class CompaniesController(
     ICompanyService companyService,
     ICompanyTrackingService companyTrackingService,
@@ -23,7 +22,7 @@ public class CompaniesController(
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetDetails(string cik)
     {
-        var userId = User.GetUserId();
+        var userId = User.TryGetUserId();
 
         var result = await companyService.GetCompanyDetailsAsync(userId, cik);
         if (result.IsFailed)

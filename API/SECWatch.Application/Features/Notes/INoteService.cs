@@ -10,9 +10,13 @@ public interface INoteService
     
     Task<Result<IReadOnlyList<FilingNoteInfo>>> GetFilingNotesAsync(Guid userId, string accessionNumber);
     
+    Task<Result<ReadOnlyCollection<TagInfo>>> GetAvailableTagsAsync(Guid userId);
+    
     Task<Result<ReadOnlyCollection<INoteInfo>>> GetUserNotesAsync(Guid userId);
     
-    Task<Result> AddNoteTagAsync(Guid userId, Guid noteId, TransactNoteTagInfo tagInfo);
+    Task<Result> AddNoteTagAsync(Guid userId, Guid noteId, TransactTagInfo tagInfo);
+    
+    Task<Result> ApplyNoteTagAsync(Guid userId, Guid noteId, Guid tagId);
     
     Task<Result> RemoveNoteTagAsync(Guid userId, Guid noteId, Guid tagId);
     

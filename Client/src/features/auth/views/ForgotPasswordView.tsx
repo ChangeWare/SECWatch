@@ -1,4 +1,4 @@
-export default function ForgotPassword() {
+export default function ForgotPasswordView() {
     return (
         <div>
             ForgotPassword

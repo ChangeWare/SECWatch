@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {paths} from "@routes/paths.ts";
 
-export default function Logout() {
+export default function LogoutView() {
     const { logout, isAuthenticated} = useAuth();
     const navigate = useNavigate();
 

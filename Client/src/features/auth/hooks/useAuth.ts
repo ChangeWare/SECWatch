@@ -29,7 +29,7 @@ export const useAuth = () => {
 
     const isValidSession = () => !(!getAuthToken() || isTokenExpired(getAuthToken()));
 
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(isValidSession());
+    const isAuthenticated = isValidSession();
 
     const registerMutation = useMutation({
         mutationFn: authApi.register,
@@ -55,7 +55,6 @@ export const useAuth = () => {
         onSuccess: (resp) => {
             // Update auth state
             setAuthToken(resp.authenticationInfo.token, resp.authenticationInfo.tokenExpires);
-            setIsAuthenticated(true);
             queryClient.setQueryData(['currentUser'], resp.authenticationInfo.user);
             toast.success(`Welcome back ${resp.authenticationInfo.user?.firstName}`);
         },
@@ -65,7 +64,6 @@ export const useAuth = () => {
     });
 
     const logout = () => {
-        setIsAuthenticated(false);
         logoutAndCleanup(queryClient);
         toast.info('You have been logged out.');
     }

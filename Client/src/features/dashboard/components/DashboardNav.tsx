@@ -18,6 +18,8 @@ import {Logo} from "@common/components/Logo.tsx";
 import {useNavigate} from "react-router-dom";
 import {paths} from "@routes/paths.ts";
 import GlobalSearchBar from "@features/dashboard/components/GlobalSearchBar.tsx";
+import {useAuth} from "@features/auth";
+import Button from "@common/components/Button.tsx";
 
 interface DashboardNavProps {
     sidebarOpen: boolean;
@@ -25,6 +27,8 @@ interface DashboardNavProps {
 }
 
 export default function DashboardNav(props: DashboardNavProps) {
+
+    const { isAuthenticated } = useAuth();
 
     const navigate = useNavigate();
 
@@ -42,41 +46,30 @@ export default function DashboardNav(props: DashboardNavProps) {
 
                 </div>
 
-                <div className="flex-1 max-w-2xl mx-5">
-                    <div className="relative">
-                        <GlobalSearchBar />
-                    </div>
-                </div>
 
                 <div className="flex items-center space-x-4">
-                    <button className="p-2 hover:bg-white/10 rounded-lg transition">
-                        <Bell className="h-5 w-5 text-gray-300"/>
-                    </button>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <button
-                                className="flex items-center space-x-2 p-2 hover:bg-white/10 rounded-lg transition">
-                                <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center">
-                                    <User className="h-5 w-5 text-white"/>
-                                </div>
-                                <ChevronDown className="h-4 w-4 text-gray-300"/>
-                            </button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-56 bg-white/10 backdrop-blur-sm border-white/10">
-                            <DropdownMenuLabel className="text-white">My Account</DropdownMenuLabel>
-                            <DropdownMenuSeparator className="bg-white/10"/>
-                            <DropdownMenuItem className="text-gray-300 focus:text-white focus:bg-white/10">
-                                Profile Settings
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="text-gray-300 focus:text-white focus:bg-white/10">
-                                Preferences
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator className="bg-white/10"/>
-                            <DropdownMenuItem onSelect={() => navigate(paths.auth.logout)} className="text-red-400 focus:text-red-400 focus:bg-white/10">
-                                <LogOut className="mr-2 h-4 w-4"/> Sign Out
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                    {isAuthenticated ? (
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <button
+                                    className="flex items-center space-x-2 p-2 hover:bg-white/10 rounded-lg transition">
+                                    <div className="h-8 w-8 rounded-full bg-secondary flex items-center justify-center">
+                                        <User className="h-5 w-5 text-white"/>
+                                    </div>
+                                    <ChevronDown className="h-4 w-4 text-gray-300"/>
+                                </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-56 bg-white/10 backdrop-blur-sm border-white/10">
+                                <DropdownMenuLabel className="text-white">My Account</DropdownMenuLabel>
+                                <DropdownMenuSeparator className="bg-white/10"/>
+                                <DropdownMenuItem onSelect={() => navigate(paths.auth.logout)} className="text-red-400 focus:text-red-400 focus:bg-white/10">
+                                    <LogOut className="mr-2 h-4 w-4"/> Sign Out
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    ) : (
+                        <Button onClick={() => navigate(paths.auth.login)} variant="primary">Sign In</Button>
+                    )}
                 </div>
             </div>
         </header>

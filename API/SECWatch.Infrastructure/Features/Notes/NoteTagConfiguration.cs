@@ -4,25 +4,24 @@ using SECWatch.Domain.Features.Notes.Models;
 
 namespace SECWatch.Infrastructure.Features.Notes;
 
-public class NoteTagConfiguration: IEntityTypeConfiguration<NoteTag>
+public class NoteTagConfiguration : IEntityTypeConfiguration<NoteTag>
 {
     public void Configure(EntityTypeBuilder<NoteTag> builder)
     {
         builder.HasKey(nt => nt.Id);
         
-        builder.HasIndex( nt => nt.NoteId);
-
+        // Composite unique index
+        builder.HasIndex(nt => new { nt.NoteId, nt.TagId })
+            .IsUnique();
+        
         builder.HasOne(nt => nt.Note)
             .WithMany()
             .HasForeignKey(nt => nt.NoteId)
             .OnDelete(DeleteBehavior.Cascade);
-
-        builder.Property(nt => nt.Label)
-            .IsRequired()
-            .HasMaxLength(50);
-
-        builder.Property(nt => nt.Color)
-            .IsRequired()
-            .HasMaxLength(7);
+        
+        builder.HasOne(nt => nt.Tag)
+            .WithMany()
+            .HasForeignKey(nt => nt.TagId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

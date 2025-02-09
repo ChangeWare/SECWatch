@@ -1,5 +1,16 @@
 import React, { useState, useMemo } from 'react';
-import {Search, Filter, AlertCircle, FileText, Book, ChevronDown, Tag, PlusIcon} from 'lucide-react';
+import {
+    Search,
+    Filter,
+    AlertCircle,
+    FileText,
+    Book,
+    ChevronDown,
+    Tag as TagIcon,
+    PlusIcon,
+    Trash,
+    Trash2
+} from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '@common/components/Card';
 import Input  from '@common/components/Input';
 import Button from '@common/components/Button';
@@ -15,7 +26,7 @@ import {
     DropdownMenuItem,
 } from '@common/components/DropdownMenu';
 import ScrollArea from '@common/components/ScrollArea';
-import {FilingNote, Note, NoteTag} from "@features/notes/types.ts";
+import {FilingNote, Note, NoteTag, Tag} from "@features/notes/types.ts";
 import CreateTagModal from "@features/notes/components/CreateTagModal.tsx";
 import useUserNotes from "@features/notes/hooks/useUserNotes.tsx";
 import LoadingIndicator from "@common/components/LoadingIndicator.tsx";
@@ -28,23 +39,14 @@ function ExploreNotesView() {
     const [createTagModalOpen, setCreateTagModalOpen] = useState(false);
     const [selectedNote, setSelectedNote] = useState<Note | null>(null);
 
-    const { notes, notesLoading, addNoteTag, removeNoteTag } = useUserNotes();
-
-    const availableTags = useMemo<NoteTag[]>(() => {
-        if (!notes) return [];
-
-        // we only want 1 of each tag with the same label
-        const tags = new Map<string, NoteTag>();
-        notes.forEach(note => {
-            note.tags.forEach(tag => {
-                tags.set(tag.label, tag);
-            });
-        });
-        return Array.from(tags.values());
-    }, [notes]);
+    const { notes, availableTags, notesLoading, deleteNote, addNoteTag, removeNoteTag, applyNoteTag } = useUserNotes();
 
     const [searchQuery, setSearchQuery] = useState('');
     const [activeFilters, setActiveFilters] = useState<FilterOption[]>([]);
+
+    const handleDeleteNote = (noteId: string) => {
+        deleteNote(noteId)
+    }
 
 
     // Extract available filter options
@@ -95,7 +97,7 @@ function ExploreNotesView() {
         });
 
         // Tags
-        availableTags.forEach(tag => {
+        availableTags?.forEach(tag => {
             options.push({
                 id: tag.id,
                 label: tag.label,
@@ -165,16 +167,13 @@ function ExploreNotesView() {
         setCreateTagModalOpen(false);
     }
 
-    const onAddTag = (noteId: string, tag: NoteTag) => {
+    const onAddTag = (noteId: string, tag: Tag) => {
         const req = {
             noteId,
-            tag: {
-                label: tag.label,
-                color: tag.color,
-            }
+            tagId: tag.id,
         }
 
-        addNoteTag(req);
+        applyNoteTag(req);
     }
 
     const onRemoveTag = (noteId: string, tagId: string) => {
@@ -182,9 +181,6 @@ function ExploreNotesView() {
             noteId,
             tagId,
         }
-
-        console.log(noteId);
-        console.log(tagId);
 
         removeNoteTag(req);
     }
@@ -255,7 +251,10 @@ function ExploreNotesView() {
                                                                         <Card key={note.id} variant="elevated" className="p-4">
                                                                             <div className="flex flex-col space-y-3">
                                                                                 {/* Note Content */}
-                                                                                <div className="font-medium">{note.content}</div>
+                                                                                <div className="flex justify-between font-medium">
+                                                                                    <div>{note.content}</div>
+                                                                                    <div><Trash2 onClick={() => handleDeleteNote(note.id)} className="cursor-pointer hover:text-error"></Trash2></div>
+                                                                                </div>
 
                                                                                 {/* Highlighted Text */}
                                                                                 <div className="text-sm text-tertiary bg-surface-foreground/20 p-3 rounded-lg">
@@ -266,7 +265,7 @@ function ExploreNotesView() {
                                                                                 <div className="flex flex-wrap gap-2">
                                                                                     {note.tags?.map(tag => (
                                                                                         <div
-                                                                                            key={tag.id}
+                                                                                            key={tag.tagId}
                                                                                             className="inline-flex items-center px-2 py-1 rounded-md text-xs"
                                                                                             style={{
                                                                                                 backgroundColor: `${tag.color}20`,
@@ -276,7 +275,7 @@ function ExploreNotesView() {
                                                                                         >
                                                                                             {tag.label}
                                                                                             <button
-                                                                                                onClick={() => onRemoveTag(note.id, tag.id)}
+                                                                                                onClick={() => onRemoveTag(note.id, tag.noteTagId)}
                                                                                                 className="ml-1 hover:opacity-80"
                                                                                             >
                                                                                                 ×
@@ -286,13 +285,13 @@ function ExploreNotesView() {
                                                                                     <DropdownMenu>
                                                                                         <DropdownMenuTrigger asChild>
                                                                                             <Button variant="foreground" size="sm" className="h-6">
-                                                                                                <Tag className="w-3 h-3 mr-1" />
+                                                                                                <TagIcon className="w-3 h-3 mr-1" />
                                                                                                 Add Tag
                                                                                             </Button>
                                                                                         </DropdownMenuTrigger>
                                                                                         <DropdownMenuContent>
                                                                                             {availableTags
-                                                                                                .filter(tag => !note.tags.find(t => t.label === tag.label))
+                                                                                                ?.filter(tag => !note.tags.find(t => t.label === tag.label))
                                                                                                 .map(tag => (
                                                                                                     <DropdownMenuItem
                                                                                                         key={tag.id}

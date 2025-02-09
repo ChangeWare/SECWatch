@@ -9,8 +9,6 @@ import {
     getChangeOverPriorYear,
     getChangePercentClassName,
     getPercentChangeOverPriorYear,
-    groupByCurrency,
-    processData,
     separateAnnualAndQuarterlyData
 } from "@features/company/utils.tsx";
 import Button from "@common/components/Button.tsx";

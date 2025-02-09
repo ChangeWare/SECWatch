@@ -22,7 +22,7 @@ export const authApi = {
   },
 
   /**
-   * Register a new user
+   * RegisterView a new user
    */
   register: async (data: RegistrationFormData): Promise<RegisterResponse> => {
     const response = await apiClient.post<RegisterResponse>('/users/register', data);

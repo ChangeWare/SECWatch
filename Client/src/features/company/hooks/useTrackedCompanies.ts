@@ -3,13 +3,17 @@ import {companyApi} from "@features/company/api/companyApi.ts";
 import {TrackedCompaniesResponse} from "@features/company/api/types.ts";
 import {useMemo} from "react";
 import {TrackedCompanyDetails} from "@features/company/types.ts";
+import {useAuth} from "@features/auth";
 
 export const useTrackedCompanies = () => {
+
+    const { isAuthenticated } = useAuth();
 
     const { data, error, isLoading } = useQuery<TrackedCompaniesResponse>({
         queryKey: ['trackedCompanies'],
         queryFn: () => companyApi.getTrackedCompanies(),
         staleTime: 1000 * 60 * 5,
+        enabled: isAuthenticated,
     });
 
     const trackedCompanies = useMemo<TrackedCompanyDetails[]>(() => {

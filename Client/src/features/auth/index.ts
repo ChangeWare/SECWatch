@@ -1,10 +1,10 @@
 export * from './paths';
 export * from './routes';
-export * from './views/Login';
-export * from './views/Register';
-export * from './views/ForgotPassword';
-export * from './views/ResetPassword';
-export * from './views/VerifyEmail';
+export * from './views/LoginView.tsx';
+export * from './views/RegisterView.tsx';
+export * from './views/ForgotPasswordView.tsx';
+export * from './views/ResetPasswordView.tsx';
+export * from './views/VerifyEmailView.tsx';
 export * from './hooks/useAuth';
 export * from './utils';
 export { default as GuestGuard } from './components/GuestGuard';

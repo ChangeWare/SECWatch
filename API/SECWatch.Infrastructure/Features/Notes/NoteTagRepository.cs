@@ -20,6 +20,19 @@ public class NoteTagRepository(ApplicationDbContext dbContext) : INoteTagReposit
             .FirstOrDefaultAsync(x => x.Id == noteTagId);
     }
 
+    public async Task<IReadOnlyList<Tag>> GetTagsForUserAsync(Guid userId)
+    {
+        return await dbContext.Tags
+            .Where(x => x.UserId == userId)
+            .ToListAsync();
+    }
+
+    public async Task<Tag?> GetTagByIdAsync(Guid tagId)
+    {
+        return await dbContext.Tags
+            .FirstOrDefaultAsync(x => x.Id == tagId);
+    }
+
     public async Task<Dictionary<Guid, IReadOnlyList<NoteTag>>> GetNoteTagsByNoteAsync(IEnumerable<Guid> noteIds)
     {
         var noteTags = await dbContext.NoteTags
@@ -30,8 +43,22 @@ public class NoteTagRepository(ApplicationDbContext dbContext) : INoteTagReposit
             .GroupBy(x => x.NoteId)
             .ToDictionary(x => x.Key, x => x.ToList() as IReadOnlyList<NoteTag>);
     }
+    
+    public async Task<Dictionary<Guid, Tag>> GetTagsByIdsAsync(IEnumerable<Guid> tagIds)
+    {
+        return await dbContext.Tags
+            .Where(x => tagIds.Contains(x.Id))
+            .ToDictionaryAsync(x => x.Id);
+    }
 
-    public async Task<NoteTag?> AddAsync(NoteTag noteTag)
+    public async Task<Tag?> AddTagAsync(Tag noteTag)
+    {
+        var entry = await dbContext.Tags.AddAsync(noteTag);
+        await dbContext.SaveChangesAsync();
+        return entry.Entity;
+    }
+
+    public async Task<NoteTag?> AddNoteTagAsync(NoteTag noteTag)
     {
         var entry = await dbContext.NoteTags.AddAsync(noteTag);
         await dbContext.SaveChangesAsync();

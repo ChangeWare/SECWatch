@@ -1,4 +1,5 @@
 import {layoutStyles, textStyles} from "@common/styles/components.ts";
+import {Link} from "react-router-dom";
 
 interface FooterItem {
     name: string;
@@ -10,11 +11,11 @@ export function HomeFooter() {
   const footerItems = [
         {
             name: 'Privacy',
-            href: '#'
+            href: '/privacy'
         },
         {
             name: 'Terms',
-            href: '#'
+            href: '/terms'
         },
         {
             name: 'Contact',
@@ -32,13 +33,13 @@ export function HomeFooter() {
             </div>
             <div className="flex space-x-6">
               {footerItems.map((item) => (
-                  <a
+                  <Link
                       key={item.href}
-                      href={item.href}
+                      to={item.href}
                       className="text-secondary hover:text-info transition"
                   >
                     {item.name}
-                  </a>
+                  </Link>
               ))}
             </div>
           </div>
