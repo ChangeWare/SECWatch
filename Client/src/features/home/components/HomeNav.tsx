@@ -56,7 +56,7 @@ export function HomeNav() {
                   </>
               ) : (
                   <>
-                    <Button variant="primary" to={paths.auth.register}>Get Started</Button>
+                    <Button variant="primary" to={paths.dashboard.default}>Get Started</Button>
                     <Button variant="info" to={paths.auth.login}>Login</Button>
                   </>
               )}
