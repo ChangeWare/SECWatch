@@ -13,7 +13,7 @@ export default function LogoutView() {
         }
         logout();
         setTimeout(() => {
-            navigate(paths.home.default);
+            navigate(paths.home.home);
         }, 3000);
     }, []);
 

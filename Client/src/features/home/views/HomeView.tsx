@@ -25,7 +25,7 @@ function HeroSection() {
                             note-taking tools, no-strings-attached CSV downloads of financial data, and more than 20 years of historical data from the Security and Exchange Commission.
                         </p>
                         <div className="flex flex-wrap gap-4">
-                            <Button className="px-8 py-3 text-lg flex items-center" to={paths.auth.register}>
+                            <Button className="px-8 py-3 text-lg flex items-center" to={paths.dashboard.default}>
                                 Get Started
                                 <ArrowRight className="ml-2 w-5 h-5" />
                             </Button>
