@@ -111,6 +111,9 @@ class FilingProcessor:
                 # Get all filings at once instead of individual requests
                 filing_history = self.sec_client.get_company_filings(cik)
 
+                if (filing_history is None) or (filing_history.filings is None):
+                    raise
+
                 # Filter to just the new filings we need (new filings)
                 needed_accession_numbers = {entry.accession_number for entry in filing_entries}
                 new_filings = [

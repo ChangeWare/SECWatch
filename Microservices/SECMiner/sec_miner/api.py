@@ -8,7 +8,7 @@ from celery_app import celery_app
 from sec_miner.api_types import CIKsRequest
 from tasks.company import process_companies_concepts, \
     process_companies_filings, process_new_companies
-from tasks.maintenance import process_index
+from tasks.maintenance import process_index, process_historical_indices
 from tasks.monitoring import check_new_filings, check_company_updates
 import uvicorn
 from sec_miner.utils.logger_factory import get_logger
@@ -100,6 +100,19 @@ async def trigger_update_companies():
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.post("/tasks/process-historical-indices")
+async def trigger_update_companies():
+    """Manually trigger SEC index update"""
+    try:
+        task = process_historical_indices.delay()
+        return {
+            "task_id": task.id,
+            "status": "started",
+            "check_status_url": f"/tasks/{task.id}"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.post("/tasks/trigger_company_concepts_processing")
 async def trigger_company_concepts_processing(
@@ -108,7 +121,7 @@ async def trigger_company_concepts_processing(
     """Manually trigger company list update"""
     try:
         ciks = request.ciks
-        task = process_companies_concepts.delay(ciks, len(ciks) == 0)
+        task = process_companies_concepts.delay(ciks, len(ciks) == 0, request.retry_last_run)
 
         return {
             "task_id": task.id,
@@ -121,13 +134,12 @@ async def trigger_company_concepts_processing(
 
 @app.post("/tasks/trigger_company_filings_processing")
 async def trigger_company_filings_processing(
-        request: Request
+        request: CIKsRequest,
 ):
     """Manually trigger company list update"""
     try:
-        body = await request.json()
-        ciks: Optional[List[str]] = body.get("ciks") or None
-        task = process_companies_filings.delay(ciks)
+        ciks = request.ciks
+        task = process_companies_filings.delay(ciks, len(ciks) == 0, request.retry_last_run)
 
         return {
             "task_id": task.id,

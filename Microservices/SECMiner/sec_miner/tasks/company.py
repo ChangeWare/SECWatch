@@ -70,7 +70,7 @@ def process_new_companies():
     retry_kwargs={'countdown': 60},
     name='tasks.company.process_companies_concepts'
 )
-def process_companies_concepts(ciks: List[str], all_companies: bool = False):
+def process_companies_concepts(ciks: List[str], all_companies: bool = False, retry_last_run: bool = False):
     """Processes and stores concepts for specified companies"""
 
     mongodb_context = MongoDbContext()
@@ -81,6 +81,14 @@ def process_companies_concepts(ciks: List[str], all_companies: bool = False):
     if all_companies:
         # Load all companies
         ciks = db_context.get_all_company_ciks()
+
+    if retry_last_run:
+        # Get the last run ciks
+        processed_ciks = redis_client.lrange("processing:processed_concepts_ciks", 0, -1)
+        processed_ciks = [cik.decode('utf-8') for cik in processed_ciks]
+        # process just ciks that weren't processed last time
+        ciks = [cik for cik in ciks if cik not in processed_ciks]
+        print(f'Skipping {len(processed_ciks)} already processed ciks')
 
     for cik in ciks:
         concept_results = sec_client.get_company_concepts(cik)
@@ -96,6 +104,7 @@ def process_companies_concepts(ciks: List[str], all_companies: bool = False):
             last_updated=datetime.now(timezone.utc)
         )
         mongodb_context.update_concept_metadata_doc(company_concepts_metadata)
+        redis_client.rpush("processing:processed_concepts_ciks", cik)
 
 
 @celery_app.task(
@@ -104,7 +113,7 @@ def process_companies_concepts(ciks: List[str], all_companies: bool = False):
     retry_kwargs={'countdown': 60},
     name='tasks.company.process_companies_filings'
 )
-def process_companies_filings(ciks: List[str], all_companies: bool = False):
+def process_companies_filings(ciks: List[str], all_companies: bool = False, retry_last_run: bool = False):
     """Processes all filings for specified companies"""
 
     db_context = DbContext()
@@ -116,12 +125,22 @@ def process_companies_filings(ciks: List[str], all_companies: bool = False):
         # Load all companies ciks
         ciks = db_context.get_all_company_ciks()
 
+    if retry_last_run:
+        # Get the last run ciks
+        processed_ciks = redis_client.lrange("processing:processed_filings_ciks", 0, -1)
+        processed_ciks = [cik.decode('utf-8') for cik in processed_ciks]
+        # process just ciks that weren't processed last time
+        ciks = [cik for cik in ciks if cik not in processed_ciks]
+        print(f'Skipping {len(processed_ciks)} already processed ciks')
+
     for cik in ciks:
         filing_history = sec_client.get_company_filings(cik)
 
-        mongodb_context.upsert_filing_history_doc(filing_history)
+        if filing_history:
+            mongodb_context.upsert_filing_history_doc(filing_history)
+            # Get the latest filing date
+            latest_filing_date = filing_history.filings[0].filing_date if filing_history.filings else None
+            if latest_filing_date:
+                db_context.update_company_last_known_filing_date(cik, latest_filing_date)
 
-        # Get the latest filing date
-        latest_filing_date = filing_history.filings[0].filing_date if filing_history.filings else None
-        if latest_filing_date:
-            db_context.update_company_last_known_filing_date(cik, latest_filing_date)
+        redis_client.rpush("processing:processed_filings_ciks", cik)
