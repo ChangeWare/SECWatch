@@ -31,25 +31,50 @@ class IndexProcessor:
             List[Dict]: List of filing dictionaries with parsed data
         """
 
-        # Find the start of actual data (after header and delimiter line)
-        header_pos = content.find('CIK|Company Name')
-        if header_pos == -1:
+        content = content.replace('\r\n', '\n').replace('\r', '\n')
+
+        # Find the header line that contains CIK and other field names
+        # Look for CIK in a more flexible way
+        for line in content.split('\n'):
+            if line.strip().startswith('CIK'):
+                header_pos = content.find(line)
+                break
+        else:
             raise ValueError("Header not found in master.idx file")
 
-        # Then find the dash separator line that follows it
-        dash_pos = content.find('\n-', header_pos) + 1
-        start_pos = content.find('\n', dash_pos) + 1
+        # Find the beginning of the data section by locating the delimiter line
+        header_end = content.find('\n', header_pos)
+        if header_end == -1:
+            raise ValueError("Invalid file format - cannot find end of header")
+
+        # Find the delimiter line (the one with dashes)
+        delimiter_pos = content.find('-' * 10, header_end)  # Look for at least 10 dashes
+        if delimiter_pos == -1:
+            raise ValueError("Cannot find delimiter line in master.idx file")
+
+        # Find the start of actual data (after the delimiter line)
+        start_pos = content.find('\n', delimiter_pos) + 1
+        if start_pos <= 0:
+            raise ValueError("Cannot find start of data section")
 
         filings: List[UnprocessedFiling] = []
 
         reader = csv.reader(StringIO(content[start_pos:]), delimiter='|')
         for row in reader:
             if len(row) == 5:  # Ensure valid row
+
+                date_str = row[3].strip()
+                try:
+                    date_filed = datetime.strptime(date_str, '%Y%m%d')
+                except ValueError as e:
+                    logger.warning(f"Date parsing error in row {row}: {str(e)}")
+                    continue
+
                 filing = UnprocessedFiling(
                     cik=normalize_cik(row[0]),
                     company_name=row[1],
                     form_type=row[2],
-                    date_filed=datetime.strptime(row[3], '%Y%m%d'),
+                    date_filed=date_filed,
                     filename=row[4],
                     accession_number=get_accession_number_from_filename(row[4])
                 )
@@ -226,7 +251,7 @@ class IndexProcessor:
             return ProcessIndexResult(
                 total_new_filings=len(cum_new_filings),
                 new_indexes=new_indexes,
-                message=f"Queued {len(cum_new_filings)} new filings for processing"
+                message=f"Queued {len(cum_new_filings)} new filings for processing for {year} Q{quarter}"
             )
 
         return ProcessIndexResult(

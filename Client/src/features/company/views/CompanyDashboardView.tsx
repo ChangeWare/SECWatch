@@ -60,7 +60,7 @@ export function CompanyDashboardView() {
                 <LoadingIndicator
                     isLoading={companyDetailsLoading || dashboardPreferencesIsLoading || conceptDataLoading}
                 >
-                    {dashboardPreferences?.pinnedConcepts.map((conceptType: string) => {
+                    {dashboardPreferences?.pinnedConcepts?.map((conceptType: string) => {
                         const dashConcept = concepts.find((c) =>
                         c.conceptType === conceptType);
 
@@ -77,7 +77,7 @@ export function CompanyDashboardView() {
                             }
                         }
                     )}
-                    {dashboardPreferences?.pinnedConcepts.length === 0 ? (
+                    {dashboardPreferences?.pinnedConcepts?.length === 0 ? (
                         <Card>
                             <div className="flex flex-col space-y-6 justify-center items-center h-64">
                                 <p className="text-foreground">No concepts pinned to dashboard</p>

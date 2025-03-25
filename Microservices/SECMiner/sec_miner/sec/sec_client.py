@@ -183,6 +183,10 @@ class SECClient:
                 logger.error(f"Error processing SEC data: {str(e)}")
                 raise
 
+    def _queue_failed_company_filings_processing(self, cik: str):
+        """Queue a failed company for reprocessing"""
+        self.redis_client.rpush('sec:processing:failed_company_filings', cik)
+
     @sleep_and_retry
     @limits(calls=config.RATE_CALLS_PER_SECOND, period=config.RATE_LIMIT_SECONDS)
     def get_company_filings(self, cik: str) -> CompanyFilingHistoryDocument:
@@ -192,14 +196,14 @@ class SECClient:
         cik = cik.zfill(10)
 
         with httpx.Client() as client:
-            response = client.get(
-                url=config.SEC_CIK_SUBMISSIONS_URL.format(cik=cik),
-                headers=self.headers
-            )
-
-            data = response.json()
-
             try:
+                response = client.get(
+                    url=config.SEC_CIK_SUBMISSIONS_URL.format(cik=cik),
+                    headers=self.headers
+                )
+
+                data = response.json()
+
                 filings_data = data["filings"]["recent"]
                 logger.info(f"Processing filings for CIK {cik}")
 
@@ -208,6 +212,29 @@ class SECClient:
 
                 # Get number of filings
                 num_filings = len(filings_data["accessionNumber"])
+
+                if num_filings == 0:
+                    logger.info(f"No filings found for CIK {cik}")
+                    return CompanyFilingHistoryDocument(
+                        cik=cik,
+                        filings=[],
+                        most_recent_filing=None,
+                        metadata=FilingHistoryMetadata(
+                            first_filed=None,
+                            last_filed=None,
+                            last_fetched=datetime.now(timezone.utc),
+                            total_filings=0,
+                            form_types=[],
+                            date_range={
+                                "start": None,
+                                "end": None,
+                                "span": {
+                                    "years": 0,
+                                    "months": 0,
+                                }
+                            }
+                        )
+                    )
 
                 for i in range(num_filings):
                     filings.append(
@@ -221,7 +248,7 @@ class SECClient:
                             file_number=filings_data["fileNumber"][i] if filings_data["fileNumber"][i] else None,
                             film_number=filings_data["filmNumber"][i],
                             items=filings_data["items"][i] if filings_data["items"][i] else None,
-                            size=int(filings_data["size"][i]),
+                            size=int(filings_data["size"][i] if filings_data["size"][i] else 0),
                             is_xbrl=bool(filings_data["isXBRL"][i]),
                             is_inline_xbrl=bool(filings_data["isInlineXBRL"][i]),
                             primary_document=filings_data["primaryDocument"][i],
@@ -257,12 +284,10 @@ class SECClient:
 
                 return filing_history
 
-            except KeyError as e:
-                logger.error(f"Error processing SEC data: {e}")
-                raise
             except Exception as e:
-                logger.error(f"Error processing SEC data: {str(e)}")
-                raise
+                logger.error(f"Error processing filing for company {cik}: {str(e)}")
+                self._queue_failed_company_filings_processing(cik)
+                return None
 
     @sleep_and_retry
     @limits(calls=config.RATE_CALLS_PER_SECOND, period=config.RATE_LIMIT_SECONDS)

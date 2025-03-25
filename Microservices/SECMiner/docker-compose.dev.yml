@@ -7,8 +7,8 @@ services:
   rabbitmq:
     image: rabbitmq:3-management
     ports:
-      - "5672:5672"  # AMQP protocol
-      - "15672:15672"  # Management UI
+      - "5672:5672"
+      - "15672:15672"
 
   mongodb:
     image: mongo:latest
@@ -20,7 +20,8 @@ services:
       MONGO_INITDB_DATABASE: "secwatch"
     volumes:
       - mongodb_data:/data/db
-    command: mongod --auth  # Explicitly enable authentication
+    command: mongod --auth
 
 volumes:
   mongodb_data:
+  sql_data:

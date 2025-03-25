@@ -96,7 +96,7 @@ class ProcessIndexResult:
     def to_json(self):
         return {
             'total_new_filings': self.total_new_filings,
-            'new_indexes': self.new_indexes,
+            'new_indexes': len(self.new_indexes),
             'message': self.message,
             'processed_at': str(self.processed_at),
         }

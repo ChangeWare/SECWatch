@@ -84,19 +84,19 @@ class SECFiling(BaseModel):
 
 class FilingHistoryMetadata(BaseModel):
     """Metadata about the company's filing history"""
-    first_filed: datetime
-    last_filed: datetime
+    first_filed: Optional[datetime]
+    last_filed: Optional[datetime]
     last_fetched: datetime
     total_filings: int
     form_types: List[str]
-    date_range: dict
+    date_range: Optional[dict]
 
 
 class CompanyFilingHistoryDocument(BaseModel):
     """Complete filing history for a company"""
     cik: str
     filings: List[SECFiling]
-    most_recent_filing: SECFiling
+    most_recent_filing: Optional[SECFiling]
     metadata: FilingHistoryMetadata
 
 
