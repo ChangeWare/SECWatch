@@ -247,7 +247,7 @@ function CompanyConceptDataTableModal (props: CompanyConceptDataTableModalProps)
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-            <DialogContent className="max-w-5xl h-[80vh] bg-background border border-white/10">
+            <DialogContent className="max-w-5xl bg-background border border-white/10">
                 <DialogHeader className="mt-8">
                     <div className="flex justify-between">
                         <DialogTitle className="text-lg font-bold text-foreground">
