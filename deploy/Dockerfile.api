@@ -1,0 +1,9 @@
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+WORKDIR /app
+EXPOSE ${API_PORT:-5181}
+
+FROM base AS final
+WORKDIR /app
+COPY publish/api/ .
+ENTRYPOINT ["dotnet", "SECWatch.API.dll"]
+

@@ -398,3 +398,16 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Deployment files - keep scripts and templates, ignore actual configs with secrets
+deploy/appsettings.Production.json
+deploy/appsettings.AlertWorkerService.Production.json
+deploy/.env
+deploy/*.env
+!deploy/env.example
+deploy/*.key
+deploy/*.pem
+deploy/nginx.conf
+publish/
+deploy.tar.gz
+*.tar.gz
